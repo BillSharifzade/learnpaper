@@ -26,6 +26,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import com.learnpaper.content.ContentRepository
 import com.learnpaper.content.Lang
 import com.learnpaper.data.LayoutPreset
 import com.learnpaper.data.Settings
+import com.learnpaper.data.WallpaperMode
 import com.learnpaper.data.WallpaperTarget
 import com.learnpaper.render.Palette
 import com.learnpaper.render.Palettes
@@ -57,7 +59,7 @@ fun langName(lang: Lang): String = stringResource(
     when (lang) {
         Lang.EN -> R.string.lang_en
         Lang.RU -> R.string.lang_ru
-        Lang.TG -> R.string.lang_tg
+        Lang.TJ -> R.string.lang_tj
     },
 )
 
@@ -305,7 +307,7 @@ fun QuietHoursControls(settings: Settings, onChange: (Settings) -> Unit) {
 }
 
 @Composable
-private fun HourStepper(label: String, minutes: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+fun HourStepper(label: String, minutes: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -317,6 +319,58 @@ private fun HourStepper(label: String, minutes: Int, onChange: (Int) -> Unit, mo
                 Icon(Icons.Filled.KeyboardArrowRight, contentDescription = null)
             }
         }
+    }
+}
+
+/** Live (redraw in place) versus static (WallpaperManager.setBitmap) delivery. */
+@Composable
+fun ModeControls(settings: Settings, onChange: (Settings) -> Unit) {
+    SectionLabel(stringResource(R.string.label_mode))
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        WallpaperMode.entries.forEach { mode ->
+            val (title, desc) = when (mode) {
+                WallpaperMode.LIVE -> R.string.mode_live to R.string.mode_live_desc
+                WallpaperMode.STATIC -> R.string.mode_static to R.string.mode_static_desc
+            }
+            val selected = settings.mode == mode
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .border(
+                        if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        RoundedCornerShape(14.dp),
+                    )
+                    .clickable { onChange(settings.copy(mode = mode)) }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(title), style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                RadioButton(selected = selected, onClick = { onChange(settings.copy(mode = mode)) })
+            }
+        }
+    }
+}
+
+/** Daily notification switch with its hour. */
+@Composable
+fun NotificationControls(settings: Settings, onChange: (Settings) -> Unit) {
+    SwitchRow(
+        title = stringResource(R.string.notif_daily),
+        subtitle = stringResource(R.string.notif_daily_desc),
+        checked = settings.notifyDaily,
+        onChecked = { onChange(settings.copy(notifyDaily = it)) },
+    )
+    if (settings.notifyDaily) {
+        HourStepper(
+            label = stringResource(R.string.notif_at),
+            minutes = settings.notifyMinute,
+            onChange = { onChange(settings.copy(notifyMinute = it)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

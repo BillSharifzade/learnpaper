@@ -16,7 +16,7 @@
     <string name="label_show_translations">Тарҷумаҳо ба забонҳои</string>
     <string name="lang_en">Англисӣ</string>
     <string name="lang_ru">Русӣ</string>
-    <string name="lang_tg">Тоҷикӣ</string>
+    <string name="lang_tj">Тоҷикӣ</string>
     <string name="onb_level_title">Сатҳи шумо</string>
     <string name="onb_level_body">Калимаҳо аз рӯи сатҳҳои CEFR гурӯҳбандӣ шудаанд. Якчандтоашро интихоб кардан мумкин аст.</string>
     <string name="level_coming_soon">ба наздикӣ</string>
@@ -102,4 +102,47 @@
     <string name="pos_preposition">пешоянд</string>
     <string name="pos_numeral">шумора</string>
     <string name="pos_conjunction">пайвандак</string>
+
+    <string name="label_mode">Обои чӣ тавр гузошта мешавад</string>
+    <string name="mode_live">Зинда (тавсия мешавад)</string>
+    <string name="mode_live_desc">Корт дар ҷояш кашида мешавад. Бе милт-милт, ва телефон бо ҳар иваз мавзӯи худро аз нав ранг намекунад.</string>
+    <string name="mode_static">Оддӣ</string>
+    <string name="mode_static_desc">Ҳар дафъа тасвири нав гузошта мешавад. Дар баъзе телефонҳо экрани асосӣ бо ҳар иваз аз нав бор мешавад.</string>
+    <string name="onb_ready_body_live">Қадами охирин: Android мепурсад, ки LearnPaper ҳамчун обои тасдиқ шавад.</string>
+    <string name="live_setup_title">Як қадам монд</string>
+    <string name="live_setup_body">Дар экрани навбатӣ LearnPaper-ро ҳамчун обои тасдиқ кунед — барои экрани асосӣ ва экрани қулф, агар пешниҳод шавад.</string>
+    <string name="live_setup_action">Обоиро гузоред</string>
+    <string name="live_active">LearnPaper обои ҷории шумост.</string>
+    <string name="live_inactive">LearnPaper ҳанӯз ҳамчун обои гузошта нашудааст.</string>
+    <string name="live_wallpaper_description">Калимаи нав дар обои аз рӯи ҷадвал.</string>
+    <string name="widget_name">Корти LearnPaper</string>
+    <string name="widget_description">Калимаи ҷорӣ бо тарҷумаҳояш.</string>
+
+    <plurals name="stat_streak">
+        <item quantity="one">рӯз паи ҳам</item>
+        <item quantity="other">рӯз паи ҳам</item>
+    </plurals>
+    <string name="stat_seen">дида шуд</string>
+    <string name="stat_learned">омӯхта шуд</string>
+    <string name="stat_due">такрор</string>
+
+    <string name="settings_packs">Калимаҳои бештар</string>
+    <string name="packs_body">Сатҳҳои иловагиро пас аз нашр боргирӣ кардан мумкин аст. Маҷмӯаҳои боргиришуда дар ҳамин телефон нигоҳ дошта мешаванд.</string>
+    <string name="packs_words">%1$d калима</string>
+    <string name="packs_update_available">навсозӣ ҳаст</string>
+    <string name="packs_installed_label">боргирӣ шуд</string>
+    <string name="packs_download">Боргирӣ</string>
+    <string name="packs_update">Навсозӣ</string>
+    <string name="packs_remove">Нест кардан</string>
+    <string name="packs_none">Ҳоло маҷмӯаҳои иловагӣ нестанд. Ҳамаи калимаҳо аллакай дар барнома ҳастанд.</string>
+    <string name="packs_error">Рӯйхати маҷмӯаҳо дастрас нашуд. Пайвастшавиро санҷед.</string>
+    <string name="packs_check">Маҷмӯаҳоро санҷед</string>
+    <string name="packs_installed">Маҷмӯа боргирӣ шуд</string>
+    <string name="packs_failed">Боргирӣ нашуд</string>
+
+    <string name="settings_notifications">Огоҳиномаҳо</string>
+    <string name="notif_daily">Калимаи рӯз</string>
+    <string name="notif_daily_desc">Ҳар рӯз як огоҳинома бо калимаи ҷорӣ</string>
+    <string name="notif_at">Соати</string>
+    <string name="notif_channel">Калимаи рӯз</string>
 </resources>

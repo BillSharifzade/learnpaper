@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.learnpaper.R
@@ -38,6 +40,7 @@ import com.learnpaper.ui.home.HomeScreen
 import com.learnpaper.ui.onboarding.OnboardingScreen
 import com.learnpaper.ui.settings.SettingsScreen
 import com.learnpaper.ui.theme.LearnPaperTheme
+import com.learnpaper.wallpaper.LiveCardWallpaper
 
 enum class Screen(val labelRes: Int, val icon: ImageVector) {
     HOME(R.string.nav_home, Icons.Filled.Home),
@@ -48,6 +51,18 @@ enum class Screen(val labelRes: Int, val icon: ImageVector) {
 @Composable
 fun LearnPaperApp(vm: AppViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // The user may come back from the system wallpaper picker; re-check whether we are active.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { vm.refreshLiveStatus() }
+    LaunchedEffect(Unit) {
+        vm.events.collect { event ->
+            when (event) {
+                UiEvent.OpenLivePicker -> runCatching { context.startActivity(LiveCardWallpaper.pickerIntent(context)) }
+            }
+        }
+    }
+
     LearnPaperTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             when {

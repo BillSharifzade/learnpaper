@@ -15,14 +15,14 @@ class Speaker(context: Context) {
         pending = null
     }
 
-    fun supports(lang: Lang): Boolean = lang != Lang.TG
+    fun supports(lang: Lang): Boolean = lang != Lang.TJ
 
     fun speak(text: String, lang: Lang) {
         if (!supports(lang)) return
         val locale = when (lang) {
             Lang.EN -> Locale.UK
             Lang.RU -> Locale("ru", "RU")
-            Lang.TG -> return
+            Lang.TJ -> return
         }
         if (ready) speakNow(text, locale) else pending = text to locale
     }

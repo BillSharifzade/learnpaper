@@ -35,7 +35,7 @@ FLUENT_RAW = "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/as
 NOTO_PNG = "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u{code}.png"
 
 LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"]
-LANGS = ("en", "ru", "tg")
+LANGS = ("en", "ru", "tj")
 COMBINING_ACUTE = "́"
 IMAGE_SIZE = 512
 
@@ -48,7 +48,7 @@ RU = {
     "ч": "ch", "ш": "sh", "щ": "shch", "ъ": "", "ы": "y", "ь": "", "э": "e", "ю": "yu",
     "я": "ya",
 }
-TG = {
+TJ = {
     "а": "a", "б": "b", "в": "v", "г": "g", "ғ": "gh", "д": "d", "е": "e", "ё": "yo",
     "ж": "zh", "з": "z", "и": "i", "ӣ": "ī", "й": "y", "к": "k", "қ": "q", "л": "l",
     "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u",
@@ -97,8 +97,8 @@ def translit_ru(word: str) -> str:
     return _translit(word, RU, ye_rule=True)
 
 
-def translit_tg(word: str) -> str:
-    return _translit(word, TG, ye_rule=True)
+def translit_tj(word: str) -> str:
+    return _translit(word, TJ, ye_rule=True)
 
 
 def strip_stress(text: str) -> str:
@@ -248,7 +248,7 @@ def main() -> int:
         seen.add(wid)
         if d.get("level") not in LEVELS:
             errors.append(f"{wid}: bad level '{d.get('level')}'")
-        for key in ("en", "ipa", "ru", "tg", "pos", "image"):
+        for key in ("en", "ipa", "ru", "tj", "pos", "image"):
             if not str(d.get(key, "")).strip():
                 errors.append(f"{wid}: missing '{key}'")
         ex = d.get("ex") or {}
@@ -257,8 +257,8 @@ def main() -> int:
                 errors.append(f"{wid}: missing example '{lang}'")
             elif len(ex[lang]) > 90:
                 warnings.append(f"{wid}: example '{lang}' is long ({len(ex[lang])} chars)")
-        if re.search(r"[A-Za-z]", d.get("ru", "")) or re.search(r"[A-Za-z]", d.get("tg", "")):
-            errors.append(f"{wid}: Latin letters inside ru/tg text")
+        if re.search(r"[A-Za-z]", d.get("ru", "")) or re.search(r"[A-Za-z]", d.get("tj", "")):
+            errors.append(f"{wid}: Latin letters inside ru/tj text")
         if not any(ch in d.get("ipa", "") for ch in "ˈˌ") and len(d.get("ipa", "")) > 8:
             warnings.append(f"{wid}: IPA has no stress mark")
 
@@ -272,7 +272,7 @@ def main() -> int:
             "tags": d.get("tags", []),
             "en": {"text": d["en"], "tr": d["ipa"]},
             "ru": {"text": strip_stress(d["ru"]), "tr": translit_ru(d["ru"])},
-            "tg": {"text": d["tg"], "tr": translit_tg(d["tg"])},
+            "tj": {"text": d["tj"], "tr": translit_tj(d["tj"])},
             "example": {lang: ex.get(lang, "") for lang in LANGS},
             "image": image,
         })
@@ -284,13 +284,13 @@ def main() -> int:
         else:
             missing, unmatched = [], []
             for w in words:
-                tg = w["tg"]["text"].lower()
+                tj = w["tj"]["text"].lower()
                 en = w["en"]["text"].lower()
-                bag = glosses.get(tg)
+                bag = glosses.get(tj)
                 if bag is None:
-                    missing.append(f"{w['id']}: '{tg}' not in Wiktionary")
+                    missing.append(f"{w['id']}: '{tj}' not in Wiktionary")
                 elif not any(en in g for g in bag):
-                    unmatched.append(f"{w['id']}: '{tg}' glosses do not mention '{en}' ({'; '.join(sorted(bag))[:80]})")
+                    unmatched.append(f"{w['id']}: '{tj}' glosses do not mention '{en}' ({'; '.join(sorted(bag))[:80]})")
             warnings += missing + unmatched
             print(f"Tajik cross-check: {len(words) - len(missing) - len(unmatched)} matched, "
                   f"{len(unmatched)} gloss mismatch, {len(missing)} not in Wiktionary")

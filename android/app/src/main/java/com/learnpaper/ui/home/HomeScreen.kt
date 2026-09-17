@@ -1,5 +1,6 @@
 package com.learnpaper.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -18,6 +20,8 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -29,12 +33,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.learnpaper.R
 import com.learnpaper.content.Lang
 import com.learnpaper.content.Word
 import com.learnpaper.data.Settings
+import com.learnpaper.domain.Stats
 import com.learnpaper.ui.AppViewModel
 import com.learnpaper.ui.UiState
 import com.learnpaper.ui.components.CardPreview
@@ -70,6 +78,12 @@ fun HomeScreen(state: UiState, vm: AppViewModel) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
         }
+        if (state.needsLiveSetup) {
+            LiveSetupBanner(onSetUp = vm::openLivePicker)
+            Spacer(Modifier.height(16.dp))
+        }
+        StatsRow(state.stats)
+        Spacer(Modifier.height(16.dp))
 
         Row(Modifier.fillMaxWidth()) {
             CardPreview(
@@ -130,6 +144,53 @@ fun HomeScreen(state: UiState, vm: AppViewModel) {
             Text(stringResource(R.string.home_apply_again))
         }
         Spacer(Modifier.height(24.dp))
+    }
+}
+
+/** Shown while live mode is selected but our wallpaper service is not the active wallpaper. */
+@Composable
+private fun LiveSetupBanner(onSetUp: () -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(stringResource(R.string.live_setup_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+            Spacer(Modifier.height(4.dp))
+            Text(stringResource(R.string.live_setup_body), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+            Spacer(Modifier.height(12.dp))
+            Button(onClick = onSetUp) { Text(stringResource(R.string.live_setup_action)) }
+        }
+    }
+}
+
+@Composable
+private fun StatsRow(stats: Stats) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        StatTile(stats.streakDays.toString(), pluralStringResource(R.plurals.stat_streak, stats.streakDays), Modifier.weight(1f))
+        StatTile(stats.wordsSeen.toString(), stringResource(R.string.stat_seen), Modifier.weight(1f))
+        StatTile(stats.wordsLearned.toString(), stringResource(R.string.stat_learned), Modifier.weight(1f))
+        StatTile(stats.dueToday.toString(), stringResource(R.string.stat_due), Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun StatTile(value: String, label: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(vertical = 10.dp, horizontal = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(value, style = MaterialTheme.typography.titleLarge)
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+        )
     }
 }
 

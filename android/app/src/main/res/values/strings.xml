@@ -18,7 +18,7 @@
     <string name="label_show_translations">Show translations in</string>
     <string name="lang_en">English</string>
     <string name="lang_ru">Russian</string>
-    <string name="lang_tg">Tajik</string>
+    <string name="lang_tj">Tajik</string>
     <string name="onb_level_title">Your level</string>
     <string name="onb_level_body">Words are grouped by CEFR level. You can pick more than one.</string>
     <string name="level_coming_soon">coming soon</string>
@@ -104,4 +104,51 @@
     <string name="pos_preposition">preposition</string>
     <string name="pos_numeral">numeral</string>
     <string name="pos_conjunction">conjunction</string>
+
+    <!-- wallpaper mode, live wallpaper, widget -->
+    <string name="label_mode">How the wallpaper is set</string>
+    <string name="mode_live">Live (recommended)</string>
+    <string name="mode_live_desc">The card is drawn in place. No flicker, and the phone does not re-colour its theme on every change.</string>
+    <string name="mode_static">Classic</string>
+    <string name="mode_static_desc">A new image is set each time. On some phones the home screen reloads with every change.</string>
+    <string name="onb_ready_body_live">One last step: Android will ask you to confirm LearnPaper as your wallpaper.</string>
+    <string name="live_setup_title">One step left</string>
+    <string name="live_setup_body">Confirm LearnPaper as your wallpaper on the next screen, choosing both home and lock screen if offered.</string>
+    <string name="live_setup_action">Set wallpaper</string>
+    <string name="live_active">LearnPaper is your active wallpaper.</string>
+    <string name="live_inactive">LearnPaper is not the active wallpaper yet.</string>
+    <string name="live_wallpaper_description">A new word on your wallpaper, on a schedule.</string>
+    <string name="widget_name">LearnPaper card</string>
+    <string name="widget_description">The current word with its translations.</string>
+
+    <!-- stats -->
+    <plurals name="stat_streak">
+        <item quantity="one">day streak</item>
+        <item quantity="other">day streak</item>
+    </plurals>
+    <string name="stat_seen">seen</string>
+    <string name="stat_learned">learned</string>
+    <string name="stat_due">to review</string>
+
+    <!-- content packs -->
+    <string name="settings_packs">More words</string>
+    <string name="packs_body">Extra levels can be downloaded when they are published. Downloaded packs are kept on this phone.</string>
+    <string name="packs_words">%1$d words</string>
+    <string name="packs_update_available">update available</string>
+    <string name="packs_installed_label">downloaded</string>
+    <string name="packs_download">Download</string>
+    <string name="packs_update">Update</string>
+    <string name="packs_remove">Remove</string>
+    <string name="packs_none">No extra packs yet. All current words are already in the app.</string>
+    <string name="packs_error">Could not reach the pack list. Check your connection.</string>
+    <string name="packs_check">Check for packs</string>
+    <string name="packs_installed">Pack downloaded</string>
+    <string name="packs_failed">Download failed</string>
+
+    <!-- notifications -->
+    <string name="settings_notifications">Notifications</string>
+    <string name="notif_daily">Word of the day</string>
+    <string name="notif_daily_desc">One notification a day with the current word</string>
+    <string name="notif_at">At</string>
+    <string name="notif_channel">Word of the day</string>
 </resources>

@@ -174,11 +174,11 @@ Why native instead of Flutter / React Native / KMP:
   "tags": ["objects", "weather"],
   "en": { "text": "umbrella", "ipa": "ʌmˈbrelə", "pos": "noun" },
   "ru": { "text": "зонт", "tr": "zont" },
-  "tg": { "text": "чатр", "tr": "chatr" },
+  "tj": { "text": "чатр", "tr": "chatr" },
   "example": {
     "en": "I took an umbrella because it was raining.",
     "ru": "Я взял зонт, потому что шёл дождь.",
-    "tg": "Ман чатр гирифтам, зеро борон меборид."
+    "tj": "Ман чатр гирифтам, зеро борон меборид."
   },
   "image": "umbrella.webp"
 }

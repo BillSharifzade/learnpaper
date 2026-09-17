@@ -29,11 +29,14 @@ class SettingsRepository(private val context: Context) {
         val PALETTE = stringPreferencesKey("palette")
         val ROTATE_PALETTE = booleanPreferencesKey("rotate_palette")
         val LAYOUT = stringPreferencesKey("layout")
+        val MODE = stringPreferencesKey("mode")
         val TARGET = stringPreferencesKey("target")
         val INTERVAL = intPreferencesKey("interval")
         val QUIET_ENABLED = booleanPreferencesKey("quiet_enabled")
         val QUIET_START = intPreferencesKey("quiet_start")
         val QUIET_END = intPreferencesKey("quiet_end")
+        val NOTIFY_DAILY = booleanPreferencesKey("notify_daily")
+        val NOTIFY_MINUTE = intPreferencesKey("notify_minute")
     }
 
     val flow: Flow<Settings> = context.settingsStore.data.map(::read)
@@ -61,11 +64,14 @@ class SettingsRepository(private val context: Context) {
             paletteId = p[Keys.PALETTE] ?: d.paletteId,
             rotatePalette = p[Keys.ROTATE_PALETTE] ?: d.rotatePalette,
             layout = p[Keys.LAYOUT]?.let { v -> LayoutPreset.entries.firstOrNull { it.name == v } } ?: d.layout,
+            mode = p[Keys.MODE]?.let { v -> WallpaperMode.entries.firstOrNull { it.name == v } } ?: d.mode,
             target = p[Keys.TARGET]?.let { v -> WallpaperTarget.entries.firstOrNull { it.name == v } } ?: d.target,
             intervalMinutes = p[Keys.INTERVAL] ?: d.intervalMinutes,
             quietEnabled = p[Keys.QUIET_ENABLED] ?: d.quietEnabled,
             quietStart = p[Keys.QUIET_START] ?: d.quietStart,
             quietEnd = p[Keys.QUIET_END] ?: d.quietEnd,
+            notifyDaily = p[Keys.NOTIFY_DAILY] ?: d.notifyDaily,
+            notifyMinute = p[Keys.NOTIFY_MINUTE] ?: d.notifyMinute,
         )
     }
 
@@ -79,12 +85,17 @@ class SettingsRepository(private val context: Context) {
         p[Keys.PALETTE] = s.paletteId
         p[Keys.ROTATE_PALETTE] = s.rotatePalette
         p[Keys.LAYOUT] = s.layout.name
+        p[Keys.MODE] = s.mode.name
         p[Keys.TARGET] = s.target.name
         p[Keys.INTERVAL] = s.intervalMinutes
         p[Keys.QUIET_ENABLED] = s.quietEnabled
         p[Keys.QUIET_START] = s.quietStart
         p[Keys.QUIET_END] = s.quietEnd
+        p[Keys.NOTIFY_DAILY] = s.notifyDaily
+        p[Keys.NOTIFY_MINUTE] = s.notifyMinute
     }
 
-    private fun langOrNull(name: String): Lang? = Lang.entries.firstOrNull { it.name == name }
+    /** "TG" was the stored name of Tajik before it was renamed to TJ. */
+    private fun langOrNull(name: String): Lang? =
+        if (name == "TG") Lang.TJ else Lang.entries.firstOrNull { it.name == name }
 }

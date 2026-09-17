@@ -16,7 +16,7 @@
     <string name="label_show_translations">Показывать переводы на</string>
     <string name="lang_en">Английский</string>
     <string name="lang_ru">Русский</string>
-    <string name="lang_tg">Таджикский</string>
+    <string name="lang_tj">Таджикский</string>
     <string name="onb_level_title">Ваш уровень</string>
     <string name="onb_level_body">Слова сгруппированы по уровням CEFR. Можно выбрать несколько.</string>
     <string name="level_coming_soon">скоро</string>
@@ -102,4 +102,49 @@
     <string name="pos_preposition">предлог</string>
     <string name="pos_numeral">числительное</string>
     <string name="pos_conjunction">союз</string>
+
+    <string name="label_mode">Как устанавливаются обои</string>
+    <string name="mode_live">Живые (рекомендуется)</string>
+    <string name="mode_live_desc">Карточка рисуется на месте. Без мерцания, и телефон не перекрашивает тему при каждой смене.</string>
+    <string name="mode_static">Обычные</string>
+    <string name="mode_static_desc">Каждый раз ставится новая картинка. На некоторых телефонах рабочий стол перезагружается при каждой смене.</string>
+    <string name="onb_ready_body_live">Последний шаг: Android попросит подтвердить LearnPaper в качестве обоев.</string>
+    <string name="live_setup_title">Остался один шаг</string>
+    <string name="live_setup_body">На следующем экране подтвердите LearnPaper как обои — для главного экрана и экрана блокировки, если будет предложено.</string>
+    <string name="live_setup_action">Установить обои</string>
+    <string name="live_active">LearnPaper — ваши текущие обои.</string>
+    <string name="live_inactive">LearnPaper ещё не установлен как обои.</string>
+    <string name="live_wallpaper_description">Новое слово на обоях по расписанию.</string>
+    <string name="widget_name">Карточка LearnPaper</string>
+    <string name="widget_description">Текущее слово с переводами.</string>
+
+    <plurals name="stat_streak">
+        <item quantity="one">день подряд</item>
+        <item quantity="few">дня подряд</item>
+        <item quantity="many">дней подряд</item>
+        <item quantity="other">дней подряд</item>
+    </plurals>
+    <string name="stat_seen">увидено</string>
+    <string name="stat_learned">выучено</string>
+    <string name="stat_due">повторить</string>
+
+    <string name="settings_packs">Больше слов</string>
+    <string name="packs_body">Дополнительные уровни можно скачать, когда они появятся. Скачанные наборы хранятся на этом телефоне.</string>
+    <string name="packs_words">%1$d слов</string>
+    <string name="packs_update_available">есть обновление</string>
+    <string name="packs_installed_label">скачано</string>
+    <string name="packs_download">Скачать</string>
+    <string name="packs_update">Обновить</string>
+    <string name="packs_remove">Удалить</string>
+    <string name="packs_none">Дополнительных наборов пока нет. Все слова уже в приложении.</string>
+    <string name="packs_error">Не удалось получить список наборов. Проверьте соединение.</string>
+    <string name="packs_check">Проверить наборы</string>
+    <string name="packs_installed">Набор скачан</string>
+    <string name="packs_failed">Не удалось скачать</string>
+
+    <string name="settings_notifications">Уведомления</string>
+    <string name="notif_daily">Слово дня</string>
+    <string name="notif_daily_desc">Одно уведомление в день с текущим словом</string>
+    <string name="notif_at">В</string>
+    <string name="notif_channel">Слово дня</string>
 </resources>

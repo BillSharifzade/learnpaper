@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.learnpaper.R
+import com.learnpaper.data.WallpaperMode
 import com.learnpaper.ui.AppViewModel
 import com.learnpaper.ui.UiState
 import com.learnpaper.ui.components.CardPreview
@@ -42,6 +43,7 @@ import com.learnpaper.ui.components.IntervalControls
 import com.learnpaper.ui.components.LanguageControls
 import com.learnpaper.ui.components.LayoutControls
 import com.learnpaper.ui.components.LevelControls
+import com.learnpaper.ui.components.ModeControls
 import com.learnpaper.ui.components.PaletteControls
 import com.learnpaper.ui.components.QuietHoursControls
 import com.learnpaper.ui.components.TargetControls
@@ -127,10 +129,17 @@ fun OnboardingScreen(state: UiState, vm: AppViewModel) {
                     Spacer(Modifier.height(24.dp))
                     QuietHoursControls(draft) { draft = it }
                     Spacer(Modifier.height(24.dp))
-                    TargetControls(draft) { draft = it }
+                    ModeControls(draft) { draft = it }
+                    if (draft.mode == WallpaperMode.STATIC) {
+                        Spacer(Modifier.height(24.dp))
+                        TargetControls(draft) { draft = it }
+                    }
                 }
                 Step.READY -> {
-                    StepHeader(R.string.onb_ready_title, R.string.onb_ready_body)
+                    StepHeader(
+                        R.string.onb_ready_title,
+                        if (draft.mode == WallpaperMode.LIVE) R.string.onb_ready_body_live else R.string.onb_ready_body,
+                    )
                     CardPreview(
                         settings = draft,
                         word = previewWord,

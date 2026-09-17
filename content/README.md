@@ -14,17 +14,17 @@ One JSON object per line:
 ```json
 {"id":"umbrella","level":"A1","pos":"noun","tags":["objects","weather"],
  "image":"fluent:Umbrella",
- "en":"umbrella","ipa":"ʌmˈbrelə","ru":"зонт","tg":"чатр",
+ "en":"umbrella","ipa":"ʌmˈbrelə","ru":"зонт","tj":"чатр",
  "ex":{"en":"I took an umbrella because it was raining.",
        "ru":"Я взял зонт, потому что шёл дождь.",
-       "tg":"Ман чатр гирифтам, зеро борон меборид."}}
+       "tj":"Ман чатр гирифтам, зеро борон меборид."}}
 ```
 
 - `id`: lowercase, digits and hyphens; unique.
 - `level`: CEFR level (`A1`…`C2`). Levels follow the CEFR-J Wordlist (`source/cefrj-vocabulary-profile-1.5.csv`).
 - `pos`: English key (`noun`, `verb`, `adjective`, `adverb`, `interjection`, `phrase`, …); the apps localise it.
 - `ru`: mark stress with a combining acute (U+0301) after the vowel, e.g. `вода́`. The build strips it for display and puts the accent on the transliteration (`vodá`).
-- `tg`: standard Tajik Cyrillic. Transliteration is generated (`ӯ→ū`, `ӣ→ī`, `ғ→gh`, `қ→q`, `ҳ→h`, `ҷ→j`, `х→kh`).
+- `tj`: standard Tajik Cyrillic. Transliteration is generated (`ӯ→ū`, `ӣ→ī`, `ғ→gh`, `қ→q`, `ҳ→h`, `ҷ→j`, `х→kh`).
 - `ipa`: English pronunciation without slashes, Oxford-style with `(r)` for non-rhotic r.
 - `image`: one of
   - `fluent:<Folder>` — a folder from `source/fluent-emoji-folders.txt` (Fluent Emoji, MIT). Flat style SVG, rasterised to 512 px PNG.
@@ -33,7 +33,7 @@ One JSON object per line:
 
 ## What the build does
 
-1. Validates every line (fields, levels, no Latin letters in `ru`/`tg`, examples present).
+1. Validates every line (fields, levels, no Latin letters in `ru`/`tj`, examples present).
 2. Generates `tr` for Russian and Tajik.
 3. Downloads and rasterises the illustration (cached under `cache/`).
 4. Cross-checks each Tajik word against the English Wiktionary dump for Tajik (kaikki.org, downloaded to `cache/` on first run) and prints words that are missing or whose glosses do not mention the English word. Warnings only: a mismatch usually means a synonym, not an error.

@@ -15,8 +15,14 @@ android {
         applicationId = "com.learnpaper"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
+
+        // Where extra content packs are listed. Override for a local server with
+        // ./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8000/manifest.json
+        val packsUrl = (project.findProperty("packsUrl") as String?)
+            ?: "https://raw.githubusercontent.com/BillSharifzade/learnpapper/main/content/packs/manifest.json"
+        buildConfigField("String", "PACKS_MANIFEST_URL", "\"$packsUrl\"")
     }
 
     buildTypes {
@@ -34,6 +40,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     androidResources {
@@ -61,4 +68,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
 }

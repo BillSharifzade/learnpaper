@@ -75,7 +75,8 @@ by both the UI and the WorkManager worker.
 
 ## Conventions and gotchas
 
-- Every user-facing string exists in `values/`, `values-ru/` and `values-tg/`. Adding a palette
+- Every user-facing string exists in `values/`, `values-ru/` and `values-tg/` (the folder keeps the ISO
+  code `tg`; the user-facing abbreviation, content key and `Lang.TJ` are all TJ). Adding a palette
   also needs a `palette_*` string in all three. Part-of-speech tags in content are English keys
   (`noun`, `verb`, …) mapped to localized strings by `PosNames`.
 - Tajik letters (Ғғ Ӣӣ Ққ Ӯӯ Ҳҳ Ҷҷ) and IPA must render: the bundled Inter font was checked for
