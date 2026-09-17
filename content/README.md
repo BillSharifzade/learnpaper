@@ -46,7 +46,7 @@ Everything in `source/words.jsonl` is bundled into the apps. Extra content can a
 without an app update: `--pack ID=LEVELS` zips the words of those levels (`words.json` +
 `images/`) into `packs/<ID>-v<N>.zip` and lists it in `packs/manifest.json`. The Android app
 fetches that manifest from this repository on GitHub
-(`raw.githubusercontent.com/BillSharifzade/learnpapper/main/content/packs/manifest.json`, see
+(`raw.githubusercontent.com/BillSharifzade/learnpaper/main/content/packs/manifest.json`, see
 `PACKS_MANIFEST_URL` in `android/app/build.gradle.kts`), installs a pack under
 `files/packs/<ID>/` and merges it with the bundled words (same id → the pack wins, so packs can
 also carry corrections). Bump `--pack-version` to publish an update. The manifest is empty until a

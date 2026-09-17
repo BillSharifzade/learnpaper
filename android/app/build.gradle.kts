@@ -21,7 +21,7 @@ android {
         // Where extra content packs are listed. Override for a local server with
         // ./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8000/manifest.json
         val packsUrl = (project.findProperty("packsUrl") as String?)
-            ?: "https://raw.githubusercontent.com/BillSharifzade/learnpapper/main/content/packs/manifest.json"
+            ?: "https://raw.githubusercontent.com/BillSharifzade/learnpaper/main/content/packs/manifest.json"
         buildConfigField("String", "PACKS_MANIFEST_URL", "\"$packsUrl\"")
     }
 
