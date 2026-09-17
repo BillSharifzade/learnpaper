@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_home">Имрӯз</string>
+    <string name="nav_history">Таърих</string>
+    <string name="nav_settings">Танзимот</string>
+
+    <string name="onb_welcome_title">Ҳар соат як калимаи нав</string>
+    <string name="onb_welcome_body">LearnPaper обои телефонро ба корти калима табдил медиҳад: калима, талаффуз, тарҷумаҳо ва мисол. Обои худ аз худ иваз мешавад.</string>
+    <string name="onb_next">Баъдӣ</string>
+    <string name="onb_back">Қафо</string>
+    <string name="onb_start">Оғоз</string>
+    <string name="onb_finish">Обоиро гузоред</string>
+    <string name="onb_languages_title">Шумо чӣ меомӯзед?</string>
+    <string name="onb_languages_body">Калимаи калон дар корт ба забони омӯхташаванда аст. Интихоб кунед, кадом тарҷумаҳо нишон дода шаванд.</string>
+    <string name="label_learning">Ман меомӯзам</string>
+    <string name="label_show_translations">Тарҷумаҳо ба забонҳои</string>
+    <string name="lang_en">Англисӣ</string>
+    <string name="lang_ru">Русӣ</string>
+    <string name="lang_tg">Тоҷикӣ</string>
+    <string name="onb_level_title">Сатҳи шумо</string>
+    <string name="onb_level_body">Калимаҳо аз рӯи сатҳҳои CEFR гурӯҳбандӣ шудаанд. Якчандтоашро интихоб кардан мумкин аст.</string>
+    <string name="level_coming_soon">ба наздикӣ</string>
+    <string name="onb_look_title">Намудро интихоб кунед</string>
+    <string name="label_palette">Ранг</string>
+    <string name="palette_rotate">Ранг бо ҳар калима иваз шавад</string>
+    <string name="label_layout">Ҷойгиршавӣ</string>
+    <string name="layout_lock">Дар поён</string>
+    <string name="layout_lock_desc">Боло барои соат холӣ мемонад</string>
+    <string name="layout_home">Дар марказ</string>
+    <string name="layout_home_desc">Корт дар миёна</string>
+    <string name="layout_compact">Мухтасар</string>
+    <string name="layout_note">Дар экрани қулф ҳамеша ҷойгиршавии поёнӣ истифода мешавад, то соат намоён монад.</string>
+    <string name="layout_compact_desc">Танҳо калима ва тарҷумаҳо</string>
+    <string name="onb_schedule_title">Чанд вақт як бор?</string>
+    <string name="label_interval">Обои иваз шавад ҳар</string>
+    <string name="interval_minutes">%1$d дақ</string>
+    <string name="interval_hours">%1$d соат</string>
+    <string name="interval_daily">Як бор дар рӯз</string>
+    <string name="label_quiet">Соатҳои ором</string>
+    <string name="quiet_desc">Шабона обои иваз намешавад</string>
+    <string name="quiet_from">Аз</string>
+    <string name="quiet_to">То</string>
+    <string name="label_target">Гузоштан ба</string>
+    <string name="target_both">Ҳар ду экран</string>
+    <string name="target_home">Танҳо асосӣ</string>
+    <string name="target_lock">Танҳо қулф</string>
+    <string name="onb_ready_title">Ҳама чиз тайёр</string>
+    <string name="onb_ready_body">Калимаи аввалин тайёр аст. Минбаъд обои худ аз худ иваз мешавад.</string>
+
+    <string name="home_next_word">Калимаи баъдӣ</string>
+    <string name="home_apply_again">Аз нав гузоштан</string>
+    <string name="home_no_word">Барои гузоштани обои аввалин «Калимаи баъдӣ»-ро пахш кунед.</string>
+    <string name="home_schedule_every">Ҳар %1$s иваз мешавад</string>
+    <string name="home_next_change">Тағйироти навбатӣ тақрибан соати %1$s</string>
+    <string name="home_quiet_now">Соатҳои ором: то %1$s таваққуф</string>
+    <string name="action_favorite">Дӯстдошта</string>
+    <string name="action_learned">Омӯхта шуд</string>
+    <string name="action_speak">Гӯш кардан</string>
+    <string name="msg_applied">Обои нав шуд</string>
+    <string name="msg_failed">Обои гузошта нашуд</string>
+    <string name="msg_no_words">Барои сатҳҳои интихобшуда калима нест</string>
+
+    <string name="history_empty">Калимаҳое, ки дидаед, дар ин ҷо пайдо мешаванд.</string>
+    <string name="history_favorites_only">Дӯстдоштаҳо</string>
+    <string name="detail_example">Мисол</string>
+    <string name="level_label">Сатҳи %1$s</string>
+
+    <string name="settings_languages">Забонҳо</string>
+    <string name="settings_content">Мундариҷа</string>
+    <string name="settings_look">Намуд</string>
+    <string name="settings_schedule">Ҷадвал</string>
+    <string name="settings_show_transcriptions">Транскрипсияҳоро нишон додан</string>
+    <string name="settings_show_examples">Мисолҳоро нишон додан</string>
+    <string name="settings_apply_now">Ҳозир гузоштан</string>
+    <string name="settings_apply_hint">Тағйироти намуд ҳангоми ивазшавии навбатии обои ё бо пахши «Ҳозир гузоштан» татбиқ мешавад.</string>
+    <string name="settings_reset">Пешравиро аз нав кардан</string>
+    <string name="settings_reset_confirm">Ин таърих, дӯстдоштаҳо ва калимаҳои омӯхташударо нест мекунад.</string>
+    <string name="settings_about">Дар бораи барнома</string>
+    <string name="settings_about_body">Калимаҳо аз рӯи CEFR-J Wordlist (Tono Laboratory, TUFS) дараҷабандӣ шудаанд. Тасвирҳо: Fluent Emoji аз Microsoft (MIT). Ҳуруф: Inter (SIL OFL). Тарҷумаҳои тоҷикӣ ва русӣ дастӣ санҷида мешаванд.</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="dialog_cancel">Бекор кардан</string>
+    <string name="dialog_reset">Аз нав кардан</string>
+
+    <string name="palette_peach">Шафтолу</string>
+    <string name="palette_mint">Пудина</string>
+    <string name="palette_lavender">Лаванда</string>
+    <string name="palette_sky">Осмон</string>
+    <string name="palette_sand">Рег</string>
+    <string name="palette_rose">Садбарг</string>
+    <string name="palette_sage">Мармарак</string>
+    <string name="palette_butter">Равған</string>
+    <string name="palette_lilac">Ёс</string>
+    <string name="palette_powder">Кабуди нарм</string>
+
+    <string name="pos_noun">исм</string>
+    <string name="pos_verb">феъл</string>
+    <string name="pos_adjective">сифат</string>
+    <string name="pos_adverb">зарф</string>
+    <string name="pos_interjection">нидо</string>
+    <string name="pos_phrase">ибора</string>
+    <string name="pos_pronoun">ҷонишин</string>
+    <string name="pos_preposition">пешоянд</string>
+    <string name="pos_numeral">шумора</string>
+    <string name="pos_conjunction">пайвандак</string>
+</resources>

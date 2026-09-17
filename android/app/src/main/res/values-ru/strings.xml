@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_home">Сегодня</string>
+    <string name="nav_history">История</string>
+    <string name="nav_settings">Настройки</string>
+
+    <string name="onb_welcome_title">Новое слово каждый час</string>
+    <string name="onb_welcome_body">LearnPaper превращает обои в карточку: слово, произношение, переводы и пример. Обои меняются сами.</string>
+    <string name="onb_next">Далее</string>
+    <string name="onb_back">Назад</string>
+    <string name="onb_start">Начать</string>
+    <string name="onb_finish">Установить обои</string>
+    <string name="onb_languages_title">Что вы изучаете?</string>
+    <string name="onb_languages_body">Крупное слово на карточке — на изучаемом языке. Выберите, какие переводы показывать.</string>
+    <string name="label_learning">Я изучаю</string>
+    <string name="label_show_translations">Показывать переводы на</string>
+    <string name="lang_en">Английский</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_tg">Таджикский</string>
+    <string name="onb_level_title">Ваш уровень</string>
+    <string name="onb_level_body">Слова сгруппированы по уровням CEFR. Можно выбрать несколько.</string>
+    <string name="level_coming_soon">скоро</string>
+    <string name="onb_look_title">Выберите оформление</string>
+    <string name="label_palette">Цвет</string>
+    <string name="palette_rotate">Менять цвет с каждым словом</string>
+    <string name="label_layout">Расположение</string>
+    <string name="layout_lock">Внизу</string>
+    <string name="layout_lock_desc">Верх остаётся свободным для часов</string>
+    <string name="layout_home">По центру</string>
+    <string name="layout_home_desc">Карточка в середине</string>
+    <string name="layout_compact">Компактный</string>
+    <string name="layout_note">На экране блокировки всегда используется нижнее расположение, чтобы часы оставались видны.</string>
+    <string name="layout_compact_desc">Только слово и переводы</string>
+    <string name="onb_schedule_title">Как часто?</string>
+    <string name="label_interval">Менять обои каждые</string>
+    <string name="interval_minutes">%1$d мин</string>
+    <string name="interval_hours">%1$d ч</string>
+    <string name="interval_daily">Раз в день</string>
+    <string name="label_quiet">Тихие часы</string>
+    <string name="quiet_desc">Ночью обои не меняются</string>
+    <string name="quiet_from">С</string>
+    <string name="quiet_to">До</string>
+    <string name="label_target">Применять к</string>
+    <string name="target_both">Оба экрана</string>
+    <string name="target_home">Только главный</string>
+    <string name="target_lock">Только блокировка</string>
+    <string name="onb_ready_title">Всё готово</string>
+    <string name="onb_ready_body">Первое слово готово. Дальше обои будут меняться сами.</string>
+
+    <string name="home_next_word">Следующее слово</string>
+    <string name="home_apply_again">Применить снова</string>
+    <string name="home_no_word">Нажмите «Следующее слово», чтобы установить первые обои.</string>
+    <string name="home_schedule_every">Меняется каждые %1$s</string>
+    <string name="home_next_change">Следующая смена около %1$s</string>
+    <string name="home_quiet_now">Тихие часы: пауза до %1$s</string>
+    <string name="action_favorite">В избранное</string>
+    <string name="action_learned">Выучено</string>
+    <string name="action_speak">Слушать</string>
+    <string name="msg_applied">Обои обновлены</string>
+    <string name="msg_failed">Не удалось установить обои</string>
+    <string name="msg_no_words">Нет слов для выбранных уровней</string>
+
+    <string name="history_empty">Здесь появятся слова, которые вы уже видели.</string>
+    <string name="history_favorites_only">Избранное</string>
+    <string name="detail_example">Пример</string>
+    <string name="level_label">Уровень %1$s</string>
+
+    <string name="settings_languages">Языки</string>
+    <string name="settings_content">Содержание</string>
+    <string name="settings_look">Оформление</string>
+    <string name="settings_schedule">Расписание</string>
+    <string name="settings_show_transcriptions">Показывать транскрипции</string>
+    <string name="settings_show_examples">Показывать примеры</string>
+    <string name="settings_apply_now">Применить сейчас</string>
+    <string name="settings_apply_hint">Изменения оформления вступят в силу при следующей смене обоев или по кнопке «Применить сейчас».</string>
+    <string name="settings_reset">Сбросить прогресс</string>
+    <string name="settings_reset_confirm">Это удалит историю, избранное и выученные слова.</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_about_body">Слова размечены по уровням CEFR-J Wordlist (Tono Laboratory, TUFS). Иллюстрации: Fluent Emoji от Microsoft (MIT). Шрифт: Inter (SIL OFL). Таджикские и русские переводы проверяются вручную.</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="dialog_cancel">Отмена</string>
+    <string name="dialog_reset">Сбросить</string>
+
+    <string name="palette_peach">Персик</string>
+    <string name="palette_mint">Мята</string>
+    <string name="palette_lavender">Лаванда</string>
+    <string name="palette_sky">Небо</string>
+    <string name="palette_sand">Песок</string>
+    <string name="palette_rose">Роза</string>
+    <string name="palette_sage">Шалфей</string>
+    <string name="palette_butter">Масло</string>
+    <string name="palette_lilac">Сирень</string>
+    <string name="palette_powder">Голубая пудра</string>
+
+    <string name="pos_noun">существительное</string>
+    <string name="pos_verb">глагол</string>
+    <string name="pos_adjective">прилагательное</string>
+    <string name="pos_adverb">наречие</string>
+    <string name="pos_interjection">междометие</string>
+    <string name="pos_phrase">фраза</string>
+    <string name="pos_pronoun">местоимение</string>
+    <string name="pos_preposition">предлог</string>
+    <string name="pos_numeral">числительное</string>
+    <string name="pos_conjunction">союз</string>
+</resources>

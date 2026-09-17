@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- card -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M36,28h36a6,6 0 0 1 6,6v40a6,6 0 0 1 -6,6h-36a6,6 0 0 1 -6,-6v-40a6,6 0 0 1 6,-6z" />
+    <!-- image tile -->
+    <path
+        android:fillColor="#E8845C"
+        android:pathData="M54,44m-8,0a8,8 0 1 0 16,0a8,8 0 1 0 -16,0" />
+    <!-- word line -->
+    <path
+        android:fillColor="#4A2A1C"
+        android:pathData="M42,58h24a2,2 0 0 1 2,2a2,2 0 0 1 -2,2h-24a2,2 0 0 1 -2,-2a2,2 0 0 1 2,-2z" />
+    <!-- translation line -->
+    <path
+        android:fillColor="#8C5A45"
+        android:pathData="M46,66h16a1.75,1.75 0 0 1 1.75,1.75a1.75,1.75 0 0 1 -1.75,1.75h-16a1.75,1.75 0 0 1 -1.75,-1.75a1.75,1.75 0 0 1 1.75,-1.75z" />
+</vector>
