@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 LearnPaper is a vocabulary app whose wallpaper changes on a schedule to a new card: a word in the
 language being learned (English, Russian or Tajik), its transcription, translations into the other
 two languages, one example sentence in all three, and an illustration. Android is native Kotlin +
-Compose (`android/`). iOS (Swift) is planned but not started. The design and its constraints,
-especially why iOS cannot set the wallpaper directly, live in `docs/DESIGN.md`.
+Compose (`android/`). iOS is Swift/SwiftUI in `ios/` (written without a Mac; not compiled yet, see
+`ios/README.md`). The design and its constraints, especially why iOS cannot set the wallpaper
+directly, live in `docs/DESIGN.md`.
 
 ## Commands
 
@@ -18,6 +19,7 @@ Content pack (run from repo root; needs `rsvg-convert`, network only for new emo
 python3 content/scripts/build.py            # validate, transliterate, fetch+rasterize emoji, write pack, copy into Android assets
 python3 content/scripts/build.py --check    # validate only, offline, writes nothing
 python3 content/scripts/build.py --no-kaikki   # skip the Wiktionary cross-check of Tajik words
+python3 content/scripts/build.py --pack b1=B1 --pack-version 1   # also publish a downloadable pack (content/packs/)
 ```
 
 Android (run from `android/`; the Gradle wrapper is checked in, SDK path in `local.properties`):
@@ -26,9 +28,10 @@ Android (run from `android/`; the Gradle wrapper is checked in, SDK path in `loc
 ./gradlew :app:assembleDebug     # APK at app/build/outputs/apk/debug/app-debug.apk
 ./gradlew :app:installDebug      # to a connected device/emulator
 ./gradlew :app:lint
-./gradlew :app:testDebugUnitTest --tests 'com.learnpaper.domain.*'   # once unit tests exist
+./gradlew :app:testDebugUnitTest                                     # 22 JUnit tests: Rotation, Stats, Settings, scheduler
+./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8765/manifest.json   # debug build reading packs from a local server
 $ANDROID_HOME/emulator/emulator -avd Pixel_API36 -no-window -no-audio -gpu swiftshader_indirect   # headless emulator
-python3 tools/smoke.py           # clears app data, runs onboarding via uiautomator, checks the wallpaper id changed, saves screenshots
+python3 tools/smoke.py           # clears app data, runs onboarding + the live-wallpaper picker via uiautomator, saves screenshots
 adb exec-out screencap -p > shot.png      # to check the rendered wallpaper on the launcher / lock screen
 ```
 
@@ -45,31 +48,48 @@ edit it by hand; change `content/source/words.jsonl` and rebuild.
 Everything hangs off `Graph` (`com.learnpaper.Graph`), a hand-rolled singleton DI container used
 by both the UI and the WorkManager worker.
 
-- **Content**: `ContentRepository` loads `assets/content/words.json` (kotlinx.serialization) and
-  decodes per-word PNGs. `Word.entry(Lang)` and `Example.of(Lang)` are the only ways UI and
-  renderer look up per-language text; `Lang` is the three-language enum.
+- **Content**: `ContentRepository` loads `assets/content/words.json` (kotlinx.serialization),
+  merges any packs installed under `files/packs/<id>/` (same id → the pack wins) and decodes
+  per-word PNGs. `Word.entry(Lang)` and `Example.of(Lang)` are the only ways UI and renderer look
+  up per-language text; `Lang` is the three-language enum (EN, RU, TJ). `PackRepository` fetches
+  `BuildConfig.PACKS_MANIFEST_URL` and installs zips; `content.generation` bumps so flows reload.
 - **Settings/Progress**: two DataStore-preferences stores. `Settings` is field-per-key.
-  `Progress` (queue, current word, history, learned, favourites, palette index) is one JSON blob
-  under a single key. `Settings.translations` derives the display languages (never the headline).
+  `Progress` (queue, current word, history, learned, favourites, palette index, per-word `Review`
+  state, active days) is one JSON blob under a single key. `Settings.translations` derives the
+  display languages (never the headline).
 - **Rotation** (`domain/Rotation.kt`): pure function `advance(progress, settings, words, now)`.
-  Shuffles the selected levels once per pass with a stable seed, skips learned words, rebuilds the
-  queue when levels change. No Android imports; the natural place for unit tests.
+  Light spaced repetition: a word that is due (`Review.dueAt`, steps 1/3/7/14/30/60 days) is shown
+  first; otherwise unseen words of the selected levels shuffled once per pass with a stable seed,
+  then seen words by due time; learned words skipped. `domain/Stats.kt` derives streak/seen/
+  learned/due. No Android imports; both have JUnit tests under `app/src/test`.
 - **Rendering** (`render/CardRenderer.kt`): Canvas-based. All sizes are written for a 1080 px wide
   canvas and multiplied by `width / 1080`. The card is a vertical stack of `Block`s centred in a
   band chosen by `LayoutPreset` (LOCK leaves the top ~30% for the clock). If the stack does not
   fit, the whole thing is re-laid-out at 0.92× until it does. `Palettes` holds the ten pastel
   palettes; `Fonts` loads the bundled Inter variable font per weight.
-- **Applying** (`wallpaper/WallpaperChanger.kt`): advance → render at `ScreenSize.portrait` →
-  `WallpaperApplier` (`WallpaperManager.setBitmap` with FLAG_SYSTEM/FLAG_LOCK). The lock screen
-  is always rendered with `LayoutPreset.LOCK` (clock zone clear); `Settings.layout` is the home
-  screen layout. If both are LOCK one bitmap is set with both flags. Returns `ChangeResult`.
+- **Applying** (`wallpaper/WallpaperChanger.kt`): advance, refresh the widget, then by
+  `Settings.mode`. **LIVE** (default): `LiveCardWallpaper` (a `WallpaperService`) observes the
+  settings/progress flows and redraws its surface; nothing else to do, but if our service is not
+  the active wallpaper the result is `NeedsLiveSetup` and the UI opens the system picker
+  (`LiveCardWallpaper.pickerIntent`). `onComputeColors()` reports fixed palette colours so
+  Material You never regenerates (a static `setBitmap` picks a new seed colour from every card
+  and restarts the launcher on HyperOS — see `docs/DESIGN.md` §3). **STATIC** ("Classic"):
+  render at `ScreenSize.portrait` → `WallpaperApplier` (`WallpaperManager.setBitmap` with
+  FLAG_SYSTEM/FLAG_LOCK); lock screen always `LayoutPreset.LOCK`, one bitmap for both when the
+  layouts match. Returns `ChangeResult`.
+- **Widget** (`widget/CardWidget.kt`): `AppWidgetProvider` with RemoteViews (`widget_card.xml`),
+  palette colour via `setColorFilter` on a white rounded drawable; `CardWidget.update(context)`
+  after every change.
 - **Scheduling** (`work/`): one unique `PeriodicWorkRequest` with `initialDelay = interval`
   (the UI applies immediately, so the first periodic run must not double-apply). Quiet hours are
   checked inside the worker, not by cancelling work. Interval changes re-enqueue with `UPDATE`.
+  `NotificationWorker` is a second unique periodic job (24 h, first run at `Settings.notifyMinute`)
+  posting the current word; POST_NOTIFICATIONS is requested when the switch is turned on.
 - **UI**: single `MainActivity`, Compose, no navigation library. `App.kt` switches between
-  onboarding and a three-tab shell via an enum. `AppViewModel` combines the settings, progress and
-  content flows into `UiState`; one-off snackbar messages are string-resource ids on a
-  `SharedFlow`. Shared controls (language, level, palette, layout, interval, quiet hours, target)
+  onboarding and a three-tab shell via an enum, re-checks `LiveCardWallpaper.isActive` on resume
+  and handles `UiEvent.OpenLivePicker`. `AppViewModel` combines the settings, progress, content
+  and live-status flows into `UiState` (with `Stats`); one-off snackbar messages are
+  string-resource ids on a `SharedFlow`; `packs` is a separate `StateFlow` for the download UI. Shared controls (language, level, palette, layout, interval, quiet hours, target)
   live in `ui/components/Controls.kt` and are reused by onboarding and settings. `CardPreview`
   renders the real card at half width for in-app previews.
 
@@ -90,4 +110,17 @@ by both the UI and the WorkManager worker.
   warnings, not errors.
 - WorkManager's minimum period is 15 minutes; `Settings.INTERVALS` starts there for that reason.
 - Some OEM lock screens (Xiaomi, Samsung) ignore FLAG_LOCK from apps; `WallpaperTarget.HOME` is
-  the fallback. Behaviour must be verified on real devices, not only the emulator.
+  the fallback in Classic mode. Live mode on OEM lock screens must be verified on real devices.
+- Kotlin block comments nest: `/* … images/*.png … */` inside a KDoc is an unclosed comment.
+- Placing a widget on the emulator via adb needs `input motionevent DOWN/MOVE/UP` with a pause
+  after DOWN; `input swipe` does not long-press. WorkManager refuses to run a periodic worker
+  before its schedule even with `cmd jobscheduler run -f`; move the clock (`adb root`, `date`)
+  to test `NotificationWorker`.
+
+## iOS (`ios/`)
+
+Swift 5.9, SwiftUI, iOS 17, XcodeGen `project.yml`; `Shared/` is compiled into both the app and
+the widget extension and is a port of the Kotlin domain code (same JSON shapes). The card changes
+on a tick schedule (`Schedule.swift`) that the app, the widget timeline and the `GetCardIntent`
+replay deterministically; the widget precomputes 24 h of entries. There is no Mac here, so the
+code has never been compiled — expect small fixes on first build.

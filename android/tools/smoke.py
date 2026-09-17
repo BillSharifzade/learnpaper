@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Smoke test against a booted emulator or device.
 
-Clears app data, installs the debug APK, walks through onboarding with uiautomator,
-and checks that Android's system wallpaper id changed. Screenshots land in --out.
+Clears app data, installs the debug APK, walks through onboarding with uiautomator
+(including the system live-wallpaper picker), and checks that our wallpaper service is
+the active wallpaper. Screenshots land in --out.
 
   cd android && ./gradlew :app:assembleDebug && python3 tools/smoke.py
 
@@ -62,6 +63,11 @@ def wallpaper_ids():
     return re.findall(r"User 0: id=(\d+): mWhich=(\d+)", dump)
 
 
+def live_active() -> bool:
+    dump = adb("shell", "dumpsys", "wallpaper").stdout.decode(errors="replace")
+    return f"{PKG}/{PKG}.wallpaper.LiveCardWallpaper" in dump
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--apk", default="app/build/outputs/apk/debug/app-debug.apk")
@@ -85,17 +91,24 @@ def main() -> int:
     for i in range(4):
         ok &= tap("Next", wait=1.5)
     screenshot(out, "02_ready")
-    ok &= tap("Set my wallpaper", wait=7)
+    ok &= tap("Set my wallpaper", wait=6)
+    screenshot(out, "03_picker")
+    # Live mode (the default) hands over to the system picker.
+    ok &= tap("Set wallpaper", wait=3)
+    for choice in ("Home screen and lock screen", "Home and lock screen", "Home screen"):
+        if node_center(choice):
+            tap(choice, wait=4)
+            break
     screenshot(out, "03_home")
     adb("shell", "input", "keyevent", "KEYCODE_HOME")
     time.sleep(2.5)
     screenshot(out, "04_launcher")
 
     after = wallpaper_ids()
-    changed = before != after
+    changed = before != after and live_active()
     crashes = [l for l in adb("logcat", "-d", "-v", "brief").stdout.decode(errors="replace").splitlines()
                if "AndroidRuntime" in l and "FATAL" in l]
-    print(f"wallpaper ids before={before} after={after} changed={changed}")
+    print(f"wallpaper ids before={before} after={after} live={live_active()} changed={changed}")
     print("crashes:", crashes or "none")
     print(f"screenshots in {out}")
     return 0 if ok and changed and not crashes else 1

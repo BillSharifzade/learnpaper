@@ -1,0 +1,86 @@
+# XcodeGen spec (https://github.com/yonaskolb/XcodeGen). On a Mac:
+#   brew install xcodegen
+#   cd ios && xcodegen generate && open LearnPaper.xcodeproj
+# Set DEVELOPMENT_TEAM below (or in Xcode) before running on a device. The App Group id must
+# match Store.appGroup and be enabled for both bundle ids in your developer account.
+name: LearnPaper
+options:
+  bundleIdPrefix: com.learnpaper
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+  xcodeVersion: "15.4"
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.2.0"
+    CURRENT_PROJECT_VERSION: "2"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_STRICT_CONCURRENCY: minimal
+    TARGETED_DEVICE_FAMILY: "1"
+
+# Shared sources and resources (content pack, font) compiled into both targets.
+targetTemplates:
+  SharedCode:
+    sources:
+      - path: Shared
+      - path: ../content/build/words.json
+        buildPhase: resources
+      - path: ../content/build/images
+        type: folder
+        buildPhase: resources
+      - path: ../android/app/src/main/assets/fonts/Inter-Variable.ttf
+        buildPhase: resources
+
+targets:
+  LearnPaper:
+    type: application
+    platform: iOS
+    templates: [SharedCode]
+    sources:
+      - path: LearnPaper
+        excludes: ["*.entitlements"]
+    dependencies:
+      - target: LearnPaperWidget
+        embed: true
+    entitlements:
+      path: LearnPaper/LearnPaper.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.learnpaper.app
+        INFOPLIST_KEY_CFBundleDisplayName: LearnPaper
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+    info:
+      path: LearnPaper/Info.plist
+      properties:
+        CFBundleDisplayName: LearnPaper
+        CFBundleLocalizations: [en, ru, tg]
+        UIAppFonts: [Inter-Variable.ttf]
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+
+  LearnPaperWidget:
+    type: app-extension
+    platform: iOS
+    templates: [SharedCode]
+    sources:
+      - path: LearnPaperWidget
+        excludes: ["*.entitlements"]
+    entitlements:
+      path: LearnPaperWidget/LearnPaperWidget.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.learnpaper.app.widget
+        INFOPLIST_KEY_CFBundleDisplayName: LearnPaper
+    info:
+      path: LearnPaperWidget/Info.plist
+      properties:
+        CFBundleDisplayName: LearnPaper
+        CFBundleLocalizations: [en, ru, tg]
+        UIAppFonts: [Inter-Variable.ttf]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

@@ -77,11 +77,22 @@ This section shapes everything else.
 - OEM quirks: some Xiaomi/HyperOS and Samsung One UI builds ignore or reset the
   lock-screen wallpaper set by apps. Needs real-device testing; the app offers a
   "home screen only" fallback.
-- Side effect: Android 12+ Material You extracts accent colors from the
-  wallpaper, so the system UI tints toward the chosen pastel.
-- Live Wallpaper (`WallpaperService`) is **not** the v1 approach: many OEMs do
-  not show live wallpapers on the lock screen, and the static-bitmap path is
-  simpler and more predictable. It can be added later as an option.
+- Side effect, measured on 17 Sep 2026: Android 12+ extracts a Material You seed
+  colour from every new static wallpaper. The seed is the most *chromatic* colour
+  in the dominant hue band, so with a pastel background it comes from the text or
+  from the emoji and differs from card to card. Each new seed regenerates the
+  system theme (SystemUI logs `Applying overlays` on every change), which
+  recreates the launcher and every dynamic-colour app; on Xiaomi HyperOS the
+  launcher restarts visibly. This is the "phone reloads its UI on every change"
+  bug.
+- Therefore the default delivery is a **live wallpaper** (`WallpaperService`):
+  a new card is a redraw of our own surface — no wallpaper-changed broadcast, no
+  colour extraction — and `onComputeColors()` reports one fixed colour set per
+  palette, so the theme never regenerates. Verified on the API 36 emulator: zero
+  theme events across changes, home and lock screen both served (Android 14+
+  tells the engine which screen it draws for; older versions get the lock
+  layout everywhere so the clock zone stays clear). The static path stays as
+  "Classic" for devices whose lock screen does not show live wallpapers.
 
 ### iOS — no public API to set the wallpaper
 
@@ -257,13 +268,14 @@ CDN without an app release.
 - Settings, including per-line visibility toggles.
 - UI localized in EN, RU, TJ.
 
-### v1.x
+### v1.x — done on Android on 17 Sep 2026
 
-- More levels and content packs from a CDN.
-- Light spaced repetition.
-- Android widget; Android live-wallpaper mode as an option.
-- Optional daily notification with the word.
-- Stats: streak, words seen.
+- Content packs downloaded from the repository on GitHub (`content/packs/manifest.json`);
+  the manifest is empty until a level that is not bundled exists.
+- Light spaced repetition (`Rotation`: due words first, intervals 1/3/7/14/30/60 days).
+- Home screen widget; live-wallpaper mode (now the default, see §3).
+- Daily "word of the day" notification.
+- Stats: streak, words seen, learned, due today.
 
 ### Out of scope for now
 
@@ -303,14 +315,29 @@ learnpaper/
 5. **Vocabulary**: seeded from classic A1 vocabulary, cross-checked with
    Wiktionary, hand-reviewed. Grows towards 500 A1–A2 words.
 6. **Order**: Android first (done as MVP), then content growth, then iOS.
+8. **Naming (17 Sep 2026)**: Tajik is shown as **TJ** everywhere the user can see
+   it (card labels, content key `tj`, `Lang.TJ`); only the platform locale
+   identifier keeps the ISO code `tg`, because that is how the system selects
+   the Tajik translation of the UI.
+9. **Android delivery (17 Sep 2026)**: live wallpaper by default, static as
+   "Classic". Reason in §3.
+10. **iOS (17 Sep 2026)**: the Shortcuts + widget approach is accepted and
+    implemented in `ios/` (Swift, XcodeGen spec); it has not been compiled yet
+    because no Mac was available. The card changes on a tick schedule that every
+    party replays deterministically (see `ios/README.md`).
+11. **Content (17 Sep 2026)**: 507 words (388 A1, 119 A2). The first 101 were
+    reviewed by a Tajik speaker; the rest are model drafts awaiting review.
 7. **Repo**: monorepo as in section 10.
 
 Still open:
 
-- **Who reviews Tajik.** Every Tajik sentence in the pack is a model draft until
-  a native speaker signs it off.
-- **iOS approach** (section 3) still needs an explicit yes once the constraint
-  is understood.
+- **Tajik review of words 102–507** (ids from `banana` onwards in
+  `content/source/words.jsonl`).
+- **Real-device check of live mode** on Xiaomi HyperOS and Samsung One UI: does
+  the lock screen show the live wallpaper, and does the launcher stay quiet?
+- **iOS build**: generate the project with XcodeGen on a Mac, fix whatever the
+  compiler flags, verify the widget timeline and the Set Wallpaper action on
+  iOS 17/18.
 
 ## 12. iOS, explained plainly
 

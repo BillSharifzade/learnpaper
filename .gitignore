@@ -6,3 +6,9 @@ android/app/src/main/assets/content/
 # misc
 .DS_Store
 *.log
+# iOS: the Xcode project is generated from ios/project.yml
+ios/*.xcodeproj
+ios/build/
+ios/DerivedData/
+*.xcuserstate
+xcuserdata/
