@@ -10,6 +10,10 @@ Usage:
   python3 content/scripts/build.py            # full build
   python3 content/scripts/build.py --check    # validate only, no network, no output
   python3 content/scripts/build.py --no-android
+  python3 content/scripts/build.py --pack b1=B1 --pack-version 2   # also publish a downloadable pack
+
+A pack is a zip (words.json + images/) written to content/packs/ and listed in
+content/packs/manifest.json, which the app fetches from this repository on GitHub.
 """
 from __future__ import annotations
 
@@ -22,6 +26,7 @@ import subprocess
 import sys
 import unicodedata
 import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +35,8 @@ FOLDERS = ROOT / "source" / "fluent-emoji-folders.txt"
 CACHE = ROOT / "cache"
 BUILD = ROOT / "build"
 ANDROID_ASSETS = ROOT.parent / "android" / "app" / "src" / "main" / "assets" / "content"
+PACKS = ROOT / "packs"
+PACK_NAMES = {"en": "{levels} words", "ru": "Слова {levels}", "tj": "Калимаҳои {levels}"}
 KAIKKI_TG_URL = "https://kaikki.org/dictionary/Tajik/kaikki.org-dictionary-Tajik.jsonl"
 FLUENT_RAW = "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets"
 NOTO_PNG = "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u{code}.png"
@@ -224,6 +231,9 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="validate only; no network, no output files")
     ap.add_argument("--no-android", action="store_true", help="do not copy the pack into the Android assets")
     ap.add_argument("--no-kaikki", action="store_true", help="skip the Wiktionary cross-check")
+    ap.add_argument("--pack", action="append", default=[], metavar="ID=LEVELS",
+                    help="write content/packs/<ID>-v<N>.zip with the words of LEVELS (comma-separated) and update the manifest")
+    ap.add_argument("--pack-version", type=int, default=1, help="version number for packs written with --pack")
     args = ap.parse_args()
 
     folders = set(FOLDERS.read_text(encoding="utf-8").splitlines()) if FOLDERS.exists() else set()
@@ -329,7 +339,43 @@ def main() -> int:
             shutil.copyfile(BUILD / "images" / name, ANDROID_ASSETS / "images" / name)
         total = sum(f.stat().st_size for f in (ANDROID_ASSETS / "images").glob("*.png"))
         print(f"copied to {ANDROID_ASSETS} ({total // 1024} KB of images)")
+
+    for spec in args.pack:
+        write_pack(spec, args.pack_version, words)
     return 0
+
+
+def write_pack(spec: str, version: int, words: list[dict]) -> None:
+    """Zip the words of the given levels into content/packs/ and list the pack in manifest.json."""
+    pack_id, _, level_spec = spec.partition("=")
+    levels = [lv for lv in level_spec.split(",") if lv]
+    if not re.fullmatch(r"[a-z0-9-]+", pack_id) or not levels:
+        sys.exit(f"bad --pack spec '{spec}', expected ID=LEVEL[,LEVEL]")
+    chosen = [w for w in words if w["level"] in levels]
+    PACKS.mkdir(parents=True, exist_ok=True)
+    for old in PACKS.glob(f"{pack_id}-v*.zip"):
+        old.unlink()
+    name = f"{pack_id}-v{version}.zip"
+    with zipfile.ZipFile(PACKS / name, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("words.json", json.dumps({"version": 1, "words": chosen}, ensure_ascii=False))
+        for w in chosen:
+            if w["image"]:
+                z.write(BUILD / "images" / w["image"], f"images/{w['image']}")
+    manifest_path = PACKS / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {"packs": []}
+    levels_text = ", ".join(levels)
+    entry = {
+        "id": pack_id,
+        "name": {lang: tpl.format(levels=levels_text) for lang, tpl in PACK_NAMES.items()},
+        "levels": levels,
+        "version": version,
+        "words": len(chosen),
+        "url": name,
+        "bytes": (PACKS / name).stat().st_size,
+    }
+    manifest["packs"] = [p for p in manifest["packs"] if p["id"] != pack_id] + [entry]
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"pack {name}: {len(chosen)} words, {entry['bytes'] // 1024} KB; manifest lists {len(manifest['packs'])} pack(s)")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LearnPaper</string>
+    <string name="app_name" translatable="false">LearnPaper</string>
 
     <string name="nav_home">Today</string>
     <string name="nav_history">History</string>

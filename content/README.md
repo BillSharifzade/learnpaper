@@ -5,6 +5,7 @@ Turns `source/words.jsonl` into the content pack the apps bundle.
 ```bash
 python3 scripts/build.py           # full build → build/ and android assets
 python3 scripts/build.py --check   # validate only, no network
+python3 scripts/build.py --pack b1=B1 --pack-version 1   # also publish a downloadable pack
 ```
 
 ## Source format
@@ -39,10 +40,26 @@ One JSON object per line:
 4. Cross-checks each Tajik word against the English Wiktionary dump for Tajik (kaikki.org, downloaded to `cache/` on first run) and prints words that are missing or whose glosses do not mention the English word. Warnings only: a mismatch usually means a synonym, not an error.
 5. Writes `build/words.json`, `build/images/*.png`, `build/report.txt`, and copies the pack into `../android/app/src/main/assets/content/`.
 
+## Downloadable packs
+
+Everything in `source/words.jsonl` is bundled into the apps. Extra content can also be shipped
+without an app update: `--pack ID=LEVELS` zips the words of those levels (`words.json` +
+`images/`) into `packs/<ID>-v<N>.zip` and lists it in `packs/manifest.json`. The Android app
+fetches that manifest from this repository on GitHub
+(`raw.githubusercontent.com/BillSharifzade/learnpapper/main/content/packs/manifest.json`, see
+`PACKS_MANIFEST_URL` in `android/app/build.gradle.kts`), installs a pack under
+`files/packs/<ID>/` and merges it with the bundled words (same id → the pack wins, so packs can
+also carry corrections). Bump `--pack-version` to publish an update. The manifest is empty until a
+level that is not bundled exists; to try the flow locally, serve `packs/` with
+`python3 -m http.server 8765` and install with
+`./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8765/manifest.json`.
+
 ## Review process
 
 Russian and Tajik text is drafted by a language model and must be checked by a native speaker
-before release. Keep `build/report.txt` clean of new warnings you cannot explain.
+before release. The first 101 words were reviewed on 17 Sep 2026; words added after that
+(ids from `banana` onwards) are still drafts. The Wiktionary dump for Tajik is small, so
+"not in Wiktionary" is expected for most everyday words; look at the gloss mismatches instead.
 
 ## Licences
 

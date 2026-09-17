@@ -84,6 +84,7 @@ class LiveCardWallpaper : WallpaperService() {
         }
 
         override fun onComputeColors(): WallpaperColors? {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) return null
             val p = palette ?: return null
             val primary = Color.valueOf(p.accent)
             val secondary = Color.valueOf(p.bg)
@@ -146,7 +147,7 @@ class LiveCardWallpaper : WallpaperService() {
             val wm = WallpaperManager.getInstance(context)
             val ours = component(context)
             val home = runCatching { wm.wallpaperInfo?.component }.getOrNull()
-            val lock = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val lock = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 runCatching { wm.getWallpaperInfo(WallpaperManager.FLAG_LOCK)?.component }.getOrNull()
             } else {
                 null
