@@ -12,3 +12,10 @@ ios/build/
 ios/DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# Python venv for the content build (Pillow)
+content/.venv/
+
+# release signing (back these up; never commit)
+android/keystore.properties
+android/keystore/

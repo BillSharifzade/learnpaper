@@ -16,6 +16,29 @@ struct SeededGenerator: RandomNumberGenerator {
     }
 }
 
+/// The words of the content pack with lookup tables, built once per load. Replaying a long
+/// schedule calls `Rotation.advance` hundreds of times, so these are not rebuilt per call.
+struct WordIndex {
+    let words: [Word]
+    let byId: [String: Word]
+    /// Position of each word in the pack; ties are broken by it, like a stable sort on Android.
+    let position: [String: Int]
+
+    init(_ words: [Word]) {
+        self.words = words
+        var byId: [String: Word] = [:]
+        var position: [String: Int] = [:]
+        byId.reserveCapacity(words.count)
+        position.reserveCapacity(words.count)
+        for (i, w) in words.enumerated() where byId[w.id] == nil {
+            byId[w.id] = w
+            position[w.id] = i
+        }
+        self.byId = byId
+        self.position = position
+    }
+}
+
 /// Picks the next word. Port of the Android `Rotation` object; see its documentation.
 ///
 /// Light spaced repetition: every shown word gets a `Review` with a due time that grows with each
@@ -29,23 +52,26 @@ enum Rotation {
     static let dayMs: Int64 = 86_400_000
 
     static func advance(_ progress: Progress, settings: Settings, words: [Word], now: Int64, tzOffsetMs: Int64 = 0) -> Progress {
+        advance(progress, settings: settings, index: WordIndex(words), now: now, tzOffsetMs: tzOffsetMs)
+    }
+
+    static func advance(_ progress: Progress, settings: Settings, index: WordIndex, now: Int64, tzOffsetMs: Int64 = 0) -> Progress {
         let levelsKey = settings.levels.sorted().joined(separator: ",")
         let seed = progress.seed == 0 ? now : progress.seed
-        let byId = Dictionary(uniqueKeysWithValues: words.map { ($0.id, $0) })
         let eligible: (String) -> Bool = { id in
-            !progress.learned.contains(id) && byId[id].map { settings.levels.contains($0.level) } == true
+            !progress.learned.contains(id) && index.byId[id].map { settings.levels.contains($0.level) } == true
         }
 
         var queue = progress.queue.filter(eligible)
         if progress.levelsKey != levelsKey || queue.isEmpty {
-            queue = buildQueue(words: words, levels: settings.levels, progress: progress, now: now, seed: seed &+ Int64(progress.history.count))
+            queue = buildQueue(words: index.words, levels: settings.levels, progress: progress, now: now, seed: seed &+ Int64(progress.history.count))
             // Avoid showing the same word twice in a row when a new pass starts.
             if queue.count > 1, queue.first == progress.currentId {
                 queue = Array(queue.dropFirst()) + [queue[0]]
             }
         }
 
-        let due = dueNow(words: words, levels: settings.levels, progress: progress, now: now).first { $0 != progress.currentId }
+        let due = dueNow(index: index, levels: settings.levels, progress: progress, now: now).first { $0 != progress.currentId }
         guard let nextId = due ?? queue.first else {
             var p = progress
             p.seed = seed
@@ -54,7 +80,22 @@ enum Rotation {
             return p
         }
 
-        let stage = min(progress.reviews[nextId]?.stage ?? 0, stepsDays.count - 1)
+        var p = progress
+        p.seed = seed
+        p.levelsKey = levelsKey
+        p.queue = queue
+        return markShown(p, id: nextId, now: now, tzOffsetMs: tzOffsetMs)
+    }
+
+    /// Puts `wordId` on the card because the user picked it (from the Words library), with the same
+    /// bookkeeping as `advance`: history, review stage, streak day, palette step. The word leaves the
+    /// current queue.
+    static func show(_ progress: Progress, wordId: String, now: Int64, tzOffsetMs: Int64 = 0) -> Progress {
+        markShown(progress, id: wordId, now: now, tzOffsetMs: tzOffsetMs)
+    }
+
+    private static func markShown(_ progress: Progress, id: String, now: Int64, tzOffsetMs: Int64) -> Progress {
+        let stage = min(progress.reviews[id]?.stage ?? 0, stepsDays.count - 1)
         let review = Review(stage: stage + 1, dueAt: now + Int64(stepsDays[stage]) * dayMs)
         let day = epochDay(now, tzOffsetMs: tzOffsetMs)
         var days = progress.activeDays
@@ -64,28 +105,29 @@ enum Rotation {
         }
 
         var p = progress
-        p.seed = seed
-        p.levelsKey = levelsKey
-        if let i = queue.firstIndex(of: nextId) { queue.remove(at: i) }
-        p.queue = queue
-        p.currentId = nextId
+        if let i = p.queue.firstIndex(of: id) { p.queue.remove(at: i) }
+        p.currentId = id
         p.lastChangeAt = now
-        p.history = Array(([HistoryEntry(id: nextId, at: now)] + progress.history).prefix(Progress.historyCap))
+        p.history = Array(([HistoryEntry(id: id, at: now)] + progress.history).prefix(Progress.historyCap))
         p.paletteIndex = progress.paletteIndex + 1
-        p.reviews[nextId] = review
+        p.reviews[id] = review
         p.activeDays = days
         return p
     }
 
-    /// Unlearned words of `levels` that are due for review, earliest first.
+    /// Unlearned words of `levels` that are due for review, earliest first (ties in pack order).
     static func dueNow(words: [Word], levels: Set<String>, progress: Progress, now: Int64) -> [String] {
-        words.compactMap { w -> (String, Int64)? in
-            guard levels.contains(w.level), !progress.learned.contains(w.id),
-                  let r = progress.reviews[w.id], r.dueAt <= now else { return nil }
-            return (w.id, r.dueAt)
+        dueNow(index: WordIndex(words), levels: levels, progress: progress, now: now)
+    }
+
+    static func dueNow(index: WordIndex, levels: Set<String>, progress: Progress, now: Int64) -> [String] {
+        var due: [(id: String, dueAt: Int64, position: Int)] = []
+        for (id, review) in progress.reviews where review.dueAt <= now && !progress.learned.contains(id) {
+            guard let word = index.byId[id], levels.contains(word.level), let position = index.position[id] else { continue }
+            due.append((id, review.dueAt, position))
         }
-        .sorted { $0.1 < $1.1 }
-        .map(\.0)
+        due.sort { $0.dueAt != $1.dueAt ? $0.dueAt < $1.dueAt : $0.position < $1.position }
+        return due.map { $0.id }
     }
 
     /// Unseen words shuffled by `seed`, then seen ones by due time. Falls back to learned words when nothing else is left.
@@ -93,11 +135,14 @@ enum Rotation {
         let pool = words.filter { levels.contains($0.level) }
         let unlearned = pool.filter { !progress.learned.contains($0.id) }
         let chosen = unlearned.isEmpty ? pool : unlearned
-        let seen = chosen.filter { progress.reviews[$0.id] != nil }
-        let unseen = chosen.filter { progress.reviews[$0.id] == nil }
+        var seen: [(id: String, dueAt: Int64, position: Int)] = []
+        var unseen: [String] = []
+        for (i, w) in chosen.enumerated() {
+            if let r = progress.reviews[w.id] { seen.append((w.id, r.dueAt, i)) } else { unseen.append(w.id) }
+        }
+        seen.sort { $0.dueAt != $1.dueAt ? $0.dueAt < $1.dueAt : $0.position < $1.position }
         var rng = SeededGenerator(seed: seed)
-        return unseen.map(\.id).shuffled(using: &rng)
-            + seen.sorted { progress.reviews[$0.id]!.dueAt < progress.reviews[$1.id]!.dueAt }.map(\.id)
+        return unseen.shuffled(using: &rng) + seen.map { $0.id }
     }
 
     static func epochDay(_ now: Int64, tzOffsetMs: Int64) -> Int64 {

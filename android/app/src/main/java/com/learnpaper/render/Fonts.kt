@@ -3,14 +3,21 @@ package com.learnpaper.render
 import android.content.Context
 import android.graphics.Typeface
 
-/** Inter variable font from assets, one Typeface per weight. Covers Latin, IPA, Russian and Tajik Cyrillic. */
+/**
+ * Bundled variable fonts, one cached Typeface per (file, weight).
+ *
+ * Onest is the brand face (words, translations, examples); it covers Latin, Russian and all Tajik
+ * letters. Inter is used for transcriptions because it has every IPA symbol and the macron and acute
+ * vowels of the Latin transliterations.
+ */
 object Fonts {
-    const val PATH = "fonts/Inter-Variable.ttf"
-    private val cache = HashMap<Int, Typeface>()
+    const val ONEST = "fonts/Onest-Variable.ttf"
+    const val INTER = "fonts/Inter-Variable.ttf"
+    private val cache = HashMap<String, Typeface>()
 
-    fun get(context: Context, weight: Int): Typeface = synchronized(cache) {
-        cache.getOrPut(weight) {
-            Typeface.Builder(context.assets, PATH)
+    fun get(context: Context, weight: Int, path: String = ONEST): Typeface = synchronized(cache) {
+        cache.getOrPut("$path@$weight") {
+            Typeface.Builder(context.assets, path)
                 .setFontVariationSettings("'wght' $weight")
                 .build() ?: Typeface.DEFAULT
         }

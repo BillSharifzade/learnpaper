@@ -3,6 +3,7 @@ package com.learnpaper.content
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.LruCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,36 +26,60 @@ class ContentRepository(private val context: Context) {
     @Volatile
     private var cache: ContentPack? = null
 
+    @Volatile
+    private var index: Map<String, Word> = emptyMap()
+
+    /** Small decoded illustrations for lists, keyed by image path; sized in kilobytes. */
+    private val thumbs = object : LruCache<String, Bitmap>(6 * 1024) {
+        override fun sizeOf(key: String, value: Bitmap) = value.byteCount / 1024
+    }
+
     /** Bumped whenever the merged content changes, so UI flows can reload. */
     private val _generation = MutableStateFlow(0)
     val generation: StateFlow<Int> = _generation
 
     suspend fun pack(): ContentPack = cache ?: mutex.withLock {
-        cache ?: withContext(Dispatchers.IO) { load() }.also { cache = it }
+        cache ?: withContext(Dispatchers.IO) { load() }.also { loaded ->
+            index = loaded.words.associateBy { it.id }
+            cache = loaded
+        }
     }
 
     suspend fun words(): List<Word> = pack().words
 
-    suspend fun word(id: String): Word? = words().firstOrNull { it.id == id }
+    suspend fun word(id: String): Word? {
+        pack()
+        return index[id]
+    }
 
     /** Drops the cache after packs were installed or removed. */
     suspend fun reload() {
-        mutex.withLock { cache = null }
+        mutex.withLock { cache = null; index = emptyMap() }
+        thumbs.evictAll()
         pack()
         _generation.value++
     }
 
     /** Decodes the word's illustration, or null when it has none. Caller owns the bitmap. */
-    fun loadImage(word: Word): Bitmap? {
+    fun loadImage(word: Word, sampleSize: Int = 1): Bitmap? {
         val name = word.image ?: return null
+        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
         return runCatching {
             val dir = word.packDir
             if (dir != null) {
-                BitmapFactory.decodeFile(File(dir, "images/$name").path)
+                BitmapFactory.decodeFile(File(dir, "images/$name").path, options)
             } else {
-                context.assets.open("content/images/$name").use { BitmapFactory.decodeStream(it) }
+                context.assets.open("content/images/$name").use { BitmapFactory.decodeStream(it, null, options) }
             }
         }.getOrNull()
+    }
+
+    /** A small shared copy of the illustration for lists (about 128 px). Do not recycle it. */
+    fun thumbnail(word: Word): Bitmap? {
+        val name = word.image ?: return null
+        val key = (word.packDir ?: "") + name
+        thumbs.get(key)?.let { return it }
+        return loadImage(word, sampleSize = 4)?.also { thumbs.put(key, it) }
     }
 
     private fun load(): ContentPack {

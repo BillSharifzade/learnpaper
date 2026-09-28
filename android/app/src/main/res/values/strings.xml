@@ -1,88 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">LearnPaper</string>
+    <string name="app_tagline">A new word on your screen, every hour</string>
 
-    <string name="nav_home">Today</string>
-    <string name="nav_history">History</string>
+    <string name="nav_today">Today</string>
+    <string name="nav_words">Words</string>
     <string name="nav_settings">Settings</string>
 
-    <string name="onb_welcome_title">A new word every hour</string>
-    <string name="onb_welcome_body">LearnPaper turns your wallpaper into a flashcard: a word, how to say it, its translations and an example. It changes on its own.</string>
-    <string name="onb_next">Next</string>
-    <string name="onb_back">Back</string>
+    <!-- Onboarding -->
+    <string name="onb_welcome_title">Learn a word every time you glance at your phone</string>
+    <string name="onb_welcome_body">LearnPaper turns your wallpaper into a flashcard: the word, how to say it, translations and an example. It changes by itself.</string>
+    <string name="onb_app_language">App language</string>
     <string name="onb_start">Get started</string>
-    <string name="onb_finish">Set my wallpaper</string>
+    <string name="onb_next">Continue</string>
+    <string name="onb_back">Back</string>
     <string name="onb_languages_title">What are you learning?</string>
-    <string name="onb_languages_body">The big word on the card is in the language you are learning. Pick which translations to show.</string>
-    <string name="label_learning">I am learning</string>
-    <string name="label_show_translations">Show translations in</string>
+    <string name="onb_languages_body">The big word on the card is in this language. Translations appear underneath.</string>
+    <string name="onb_level_title">Choose your level</string>
+    <string name="onb_level_body">Pick one or more levels. You can change them at any time.</string>
+    <string name="onb_look_title">Make it yours</string>
+    <string name="onb_look_body">Choose the colours and where the card sits on the screen.</string>
+    <string name="onb_schedule_title">How often?</string>
+    <string name="onb_schedule_body">A new word appears on this schedule. At night the wallpaper rests.</string>
+    <string name="onb_ready_title">All set!</string>
+    <string name="onb_ready_body">Your first word is ready. From now on the wallpaper changes by itself.</string>
+    <string name="onb_ready_body_live">One last step: Android will ask you to confirm LearnPaper as your wallpaper. Choose home and lock screen if offered.</string>
+    <string name="onb_finish">Set as wallpaper</string>
+
+    <!-- Languages and levels -->
+    <string name="label_learning">I\'m learning</string>
+    <string name="label_show_translations">Translations in</string>
     <string name="lang_en">English</string>
     <string name="lang_ru">Russian</string>
     <string name="lang_tj">Tajik</string>
-    <string name="onb_level_title">Your level</string>
-    <string name="onb_level_body">Words are grouped by CEFR level. You can pick more than one.</string>
-    <string name="level_coming_soon">coming soon</string>
-    <string name="onb_look_title">Choose your look</string>
-    <string name="label_palette">Colour</string>
-    <string name="palette_rotate">Change colour with every word</string>
-    <string name="label_layout">Layout</string>
+    <string name="level_a1">Beginner</string>
+    <string name="level_a2">Elementary</string>
+    <string name="level_b1">Intermediate</string>
+    <string name="level_b2">Upper intermediate</string>
+    <string name="level_c1">Advanced</string>
+    <string name="level_c2">Proficient</string>
+    <plurals name="words_count">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+
+    <!-- Look -->
+    <string name="label_palette">Colours</string>
+    <string name="palette_rotate">New colour with every word</string>
+    <string name="label_layout">Card position</string>
     <string name="layout_lock">Lower</string>
-    <string name="layout_lock_desc">Leaves the top free for the clock</string>
-    <string name="layout_home">Centered</string>
-    <string name="layout_home_desc">Card in the middle</string>
+    <string name="layout_lock_desc">Room for the clock</string>
+    <string name="layout_home">Centred</string>
+    <string name="layout_home_desc">In the middle</string>
     <string name="layout_compact">Compact</string>
-    <string name="layout_note">The lock screen always uses the lower layout, so the clock stays clear.</string>
-    <string name="layout_compact_desc">Word and translations only</string>
-    <string name="onb_schedule_title">How often?</string>
-    <string name="label_interval">Change wallpaper every</string>
-    <string name="interval_minutes">%1$d min</string>
-    <string name="interval_hours">%1$d h</string>
-    <string name="interval_daily">Once a day</string>
-    <string name="label_quiet">Quiet hours</string>
-    <string name="quiet_desc">No changes at night</string>
-    <string name="quiet_from">From</string>
-    <string name="quiet_to">To</string>
-    <string name="label_target">Apply to</string>
-    <string name="target_both">Both screens</string>
-    <string name="target_home">Home only</string>
-    <string name="target_lock">Lock only</string>
-    <string name="onb_ready_title">All set</string>
-    <string name="onb_ready_body">Your first word is ready. The wallpaper will change on its own from now on.</string>
-
-    <string name="home_next_word">Next word</string>
-    <string name="home_apply_again">Apply again</string>
-    <string name="home_no_word">Tap “Next word” to set your first wallpaper.</string>
-    <string name="home_schedule_every">Changes every %1$s</string>
-    <string name="home_next_change">Next change around %1$s</string>
-    <string name="home_quiet_now">Quiet hours: paused until %1$s</string>
-    <string name="action_favorite">Favourite</string>
-    <string name="action_learned">Learned</string>
-    <string name="action_speak">Listen</string>
-    <string name="msg_applied">Wallpaper updated</string>
-    <string name="msg_failed">Could not set the wallpaper</string>
-    <string name="msg_no_words">No words for the selected levels</string>
-
-    <string name="history_empty">Words you have seen will appear here.</string>
-    <string name="history_favorites_only">Favourites</string>
-    <string name="detail_example">Example</string>
-    <string name="level_label">Level %1$s</string>
-
-    <string name="settings_languages">Languages</string>
-    <string name="settings_content">Content</string>
-    <string name="settings_look">Look</string>
-    <string name="settings_schedule">Schedule</string>
-    <string name="settings_show_transcriptions">Show transcriptions</string>
-    <string name="settings_show_examples">Show example sentences</string>
-    <string name="settings_apply_now">Apply now</string>
-    <string name="settings_apply_hint">Changes to the look apply on the next wallpaper change, or tap Apply now.</string>
-    <string name="settings_reset">Reset progress</string>
-    <string name="settings_reset_confirm">This clears your history, favourites and learned words.</string>
-    <string name="settings_about">About</string>
-    <string name="settings_about_body">Words are graded with the CEFR-J Wordlist (Tono Laboratory, TUFS). Illustrations: Fluent Emoji by Microsoft (MIT). Font: Inter (SIL OFL). Tajik and Russian translations are reviewed by hand.</string>
-    <string name="settings_version">Version %1$s</string>
-    <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_reset">Reset</string>
-
+    <string name="layout_compact_desc">Word and translations</string>
+    <string name="layout_note">On the lock screen the card always keeps clear of the clock.</string>
+    <string name="label_lock_clock">Lock screen clock</string>
+    <string name="lock_clock_auto">Auto</string>
+    <string name="lock_clock_top">Top</string>
+    <string name="lock_clock_big">Middle</string>
+    <string name="lock_clock_desc">Where your phone shows the lock-screen clock. With a large clock in the middle, the card moves below it and shows the word and its translations.</string>
     <string name="palette_peach">Peach</string>
     <string name="palette_mint">Mint</string>
     <string name="palette_lavender">Lavender</string>
@@ -92,8 +69,114 @@
     <string name="palette_sage">Sage</string>
     <string name="palette_butter">Butter</string>
     <string name="palette_lilac">Lilac</string>
-    <string name="palette_powder">Powder blue</string>
+    <string name="palette_powder">Powder</string>
+    <string name="palette_midnight">Midnight</string>
+    <string name="palette_pine">Pine</string>
 
+    <!-- Schedule and delivery -->
+    <string name="label_interval">New word every</string>
+    <string name="interval_minutes">%1$d min</string>
+    <string name="interval_hours">%1$d h</string>
+    <string name="interval_daily">Once a day</string>
+    <string name="label_quiet">Quiet hours</string>
+    <string name="quiet_desc">No changes at night</string>
+    <string name="quiet_from">From</string>
+    <string name="quiet_to">To</string>
+    <string name="label_mode">How the wallpaper is set</string>
+    <string name="mode_live">Live (recommended)</string>
+    <string name="mode_live_desc">The card is redrawn in place. No flicker, and your phone does not re-colour its theme with every word.</string>
+    <string name="mode_static">Classic</string>
+    <string name="mode_static_desc">A new picture is set each time. On some phones the home screen reloads with every change.</string>
+    <string name="label_target">Set on</string>
+    <string name="target_both">Both screens</string>
+    <string name="target_home">Home screen</string>
+    <string name="target_lock">Lock screen</string>
+
+    <!-- Today -->
+    <string name="today_next_change">Next word at %1$s</string>
+    <string name="today_every">every %1$s</string>
+    <string name="today_quiet_now">Quiet hours until %1$s</string>
+    <string name="home_no_word">Tap “Next word” to put your first card on the wallpaper.</string>
+    <string name="action_next_word">Next word</string>
+    <string name="action_favorite">Add to favourites</string>
+    <string name="action_unfavorite">Remove from favourites</string>
+    <string name="action_learned">I know it</string>
+    <string name="action_unlearned">Keep learning</string>
+    <string name="action_speak">Listen</string>
+    <string name="action_show_on_wallpaper">Show on wallpaper</string>
+    <plurals name="stat_streak">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="stat_seen">seen</string>
+    <string name="stat_learned">learned</string>
+    <string name="stat_due">to review</string>
+    <string name="msg_applied">Wallpaper updated</string>
+    <string name="msg_shown">Now on your wallpaper</string>
+    <string name="msg_failed">Could not set the wallpaper</string>
+    <string name="msg_no_words">No words for the selected levels</string>
+    <string name="live_setup_title">One step left</string>
+    <string name="live_setup_body">Confirm LearnPaper as your wallpaper on the next screen — for the home and lock screen if offered.</string>
+    <string name="live_setup_action">Set as wallpaper</string>
+    <string name="live_active">LearnPaper is your wallpaper.</string>
+    <string name="live_inactive">LearnPaper is not your wallpaper yet.</string>
+
+    <!-- Words -->
+    <string name="words_title">Words</string>
+    <string name="words_search_hint">Search in any language</string>
+    <string name="words_filter_all">All</string>
+    <string name="words_filter_history">Seen</string>
+    <string name="words_filter_favorites">Favourites</string>
+    <string name="words_filter_learned">Learned</string>
+    <string name="words_empty_search">Nothing found. Try another spelling or language.</string>
+    <string name="words_empty_history">Words you see on your wallpaper will appear here.</string>
+    <string name="words_empty_favorites">Tap the heart on a word to keep it here.</string>
+    <string name="words_empty_learned">Words you mark as known are kept here and leave the rotation.</string>
+    <string name="words_clear_search">Clear search</string>
+    <string name="detail_example">Example</string>
+    <string name="time_just_now">just now</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d min ago</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%d h ago</item>
+        <item quantity="other">%d h ago</item>
+    </plurals>
+    <string name="time_yesterday">yesterday</string>
+
+    <!-- Settings -->
+    <string name="settings_app_language">App language</string>
+    <string name="settings_learning">Learning</string>
+    <string name="settings_levels">Levels</string>
+    <string name="settings_show_transcriptions">Transcriptions</string>
+    <string name="settings_show_transcriptions_desc">IPA for English, Latin letters for Russian and Tajik</string>
+    <string name="settings_show_examples">Example sentences</string>
+    <string name="settings_show_examples_desc">One short sentence in every language</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_wallpaper">Wallpaper</string>
+    <string name="settings_apply_now">Apply now</string>
+    <string name="settings_apply_hint">Changes to the look are applied with the next word, or right away with “Apply now”.</string>
+    <string name="settings_schedule">Schedule</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="notif_daily">Word of the day</string>
+    <string name="notif_daily_desc">A daily notification with the current word</string>
+    <string name="notif_at">At</string>
+    <string name="notif_channel">Word of the day</string>
+    <string name="settings_about">About</string>
+    <string name="settings_about_body">Words are graded by the CEFR-J Wordlist (Tono Laboratory, TUFS) and the Octanove C1/C2 profile. Illustrations: Fluent Emoji by Microsoft (MIT). Fonts: Onest and Inter (SIL OFL).</string>
+    <string name="settings_privacy">No account, no ads, no tracking. Everything stays on your phone.</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_licenses">Licences</string>
+    <string name="settings_reset">Reset progress</string>
+    <string name="settings_reset_confirm">This clears your history, favourites and learned words.</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_reset">Reset</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_close">Close</string>
+    <string name="time_picker_title">Choose a time</string>
+
+    <!-- Parts of speech (shown on the card) -->
     <string name="pos_noun">noun</string>
     <string name="pos_verb">verb</string>
     <string name="pos_adjective">adjective</string>
@@ -105,50 +188,22 @@
     <string name="pos_numeral">numeral</string>
     <string name="pos_conjunction">conjunction</string>
 
-    <!-- wallpaper mode, live wallpaper, widget -->
-    <string name="label_mode">How the wallpaper is set</string>
-    <string name="mode_live">Live (recommended)</string>
-    <string name="mode_live_desc">The card is drawn in place. No flicker, and the phone does not re-colour its theme on every change.</string>
-    <string name="mode_static">Classic</string>
-    <string name="mode_static_desc">A new image is set each time. On some phones the home screen reloads with every change.</string>
-    <string name="onb_ready_body_live">One last step: Android will ask you to confirm LearnPaper as your wallpaper.</string>
-    <string name="live_setup_title">One step left</string>
-    <string name="live_setup_body">Confirm LearnPaper as your wallpaper on the next screen, choosing both home and lock screen if offered.</string>
-    <string name="live_setup_action">Set wallpaper</string>
-    <string name="live_active">LearnPaper is your active wallpaper.</string>
-    <string name="live_inactive">LearnPaper is not the active wallpaper yet.</string>
-    <string name="live_wallpaper_description">A new word on your wallpaper, on a schedule.</string>
-    <string name="widget_name">LearnPaper card</string>
-    <string name="widget_description">The current word with its translations.</string>
-
-    <!-- stats -->
-    <plurals name="stat_streak">
-        <item quantity="one">day streak</item>
-        <item quantity="other">day streak</item>
-    </plurals>
-    <string name="stat_seen">seen</string>
-    <string name="stat_learned">learned</string>
-    <string name="stat_due">to review</string>
-
-    <!-- content packs -->
+    <!-- Content packs -->
     <string name="settings_packs">More words</string>
-    <string name="packs_body">Extra levels can be downloaded when they are published. Downloaded packs are kept on this phone.</string>
-    <string name="packs_words">%1$d words</string>
+    <string name="packs_body">All levels are already included. New word packs can be downloaded here when they are published.</string>
     <string name="packs_update_available">update available</string>
     <string name="packs_installed_label">downloaded</string>
     <string name="packs_download">Download</string>
     <string name="packs_update">Update</string>
     <string name="packs_remove">Remove</string>
-    <string name="packs_none">No extra packs yet. All current words are already in the app.</string>
-    <string name="packs_error">Could not reach the pack list. Check your connection.</string>
-    <string name="packs_check">Check for packs</string>
+    <string name="packs_none">No new packs right now.</string>
+    <string name="packs_error">Could not load the list. Check your connection.</string>
+    <string name="packs_check">Check for new words</string>
     <string name="packs_installed">Pack downloaded</string>
     <string name="packs_failed">Download failed</string>
 
-    <!-- notifications -->
-    <string name="settings_notifications">Notifications</string>
-    <string name="notif_daily">Word of the day</string>
-    <string name="notif_daily_desc">One notification a day with the current word</string>
-    <string name="notif_at">At</string>
-    <string name="notif_channel">Word of the day</string>
+    <!-- System surfaces -->
+    <string name="live_wallpaper_description">A new vocabulary card on your wallpaper, on a schedule.</string>
+    <string name="widget_name">LearnPaper card</string>
+    <string name="widget_description">The current word with its translations.</string>
 </resources>

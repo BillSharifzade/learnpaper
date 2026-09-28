@@ -28,11 +28,11 @@ enum Schedule {
     }
 
     /// Applies every tick up to `now`. Quiet hours skip the change but still consume the tick.
-    static func catchUp(_ progress: Progress, settings: Settings, words: [Word], now: Int64, calendar: Calendar = .current) -> Progress {
+    static func catchUp(_ progress: Progress, settings: Settings, index: WordIndex, now: Int64, calendar: Calendar = .current) -> Progress {
         var p = progress
         for t in ticks(progress: progress, settings: settings, until: now) {
             if !settings.isQuiet(at: Date(millis: t), calendar: calendar) {
-                p = Rotation.advance(p, settings: settings, words: words, now: t, tzOffsetMs: tzOffset(at: t, calendar: calendar))
+                p = Rotation.advance(p, settings: settings, index: index, now: t, tzOffsetMs: tzOffset(at: t, calendar: calendar))
             }
             p.lastTick = t
         }
@@ -44,6 +44,20 @@ enum Schedule {
     static func newAnchor(now: Date = Date(), calendar: Calendar = .current) -> Int64 {
         let c = calendar.dateComponents([.year, .month, .day, .hour], from: now)
         return (calendar.date(from: c) ?? now).millis
+    }
+
+    /// The next tick after `now` at which the card changes, skipping quiet hours; nil before onboarding.
+    static func nextChange(progress: Progress, settings: Settings, now: Date = Date(), calendar: Calendar = .current) -> Date? {
+        guard progress.scheduleAnchor > 0 else { return nil }
+        let from = max(progress.lastTick, now.millis)
+        var probe = progress
+        probe.lastTick = from
+        let horizon = from + 2 * 86_400_000
+        for t in ticks(progress: probe, settings: settings, until: horizon).prefix(400)
+        where !settings.isQuiet(at: Date(millis: t), calendar: calendar) {
+            return Date(millis: t)
+        }
+        return nil
     }
 
     static func tzOffset(at millis: Int64, calendar: Calendar = .current) -> Int64 {

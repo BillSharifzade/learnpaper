@@ -5,15 +5,17 @@ import WidgetKit
 /// App Group's UserDefaults. Everything is stored as JSON so the shape matches the Android app.
 final class Store {
     static let appGroup = "group.com.learnpaper"
+    /// The App Group's defaults (falls back to the app's own when the group is not provisioned).
+    static let defaults: UserDefaults = UserDefaults(suiteName: appGroup) ?? .standard
     static let shared = Store()
 
-    private let defaults: UserDefaults
+    private let ud: UserDefaults
     private let queue = DispatchQueue(label: "com.learnpaper.store")
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
     init(defaults: UserDefaults? = nil) {
-        self.defaults = defaults ?? UserDefaults(suiteName: Store.appGroup) ?? .standard
+        ud = defaults ?? Store.defaults
     }
 
     var settings: Settings {
@@ -24,6 +26,12 @@ final class Store {
     var progress: Progress {
         get { load("progress") ?? Progress() }
         set { save(newValue, key: "progress") }
+    }
+
+    /// Whether the user has opened the Shortcuts guide once (hides the setup banner on Today).
+    var guideSeen: Bool {
+        get { ud.bool(forKey: "guideSeen") }
+        set { ud.set(newValue, forKey: "guideSeen") }
     }
 
     func updateProgress(_ transform: (inout Progress) -> Void) -> Progress {
@@ -41,7 +49,7 @@ final class Store {
         let s = settings
         guard s.onboarded else { return progress }
         return updateProgress { p in
-            p = Schedule.catchUp(p, settings: s, words: ContentStore.shared.words, now: now.millis)
+            p = Schedule.catchUp(p, settings: s, index: ContentStore.shared.index, now: now.millis)
         }
     }
 
@@ -51,7 +59,16 @@ final class Store {
         let s = settings
         let ms = now.millis
         return updateProgress { p in
-            p = Rotation.advance(p, settings: s, words: ContentStore.shared.words, now: ms, tzOffsetMs: Schedule.tzOffset(at: ms))
+            p = Rotation.advance(p, settings: s, index: ContentStore.shared.index, now: ms, tzOffsetMs: Schedule.tzOffset(at: ms))
+        }
+    }
+
+    /// Makes a word picked in the Words library the current card.
+    @discardableResult
+    func show(wordId: String, now: Date = Date()) -> Progress {
+        let ms = now.millis
+        return updateProgress { p in
+            p = Rotation.show(p, wordId: wordId, now: ms, tzOffsetMs: Schedule.tzOffset(at: ms))
         }
     }
 
@@ -65,11 +82,11 @@ final class Store {
     }
 
     private func load<T: Decodable>(_ key: String) -> T? {
-        guard let data = defaults.data(forKey: key) else { return nil }
+        guard let data = ud.data(forKey: key) else { return nil }
         return try? decoder.decode(T.self, from: data)
     }
 
     private func save<T: Encodable>(_ value: T, key: String) {
-        if let data = try? encoder.encode(value) { defaults.set(data, forKey: key) }
+        if let data = try? encoder.encode(value) { ud.set(data, forKey: key) }
     }
 }

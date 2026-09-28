@@ -16,10 +16,13 @@ import com.learnpaper.data.Settings
 import com.learnpaper.data.WallpaperMode
 import com.learnpaper.domain.Stats
 import com.learnpaper.domain.StatsCalculator
+import com.learnpaper.i18n.AppLanguage
+import com.learnpaper.i18n.AppLocale
 import com.learnpaper.render.Palettes
 import com.learnpaper.wallpaper.ChangeResult
 import com.learnpaper.wallpaper.LiveCardWallpaper
 import com.learnpaper.wallpaper.Speaker
+import com.learnpaper.widget.CardWidget
 import com.learnpaper.work.WallpaperScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,26 +33,38 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.TimeZone
 
+/** The loaded words with what the UI derives from them once per load (not per state change). */
+data class ContentSnapshot(
+    val words: List<Word> = emptyList(),
+    val byId: Map<String, Word> = emptyMap(),
+    /** Levels present in the content, in CEFR order. */
+    val levels: List<String> = emptyList(),
+    val levelCounts: Map<String, Int> = emptyMap(),
+)
+
 data class UiState(
     val loading: Boolean = true,
     val settings: Settings = Settings(),
     val progress: Progress = Progress(),
     val words: List<Word> = emptyList(),
+    val byId: Map<String, Word> = emptyMap(),
     /** Levels present in the content, in CEFR order. */
     val availableLevels: List<String> = emptyList(),
+    val levelCounts: Map<String, Int> = emptyMap(),
     val current: Word? = null,
     val stats: Stats = Stats(0, 0, 0, 0),
     /** Whether our live wallpaper service is the active wallpaper (refreshed on resume). */
     val liveActive: Boolean = false,
     val busy: Boolean = false,
 ) {
-    fun word(id: String): Word? = words.firstOrNull { it.id == id }
+    fun word(id: String): Word? = byId[id]
 
     /** Word used for previews before anything has been applied. */
     val previewWord: Word?
@@ -88,25 +103,39 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val events: SharedFlow<UiEvent> = _events
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    private val words = graph.content.generation.flatMapLatest { flow { emit(graph.content.words()) } }
+    private val content = graph.content.generation.flatMapLatest {
+        flow {
+            val words = graph.content.words()
+            emit(
+                ContentSnapshot(
+                    words = words,
+                    byId = words.associateBy { it.id },
+                    levels = ContentRepository.sortLevels(words.map { it.level }),
+                    levelCounts = words.groupingBy { it.level }.eachCount(),
+                ),
+            )
+        }
+    }.flowOn(Dispatchers.Default)
 
     val state: StateFlow<UiState> = combine(
         graph.settings.flow,
         graph.progress.flow,
-        words,
+        content,
         busy,
         liveActive,
-    ) { settings, progress, words, isBusy, live ->
+    ) { settings, progress, content, isBusy, live ->
         val now = System.currentTimeMillis()
         UiState(
             loading = false,
             settings = settings,
             progress = progress,
-            words = words,
-            availableLevels = ContentRepository.sortLevels(words.map { it.level }),
-            current = progress.currentId?.let { id -> words.firstOrNull { it.id == id } },
+            words = content.words,
+            byId = content.byId,
+            availableLevels = content.levels,
+            levelCounts = content.levelCounts,
+            current = progress.currentId?.let { content.byId[it] },
             stats = StatsCalculator.of(
-                progress, settings.levels, words.associate { it.id to it.level }, now, TimeZone.getDefault().getOffset(now).toLong(),
+                progress, settings.levels, content.byId.mapValues { it.value.level }, now, TimeZone.getDefault().getOffset(now).toLong(),
             ),
             liveActive = live,
             busy = isBusy,
@@ -143,6 +172,21 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun nextWord() = launchBusy { report(graph.changer.changeToNext()) }
+
+    /** Puts a word picked in the library on the wallpaper right away. */
+    fun showWord(id: String) = launchBusy { report(graph.changer.show(id), shown = true) }
+
+    /** Small shared illustration for lists; null for words without one. */
+    fun thumbnail(word: Word): Bitmap? = graph.content.thumbnail(word)
+
+    fun appLanguage(): AppLanguage = AppLocale.current(app)
+
+    /** Switches the interface language; [activity] is recreated before Android 13. */
+    fun setAppLanguage(activity: android.content.Context, lang: AppLanguage) {
+        if (AppLocale.current(app) == lang) return
+        AppLocale.set(activity, lang)
+        CardWidget.update(app)
+    }
 
     fun applyCurrent() = launchBusy { report(graph.changer.applyCurrent()) }
 
@@ -216,9 +260,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private suspend fun report(result: ChangeResult) {
+    private suspend fun report(result: ChangeResult, shown: Boolean = false) {
         when (result) {
-            is ChangeResult.Applied -> _messages.emit(R.string.msg_applied)
+            is ChangeResult.Applied -> _messages.emit(if (shown) R.string.msg_shown else R.string.msg_applied)
             ChangeResult.NoWords -> _messages.emit(R.string.msg_no_words)
             ChangeResult.Failed -> _messages.emit(R.string.msg_failed)
             ChangeResult.NeedsLiveSetup -> _events.emit(UiEvent.OpenLivePicker)

@@ -16,6 +16,7 @@ import com.learnpaper.Graph
 import com.learnpaper.MainActivity
 import com.learnpaper.R
 import com.learnpaper.content.Lang
+import com.learnpaper.i18n.AppLocale
 
 /** Posts the current word once a day at the time chosen in settings. */
 class NotificationWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -34,13 +35,16 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Coroutine
         val translations = settings.translations.joinToString("  ·  ") { word.entry(it).text }
         val example = if (settings.showExamples) word.example.of(settings.headline) else ""
 
-        ensureChannel(applicationContext)
+        val ctx = AppLocale.localized(applicationContext)
+        ensureChannel(ctx)
         val open = PendingIntent.getActivity(
             applicationContext, 1, Intent(applicationContext, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL)
             .setSmallIcon(R.drawable.ic_notification)
+            .setColor(0xFF5A48E6.toInt())
+            .setSubText(ctx.getString(R.string.notif_channel))
             .setContentTitle(headline.text + if (headline.tr.isNotBlank()) "   ${tr(settings.headline, headline.tr)}" else "")
             .setContentText(translations)
             .setStyle(NotificationCompat.BigTextStyle().bigText(listOf(translations, example).filter { it.isNotBlank() }.joinToString("\n")))
@@ -62,7 +66,7 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Coroutine
             val nm = context.getSystemService(NotificationManager::class.java)
             if (nm.getNotificationChannel(CHANNEL) == null) {
                 nm.createNotificationChannel(
-                    NotificationChannel(CHANNEL, context.getString(R.string.notif_channel), NotificationManager.IMPORTANCE_DEFAULT),
+                    NotificationChannel(CHANNEL, AppLocale.localized(context).getString(R.string.notif_channel), NotificationManager.IMPORTANCE_DEFAULT),
                 )
             }
         }

@@ -39,20 +39,28 @@ object Rotation {
         val nextId = due ?: queue.firstOrNull()
             ?: return progress.copy(seed = seed, levelsKey = levelsKey, queue = emptyList())
 
-        val stage = (progress.reviews[nextId]?.stage ?: 0).coerceAtMost(STEPS_DAYS.lastIndex)
+        return markShown(progress.copy(seed = seed, levelsKey = levelsKey, queue = queue), nextId, now, tzOffsetMs)
+    }
+
+    /**
+     * Puts [wordId] on the wallpaper because the user picked it, with the same bookkeeping as [advance]
+     * (history, review stage, streak day, palette step). The word leaves the current queue.
+     */
+    fun show(progress: Progress, wordId: String, now: Long, tzOffsetMs: Long = 0L): Progress =
+        markShown(progress, wordId, now, tzOffsetMs)
+
+    private fun markShown(progress: Progress, id: String, now: Long, tzOffsetMs: Long): Progress {
+        val stage = (progress.reviews[id]?.stage ?: 0).coerceAtMost(STEPS_DAYS.lastIndex)
         val review = Review(stage = stage + 1, dueAt = now + STEPS_DAYS[stage] * DAY_MS)
         val day = epochDay(now, tzOffsetMs)
         val days = if (progress.activeDays.lastOrNull() == day) progress.activeDays else (progress.activeDays + day).takeLast(Progress.ACTIVE_DAYS_CAP)
-
         return progress.copy(
-            seed = seed,
-            levelsKey = levelsKey,
-            queue = queue - nextId,
-            currentId = nextId,
+            queue = progress.queue - id,
+            currentId = id,
             lastChangeAt = now,
-            history = (listOf(HistoryEntry(nextId, now)) + progress.history).take(Progress.HISTORY_CAP),
+            history = (listOf(HistoryEntry(id, now)) + progress.history).take(Progress.HISTORY_CAP),
             paletteIndex = progress.paletteIndex + 1,
-            reviews = progress.reviews + (nextId to review),
+            reviews = progress.reviews + (id to review),
             activeDays = days,
         )
     }

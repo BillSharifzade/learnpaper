@@ -3,8 +3,13 @@
 
 Reads content/source/words.jsonl, validates it, generates Latin transliterations
 for Russian and Tajik, fetches and rasterizes Fluent Emoji illustrations, and
-writes content/build/words.json + content/build/images/*.png. By default the
+writes content/build/words.json + content/build/images/*.webp. By default the
 result is also copied into the Android app's assets.
+
+Images are lossless WebP (Pillow), one file per illustration shared by every word
+that uses it; a word with "image": "none" has no illustration (the card shows a
+drop-cap tile instead). Pillow is taken from content/.venv when the system Python
+lacks it:  python3 -m venv content/.venv && content/.venv/bin/pip install pillow
 
 Usage:
   python3 content/scripts/build.py            # full build
@@ -18,6 +23,7 @@ content/packs/manifest.json, which the app fetches from this repository on GitHu
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -30,6 +36,16 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+VENV_PY = ROOT / ".venv" / "bin" / "python"
+
+try:
+    from PIL import Image  # noqa: F401
+    HAVE_PIL = True
+except ImportError:
+    HAVE_PIL = False
+    if VENV_PY.exists() and Path(sys.prefix).resolve() != (ROOT / ".venv").resolve() and not os.environ.get("LP_NO_VENV"):
+        os.environ["LP_NO_VENV"] = "1"
+        os.execv(str(VENV_PY), [str(VENV_PY), *sys.argv])
 SOURCE = ROOT / "source" / "words.jsonl"
 FOLDERS = ROOT / "source" / "fluent-emoji-folders.txt"
 CACHE = ROOT / "cache"
@@ -161,30 +177,65 @@ def rasterize(svg: Path, png: Path) -> bool:
         return False
 
 
+def image_name(spec: str) -> str:
+    """Shared file name for an image spec, so words that use the same picture share one file."""
+    kind, _, name = spec.partition(":")
+    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or hashlib.sha1(name.encode()).hexdigest()[:10]
+    ext = "webp" if HAVE_PIL else "png"
+    return f"{kind[:1]}-{slug}.{ext}"
+
+
+def to_webp(png: Path, out: Path) -> bool:
+    try:
+        from PIL import Image
+        with Image.open(png) as im:
+            im.convert("RGBA").save(out, "WEBP", lossless=True, method=4, quality=80)
+        return True
+    except Exception as e:  # noqa: BLE001
+        print(f"  webp failed for {png.name}: {e}", file=sys.stderr)
+        return False
+
+
+def finish(raster: Path, out: Path) -> bool:
+    """Write the final image from a PNG raster: WebP when Pillow is available, else the PNG itself."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    if out.suffix == ".webp":
+        return to_webp(raster, out)
+    shutil.copyfile(raster, out)
+    return True
+
+
 def build_image(word_id: str, spec: str, folders: set[str], check_only: bool) -> tuple[str | None, list[str]]:
     """Return (image file name or None, warnings)."""
     warnings: list[str] = []
+    if spec == "none":
+        return None, warnings
     kind, _, name = spec.partition(":")
-    out = BUILD / "images" / f"{word_id}.png"
+    out = BUILD / "images" / image_name(spec)
+    raster = CACHE / "raster" / (out.stem + ".png")
     if kind == "fluent":
         if name not in folders:
             warnings.append(f"{word_id}: Fluent folder '{name}' not in folder list")
             return None, warnings
         if check_only:
             return out.name, warnings
+        if out.exists():
+            return out.name, warnings
         svg = fetch_fluent_svg(name)
         if svg is None:
             warnings.append(f"{word_id}: could not download Fluent SVG for '{name}'")
             return None, warnings
-        if out.exists() and out.stat().st_mtime >= svg.stat().st_mtime:
-            return out.name, warnings
-        return (out.name if rasterize(svg, out) else None), warnings
+        if not (raster.exists() and raster.stat().st_mtime >= svg.stat().st_mtime) and not rasterize(svg, raster):
+            return None, warnings
+        return (out.name if finish(raster, out) else None), warnings
     if kind == "noto":
         if check_only:
             return out.name, warnings
-        code = name.lower().replace("u+", "").replace(" ", "_")
-        if fetch(NOTO_PNG.format(code=code), out):
+        if out.exists():
             return out.name, warnings
+        code = name.lower().replace("u+", "").replace(" ", "_")
+        if fetch(NOTO_PNG.format(code=code), raster):
+            return (out.name if finish(raster, out) else None), warnings
         warnings.append(f"{word_id}: could not download Noto PNG for '{name}'")
         return None, warnings
     if kind == "file":
@@ -192,9 +243,8 @@ def build_image(word_id: str, spec: str, folders: set[str], check_only: bool) ->
         if not src.exists():
             warnings.append(f"{word_id}: image file '{name}' missing")
             return None, warnings
-        if not check_only:
-            out.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(src, out)
+        if not check_only and not out.exists():
+            finish(src, out)
         return out.name, warnings
     warnings.append(f"{word_id}: unknown image spec '{spec}'")
     return None, warnings
@@ -239,6 +289,7 @@ def main() -> int:
     folders = set(FOLDERS.read_text(encoding="utf-8").splitlines()) if FOLDERS.exists() else set()
     errors: list[str] = []
     warnings: list[str] = []
+    notes: list[str] = []
     words: list[dict] = []
     seen: set[str] = set()
 
@@ -258,7 +309,7 @@ def main() -> int:
         seen.add(wid)
         if d.get("level") not in LEVELS:
             errors.append(f"{wid}: bad level '{d.get('level')}'")
-        for key in ("en", "ipa", "ru", "tj", "pos", "image"):
+        for key in ("en", "ipa", "ru", "tj", "pos", "image"):  # image may be "none"
             if not str(d.get(key, "")).strip():
                 errors.append(f"{wid}: missing '{key}'")
         ex = d.get("ex") or {}
@@ -301,9 +352,10 @@ def main() -> int:
                     missing.append(f"{w['id']}: '{tj}' not in Wiktionary")
                 elif not any(en in g for g in bag):
                     unmatched.append(f"{w['id']}: '{tj}' glosses do not mention '{en}' ({'; '.join(sorted(bag))[:80]})")
-            warnings += missing + unmatched
+            # Wiktionary covers only a few thousand Tajik words, so these are notes for the report, not warnings.
+            notes = missing + unmatched
             print(f"Tajik cross-check: {len(words) - len(missing) - len(unmatched)} matched, "
-                  f"{len(unmatched)} gloss mismatch, {len(missing)} not in Wiktionary")
+                  f"{len(unmatched)} gloss mismatch, {len(missing)} not in Wiktionary (details in build/report.txt)")
 
     for e in errors:
         print("ERROR", e)
@@ -313,6 +365,7 @@ def main() -> int:
     levels = {}
     for w in words:
         levels[w["level"]] = levels.get(w["level"], 0) + 1
+    levels = {lv: levels[lv] for lv in LEVELS if lv in levels}
     with_images = sum(1 for w in words if w["image"])
     print(f"{len(words)} words, levels {levels}, {with_images} with images, "
           f"{len(errors)} errors, {len(warnings)} warnings")
@@ -323,22 +376,28 @@ def main() -> int:
         return 0
 
     BUILD.mkdir(parents=True, exist_ok=True)
+    wanted_build = {w["image"] for w in words if w["image"]}
+    for old in (BUILD / "images").glob("*"):
+        if old.name not in wanted_build:
+            old.unlink()
     pack = {"version": 1, "words": words}
-    (BUILD / "words.json").write_text(json.dumps(pack, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BUILD / "report.txt").write_text("\n".join(errors + warnings) + "\n", encoding="utf-8")
+    (BUILD / "words.json").write_text(json.dumps(pack, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (BUILD / "report.txt").write_text("\n".join(errors + warnings + notes) + "\n", encoding="utf-8")
 
     if not args.no_android:
         ANDROID_ASSETS.mkdir(parents=True, exist_ok=True)
         (ANDROID_ASSETS / "images").mkdir(exist_ok=True)
         shutil.copyfile(BUILD / "words.json", ANDROID_ASSETS / "words.json")
         wanted = {w["image"] for w in words if w["image"]}
-        for old in (ANDROID_ASSETS / "images").glob("*.png"):
+        for old in (ANDROID_ASSETS / "images").iterdir():
             if old.name not in wanted:
                 old.unlink()
         for name in wanted:
-            shutil.copyfile(BUILD / "images" / name, ANDROID_ASSETS / "images" / name)
-        total = sum(f.stat().st_size for f in (ANDROID_ASSETS / "images").glob("*.png"))
-        print(f"copied to {ANDROID_ASSETS} ({total // 1024} KB of images)")
+            dst = ANDROID_ASSETS / "images" / name
+            if not dst.exists() or dst.stat().st_size != (BUILD / "images" / name).stat().st_size:
+                shutil.copyfile(BUILD / "images" / name, dst)
+        total = sum(f.stat().st_size for f in (ANDROID_ASSETS / "images").iterdir())
+        print(f"copied to {ANDROID_ASSETS} ({len(wanted)} images, {total // 1024} KB)")
 
     for spec in args.pack:
         write_pack(spec, args.pack_version, words)

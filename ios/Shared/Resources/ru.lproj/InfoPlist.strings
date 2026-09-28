@@ -1,0 +1,2 @@
+/* Display name under the icon; the same in every language. The .lproj folders also make Xcode list en, ru and tg. */
+"CFBundleDisplayName" = "LearnPaper";

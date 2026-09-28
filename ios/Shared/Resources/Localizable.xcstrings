@@ -1,2470 +1,3786 @@
 {
-  "sourceLanguage": "en",
-  "version": "1.0",
-  "strings": {
-    "nav.today": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "action_favorite" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to favourites"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сегодня"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить в избранное"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Имрӯз"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ба дӯстдоштаҳо илова кардан"
           }
         }
       }
     },
-    "nav.history": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "History"
+    "action_learned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I know it"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "История"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Я знаю"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Таърих"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медонам"
           }
         }
       }
     },
-    "nav.settings": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings"
+    "action_next_word" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next word"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Настройки"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующее слово"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Танзимот"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи навбатӣ"
           }
         }
       }
     },
-    "onb.welcome.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A new word every hour"
+    "action_show_on_wallpaper" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show on wallpaper"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Новое слово каждый час"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать на обоях"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҳар соат як калимаи нав"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар экран нишон додан"
           }
         }
       }
     },
-    "onb.welcome.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LearnPaper turns your wallpaper into a flashcard: a word, how to say it, its translations and an example. It changes on its own."
+    "action_speak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LearnPaper превращает обои в карточку: слово, произношение, переводы и пример. Обои меняются сами."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прослушать"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LearnPaper обои телефонро ба корти калима табдил медиҳад: калима, талаффуз, тарҷумаҳо ва мисол. Обои худ аз худ иваз мешавад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гӯш кардан"
           }
         }
       }
     },
-    "onb.next": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next"
+    "action_unfavorite" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from favourites"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Далее"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать из избранного"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Баъдӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аз дӯстдоштаҳо хориҷ кардан"
           }
         }
       }
     },
-    "onb.back": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Back"
+    "action_unlearned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep learning"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Назад"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить учить"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Қафо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Омӯхтанро идома додан"
           }
         }
       }
     },
-    "onb.start": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get started"
+    "app_tagline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new word on your screen, every hour"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Начать"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое слово на экране каждый час"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Оғоз"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳар соат калимаи нав дар экрани шумо"
           }
         }
       }
     },
-    "onb.finish": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start"
+    "detail_example" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Example"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Начать"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пример"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Оғоз кардан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мисол"
           }
         }
       }
     },
-    "onb.languages.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What are you learning?"
+    "dialog_cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Что вы изучаете?"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Шумо чӣ меомӯзед?"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бекор кардан"
           }
         }
       }
     },
-    "onb.languages.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The big word on the card is in the language you are learning. Pick which translations to show."
+    "dialog_close" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Крупное слово на карточке — на изучаемом языке. Выберите, какие переводы показывать."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаи калон дар корт ба забони омӯхташаванда аст. Интихоб кунед, кадом тарҷумаҳо нишон дода шаванд."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пӯшидан"
           }
         }
       }
     },
-    "label.learning": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I am learning"
+    "dialog_ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Я изучаю"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ОК"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ман меомӯзам"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хуб"
           }
         }
       }
     },
-    "label.showTranslations": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show translations in"
+    "dialog_reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Показывать переводы на"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тарҷумаҳо ба забонҳои"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тоза кардан"
           }
         }
       }
     },
-    "lang.en": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "English"
+    "home_no_word" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap “Next word” to put your first card on the wallpaper."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Английский"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите «Следующее слово», чтобы поставить первую карточку на обои."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Англисӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Барои ба экран гузоштани корти аввалин «Калимаи навбатӣ»-ро пахш кунед."
           }
         }
       }
     },
-    "lang.ru": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Russian"
+    "interval_daily" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once a day"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Русский"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раз в день"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Русӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рӯзе як бор"
           }
         }
       }
     },
-    "lang.tj": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tajik"
+    "interval_hours" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Таджикский"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ч"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тоҷикӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld соат"
           }
         }
       }
     },
-    "onb.level.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your level"
+    "interval_minutes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваш уровень"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld мин"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сатҳи шумо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld дақ."
           }
         }
       }
     },
-    "onb.level.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Words are grouped by CEFR level. You can pick more than one."
+    "ios_guide_intro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once set up, your wallpaper changes to the current card at the times you pick. It takes about five minutes."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Слова сгруппированы по уровням CEFR. Можно выбрать несколько."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "После настройки обои будут меняться на текущую карточку в выбранное время. Это займёт около пяти минут."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаҳо аз рӯи сатҳҳои CEFR гурӯҳбандӣ шудаанд. Якчандтоашро интихоб кардан мумкин аст."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пас аз танзим тасвири экран дар вақтҳои интихобкардаи шумо ба корти ҷорӣ иваз мешавад. Ин тақрибан панҷ дақиқа вақт мегирад."
           }
         }
       }
     },
-    "level.comingSoon": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "coming soon"
+    "ios_guide_open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wallpaper setup guide"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "скоро"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как настроить обои"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ба наздикӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дастури танзими тасвири экран"
           }
         }
       }
     },
-    "level.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Level %@"
+    "ios_guide_open_shortcuts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Shortcuts"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Уровень %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть «Команды»"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сатҳи %@"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кушодани «Команды»"
           }
         }
       }
     },
-    "onb.look.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose your look"
+    "ios_guide_step1" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the Shortcuts app and tap + to create a new shortcut."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выберите оформление"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откройте приложение «Команды» и нажмите +, чтобы создать новую команду."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Намудро интихоб кунед"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Барномаи «Команды» (Shortcuts)-ро кушоед ва барои сохтани фармони нав тугмаи «+»-ро пахш кунед."
           }
         }
       }
     },
-    "label.palette": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Colour"
+    "ios_guide_step2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the action “Get LearnPaper card” (search for LearnPaper)."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Цвет"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте действие «Get LearnPaper card» (найдите LearnPaper в поиске)."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ранг"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Амали «Get LearnPaper card»-ро илова кунед (дар ҷустуҷӯ LearnPaper-ро нависед)."
           }
         }
       }
     },
-    "palette.rotate": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Change colour with every word"
+    "ios_guide_step3" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the action “Set Wallpaper” (on some iOS versions “Set Wallpaper Photo”), choose Lock Screen and Home Screen, and turn off “Show Preview”."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Менять цвет с каждым словом"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте действие «Установить обои» (в некоторых версиях iOS — «Установить фото обоев»), выберите экран блокировки и главный экран и выключите «Показывать превью»."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ранг бо ҳар калима иваз шавад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Амали «Установить обои» (Set Wallpaper)-ро илова кунед (дар баъзе версияҳои iOS «Установить фото обоев»), экрани қулф ва экрани асосиро интихоб кунед ва «Показывать превью» (Show Preview)-ро хомӯш кунед."
           }
         }
       }
     },
-    "label.layout": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Layout"
+    "ios_guide_step4" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name the shortcut “LearnPaper wallpaper” and run it once to check."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Расположение"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назовите команду «LearnPaper wallpaper» и запустите её один раз для проверки."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҷойгиршавӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фармонро «LearnPaper wallpaper» ном гузоред ва барои санҷиш як бор иҷро кунед."
           }
         }
       }
     },
-    "layout.lock": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lower"
+    "ios_guide_step5" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Automation, tap +, choose Time of Day, pick a time, select Run Immediately and choose the shortcut."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Внизу"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейдите в «Автоматизация», нажмите +, выберите «Время суток», задайте время, включите «Запускать сразу» и выберите команду."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дар поён"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ба «Автоматизация» (Automation) гузаред, «+»-ро пахш кунед, «Время суток» (Time of Day)-ро интихоб кунед, вақтро муайян кунед, «Запускать сразу» (Run Immediately)-ро фаъол кунед ва фармонро интихоб кунед."
           }
         }
       }
     },
-    "layout.lock.desc": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Leaves the top free for the clock"
+    "ios_guide_step6" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat step 5 for every hour you want a new card, e.g. 8:00, 9:00 … 22:00. iOS has no “every hour” trigger, so each time is its own automation."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Верх остаётся свободным для часов"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторите шаг 5 для каждого часа, когда нужна новая карточка, например 8:00, 9:00 … 22:00. В iOS нет триггера «каждый час», поэтому каждое время — отдельная автоматизация."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Боло барои соат холӣ мемонад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қадами 5-ро барои ҳар соате, ки корти нав мехоҳед, такрор кунед, масалан 8:00, 9:00 … 22:00. Дар iOS триггери «ҳар соат» нест, бинобар ин ҳар вақт автоматизатсияи алоҳида аст."
           }
         }
       }
     },
-    "layout.home": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Centered"
+    "ios_guide_tip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your wallpaper must be a normal photo wallpaper (not Photo Shuffle). Fewer steps: use “When charger connected” or “When Focus changes” triggers instead of times."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "По центру"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обои должны быть обычным фото (не «Перемешивание фото»). Меньше шагов: вместо времени используйте триггеры «При подключении зарядки» или «При смене фокусирования»."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дар марказ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тасвири экран бояд акси оддӣ бошад (на «Перемешивание фото» / Photo Shuffle). Барои қадамҳои камтар ба ҷои вақт триггерҳои «При подключении зарядки» ё «При смене фокусирования»-ро истифода баред."
           }
         }
       }
     },
-    "layout.home.desc": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Card in the middle"
+    "ios_how_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS does not let apps change the wallpaper by themselves. You get two ways instead."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Карточка в середине"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS не позволяет приложениям самим менять обои. Вместо этого есть два способа."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт дар миёна"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS ба барномаҳо иҷозат намедиҳад, ки тасвири экранро худашон иваз кунанд. Ба ҷои ин ду роҳ ҳаст."
           }
         }
       }
     },
-    "layout.compact": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compact"
+    "ios_how_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How it works on iPhone"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Компактный"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как это работает на iPhone"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мухтасар"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар iPhone чӣ тавр кор мекунад"
           }
         }
       }
     },
-    "layout.compact.desc": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Word and translations only"
+    "ios_msg_applied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card updated"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Только слово и переводы"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Карточка обновлена"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Танҳо калима ва тарҷумаҳо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корт нав шуд"
           }
         }
       }
     },
-    "layout.note": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The lock screen widget and the Shortcuts card use the lower layout, so the clock stays clear."
+    "ios_msg_shown" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now the current card"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджет экрана блокировки и карточка для Быстрых команд используют нижнюю раскладку, чтобы часы оставались видны."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Теперь это текущая карточка"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджети экрани қулф ва корти Shortcuts ҷойгиршавии поёнро истифода мебаранд, то соат намоён монад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Акнун ин корти ҷорӣ аст"
           }
         }
       }
     },
-    "onb.schedule.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How often?"
+    "ios_onb_finish" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start learning"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Как часто?"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начать учиться"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Чанд вақт як бор?"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Омӯзишро оғоз кардан"
           }
         }
       }
     },
-    "label.interval": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Change wallpaper every"
+    "ios_onb_ready_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your first word is ready. Widgets change by themselves; your wallpaper follows once Shortcuts is set up."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Менять обои каждые"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Первое слово готово. Виджеты меняются сами, а обои — после настройки «Команд»."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои иваз шавад ҳар"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи аввалин тайёр аст. Виджетҳо худ аз худ иваз мешаванд, тасвири экран бошад — пас аз танзими «Команды» (Shortcuts)."
           }
         }
       }
     },
-    "interval.minutes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d min"
+    "ios_schedule_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The widget follows this schedule by itself. For the wallpaper, create a Shortcuts automation for each time you want a change."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d мин"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджет сам следует этому расписанию. Для обоев создайте в «Командах» автоматизацию на каждое время смены."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d дақ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджет ин ҷадвалро худаш риоя мекунад. Барои тасвири экран дар «Команды» (Shortcuts) барои ҳар вақти иваз як автоматизатсия созед."
           }
         }
       }
     },
-    "interval.hours": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d h"
+    "ios_setup_action" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show me how"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d ч"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать, как"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d соат"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дастурро дидан"
           }
         }
       }
     },
-    "interval.daily": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Once a day"
+    "ios_setup_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On iPhone only you can change the wallpaper, so it takes a short one-time setup in Shortcuts. The widget works right away."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Раз в день"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На iPhone обои может менять только владелец, поэтому нужна короткая разовая настройка в «Командах». Виджет работает сразу."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Як бор дар рӯз"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар iPhone тасвири экранро танҳо худи соҳиби он иваз карда метавонад, бинобар ин як танзими кӯтоҳи яккарата дар «Команды» (Shortcuts) лозим аст. Виджет фавран кор мекунад."
           }
         }
       }
     },
-    "label.quiet": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quiet hours"
+    "ios_setup_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Put it on your wallpaper"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тихие часы"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поставьте карточку на обои"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Соатҳои ором"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кортро ба тасвири экран гузоред"
           }
         }
       }
     },
-    "quiet.desc": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No changes at night"
+    "ios_shortcuts_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A short setup in the Shortcuts app puts the card on your actual wallpaper at the times you choose."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ночью обои не меняются"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Короткая настройка в приложении «Команды» ставит карточку на настоящие обои в выбранное время."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Шабона обои иваз намешавад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Танзими кӯтоҳ дар барномаи «Команды» (Shortcuts) кортро дар вақтҳои интихобкардаи шумо ба тасвири экрани воқеӣ мегузорад."
           }
         }
       }
     },
-    "quiet.from": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "From"
+    "ios_shortcuts_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real wallpaper via Shortcuts"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "С"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настоящие обои через «Команды»"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Аз"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тасвири экрани воқеӣ тавассути «Команды» (Shortcuts)"
           }
         }
       }
     },
-    "quiet.to": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To"
+    "ios_show_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets show it right away; the wallpaper changes the next time your shortcut runs."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "До"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджеты покажут его сразу, а обои сменятся при следующем запуске вашей команды."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "То"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджетҳо онро фавран нишон медиҳанд, тасвири экран бошад дафъаи навбатии иҷрои фармони шумо иваз мешавад."
           }
         }
       }
     },
-    "onb.ios.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How it works on iPhone"
+    "ios_widget_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the LearnPaper widget to your Home Screen or Lock Screen. It shows the current card and changes on schedule with no setup."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Как это работает на iPhone"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте виджет LearnPaper на главный экран или экран блокировки. Он показывает текущую карточку и меняется по расписанию без настройки."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дар iPhone чӣ тавр кор мекунад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджети LearnPaper-ро ба экрани асосӣ ё экрани қулф илова кунед. Он корти ҷориро нишон медиҳад ва бе ягон танзим аз рӯи ҷадвал иваз мешавад."
           }
         }
       }
     },
-    "onb.ios.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS does not let apps change the wallpaper by themselves. You get two things instead."
+    "ios_widget_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget — works by itself"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS не позволяет приложениям менять обои самостоятельно. Вместо этого есть два способа."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджет — работает сам"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS ба барномаҳо иҷозат намедиҳад, ки обоиро худашон иваз кунанд. Ба ҷои он ду роҳ ҳаст."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виджет — худ аз худ кор мекунад"
           }
         }
       }
     },
-    "ios.widget.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Widget — works by itself"
+    "label_interval" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New word every"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджет — работает сам"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое слово каждые"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджет — худаш кор мекунад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи нав ҳар"
           }
         }
       }
     },
-    "ios.widget.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add the LearnPaper widget to your Home Screen or Lock Screen. It shows the card and changes on schedule with no setup."
+    "label_layout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card position"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Добавьте виджет LearnPaper на главный экран или экран блокировки. Он показывает карточку и меняется по расписанию без настройки."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Положение карточки"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджети LearnPaper-ро ба экрани асосӣ ё экрани қулф илова кунед. Он кортро нишон медиҳад ва аз рӯи ҷадвал бе танзим иваз мешавад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҷойи корт"
           }
         }
       }
     },
-    "ios.shortcuts.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Real wallpaper via Shortcuts"
+    "label_learning" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I'm learning"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Настоящие обои через Быстрые команды"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Я изучаю"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои воқеӣ тавассути Shortcuts"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ман меомӯзам"
           }
         }
       }
     },
-    "ios.shortcuts.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A short setup in the Shortcuts app puts the card on your actual wallpaper at the times you choose."
+    "label_palette" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colours"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Короткая настройка в приложении «Быстрые команды» ставит карточку на настоящие обои в выбранное время."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цвета"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Танзими кӯтоҳ дар барномаи Shortcuts кортро дар вақтҳои интихобкардаатон ба обои воқеӣ мегузорад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рангҳо"
           }
         }
       }
     },
-    "ios.shortcuts.guide": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wallpaper setup guide"
+    "label_quiet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet hours"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Инструкция по обоям"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тихие часы"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дастури танзими обои"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соатҳои ором"
           }
         }
       }
     },
-    "onb.ready.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All set"
+    "label_show_translations" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translations in"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Всё готово"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переводы на"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҳама чиз тайёр"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тарҷума ба забонҳои"
           }
         }
       }
     },
-    "onb.ready.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your first word is ready. The widget changes on its own; the wallpaper follows once Shortcuts is set up."
+    "lang_en" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Первое слово готово. Виджет меняется сам; обои — после настройки Быстрых команд."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Английский"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаи аввалин тайёр аст. Виджет худаш иваз мешавад; обои — пас аз танзими Shortcuts."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Англисӣ"
           }
         }
       }
     },
-    "home.nextWord": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next word"
+    "lang_ru" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Russian"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Следующее слово"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Русский"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаи баъдӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Русӣ"
           }
         }
       }
     },
-    "home.noWord": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap “Next word” to get your first card."
+    "lang_tj" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tajik"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нажмите «Следующее слово», чтобы получить первую карточку."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таджикский"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Барои гирифтани корти аввал «Калимаи навбатӣ»-ро пахш кунед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тоҷикӣ"
           }
         }
       }
     },
-    "home.scheduleEvery": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Changes every %@"
+    "layout_compact" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compact"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Меняется каждые %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Компактно"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҳар %@ иваз мешавад"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мухтасар"
           }
         }
       }
     },
-    "home.nextChange": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next change around %@"
+    "layout_compact_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word and translations"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Следующая смена около %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слово и переводы"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тағйироти навбатӣ тақрибан соати %@"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калима ва тарҷумаҳо"
           }
         }
       }
     },
-    "home.quietNow": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quiet hours: paused until %@"
+    "layout_home" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centred"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тихие часы: пауза до %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По центру"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Соатҳои ором: то %@ таваққуф"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар марказ"
           }
         }
       }
     },
-    "msg.applied": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Card updated"
+    "layout_home_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the middle"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Карточка обновлена"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посередине"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корт навсозӣ шуд"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар миёнаи экран"
           }
         }
       }
     },
-    "history.empty": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Words you have seen will appear here."
+    "layout_lock" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Здесь появятся слова, которые вы уже видели."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ниже"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаҳое, ки дидаед, дар ин ҷо пайдо мешаванд."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поёнтар"
           }
         }
       }
     },
-    "history.favoritesOnly": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Favourites"
+    "layout_lock_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room for the clock"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Избранное"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Место для часов"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дӯстдоштаҳо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Барои соат ҷой мемонад"
           }
         }
       }
     },
-    "detail.example": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Example"
+    "layout_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the lock screen the card always keeps clear of the clock."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пример"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На экране блокировки карточка всегда обходит часы."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мисол"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар экрани қулф корт ҳамеша соатро намепӯшонад."
           }
         }
       }
     },
-    "settings.languages": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Languages"
+    "level_a1" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginner"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Языки"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начальный"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Забонҳо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ибтидоӣ"
           }
         }
       }
     },
-    "settings.content": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Content"
+    "level_a2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementary"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Содержание"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Элементарный"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мундариҷа"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Асосӣ"
           }
         }
       }
     },
-    "settings.look": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Look"
+    "level_b1" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intermediate"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Оформление"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средний"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Намуд"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Миёна"
           }
         }
       }
     },
-    "settings.schedule": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Schedule"
+    "level_b2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upper intermediate"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Расписание"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выше среднего"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҷадвал"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Болотар аз миёна"
           }
         }
       }
     },
-    "settings.showTranscriptions": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show transcriptions"
+    "level_c1" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Показывать транскрипции"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продвинутый"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Транскрипсияҳоро нишон додан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пешрафта"
           }
         }
       }
     },
-    "settings.showExamples": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show example sentences"
+    "level_c2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proficient"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Показывать примеры"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профессиональный"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мисолҳоро нишон додан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мукаммал"
           }
         }
       }
     },
-    "settings.schedule.iosNote": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The widget follows this schedule by itself. For the wallpaper, create a Shortcuts automation for each time you want a change."
+    "msg_no_words" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No words for the selected levels"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджет следует этому расписанию сам. Для обоев создайте автоматизацию в «Быстрых командах» на каждое время смены."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для выбранных уровней нет слов"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Виджет ин ҷадвалро худаш иҷро мекунад. Барои обои, барои ҳар вақти иваз як автоматизатсия дар Shortcuts созед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Барои сатҳҳои интихобшуда калима нест"
           }
         }
       }
     },
-    "settings.wallpaper": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wallpaper"
+    "nav_settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Танзимот"
           }
         }
       }
     },
-    "settings.notifications": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notifications"
+    "nav_today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Уведомления"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сегодня"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Огоҳиномаҳо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имрӯз"
           }
         }
       }
     },
-    "notif.daily": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Word of the day"
+    "nav_words" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Слово дня"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слова"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаи рӯз"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаҳо"
           }
         }
       }
     },
-    "notif.daily.desc": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One notification a day with the current word"
+    "notif_at" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Одно уведомление в день с текущим словом"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ҳар рӯз як огоҳинома бо калимаи ҷорӣ"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соати"
           }
         }
       }
     },
-    "notif.at": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "At"
+    "notif_daily" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word of the day"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "В"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слово дня"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Соати"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи рӯз"
           }
         }
       }
     },
-    "settings.about": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About"
+    "notif_daily_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A daily notification with the current word"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "О приложении"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ежедневное уведомление с текущим словом"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дар бораи барнома"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳар рӯз як огоҳӣ бо калимаи ҷорӣ"
           }
         }
       }
     },
-    "settings.about.body": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Words are graded with the CEFR-J Wordlist (Tono Laboratory, TUFS). Illustrations: Fluent Emoji by Microsoft (MIT). Font: Inter (SIL OFL). Tajik and Russian translations are reviewed by hand."
+    "onb_app_language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Слова размечены по уровням CEFR-J Wordlist (Tono Laboratory, TUFS). Иллюстрации: Fluent Emoji от Microsoft (MIT). Шрифт: Inter (SIL OFL). Таджикские и русские переводы проверяются вручную."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык приложения"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаҳо аз рӯи CEFR-J Wordlist (Tono Laboratory, TUFS) дараҷабандӣ шудаанд. Тасвирҳо: Fluent Emoji аз Microsoft (MIT). Ҳуруф: Inter (SIL OFL). Тарҷумаҳои тоҷикӣ ва русӣ дастӣ санҷида мешаванд."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забони барнома"
           }
         }
       }
     },
-    "settings.version": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Version %@"
+    "onb_back" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Версия %@"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Версия %@"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бозгашт"
           }
         }
       }
     },
-    "settings.reset": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reset progress"
+    "onb_languages_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The big word on the card is in this language. Translations appear underneath."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сбросить прогресс"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крупное слово на карточке — на этом языке. Переводы показываются под ним."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пешравиро аз нав кардан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи калон дар корт ба ҳамин забон аст. Тарҷумаҳо дар зери он нишон дода мешаванд."
           }
         }
       }
     },
-    "settings.reset.confirm": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This clears your history, favourites and learned words."
+    "onb_languages_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What are you learning?"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это удалит историю, избранное и выученные слова."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что вы изучаете?"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ин таърих, дӯстдоштаҳо ва калимаҳои омӯхташударо нест мекунад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шумо чӣ меомӯзед?"
           }
         }
       }
     },
-    "dialog.cancel": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "onb_level_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick one or more levels. You can change them at any time."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отмена"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Можно выбрать несколько уровней и изменить их в любой момент."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Бекор кардан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як ё якчанд сатҳро интихоб кунед. Онҳоро ҳар вақт иваз кардан мумкин аст."
           }
         }
       }
     },
-    "dialog.reset": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reset"
+    "onb_level_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose your level"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сбросить"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите уровень"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Аз нав кардан"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сатҳи худро интихоб кунед"
           }
         }
       }
     },
-    "stat.streak": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "day streak"
+    "onb_look_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the colours and where the card sits on the screen."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "дней подряд"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите цвета и место карточки на экране."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "рӯз паи ҳам"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рангҳо ва ҷойи кортро дар экран интихоб кунед."
           }
         }
       }
     },
-    "stat.seen": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "seen"
+    "onb_look_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make it yours"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "увидено"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройте вид"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "дида шуд"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Намуди дилхоҳро интихоб кунед"
           }
         }
       }
     },
-    "stat.learned": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "learned"
+    "onb_next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "выучено"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Далее"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "омӯхта шуд"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Идома"
           }
         }
       }
     },
-    "stat.due": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "to review"
+    "onb_ready_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All set!"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "повторить"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё готово!"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "такрор"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳама чиз тайёр!"
           }
         }
       }
     },
-    "widget.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LearnPaper card"
+    "onb_schedule_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new word appears on this schedule. At night the wallpaper rests."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Карточка LearnPaper"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое слово появляется по этому расписанию. Ночью обои отдыхают."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Корти LearnPaper"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи нав аз рӯи ҳамин ҷадвал пайдо мешавад. Шабона тасвири экран иваз намешавад."
           }
         }
       }
     },
-    "widget.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The current word with its translations."
+    "onb_schedule_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How often?"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Текущее слово с переводами."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как часто?"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Калимаи ҷорӣ бо тарҷумаҳояш."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чанд вақт як бор?"
           }
         }
       }
     },
-    "palette.peach": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Peach"
+    "onb_start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get started"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Персик"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начать"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Шафтолу"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оғоз кардан"
           }
         }
       }
     },
-    "palette.mint": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mint"
+    "onb_welcome_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LearnPaper turns your wallpaper into a flashcard: the word, how to say it, translations and an example. It changes by itself."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мята"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LearnPaper превращает обои в карточку: слово, произношение, переводы и пример. Обои меняются сами."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пудина"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LearnPaper тасвири экрани шуморо ба корти калима табдил медиҳад: калима, талаффуз, тарҷумаҳо ва мисол. Он худ аз худ иваз мешавад."
           }
         }
       }
     },
-    "palette.lavender": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lavender"
+    "onb_welcome_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learn a word every time you glance at your phone"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Лаванда"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Учите слово каждый раз, когда смотрите на телефон"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Лаванда"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳар дафъае, ки ба телефон нигоҳ мекунед, як калима омӯзед"
           }
         }
       }
     },
-    "palette.sky": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sky"
+    "palette_butter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Butter"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Небо"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сливки"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Осмон"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қаймоқ"
           }
         }
       }
     },
-    "palette.sand": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sand"
+    "palette_lavender" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lavender"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Песок"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лаванда"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Рег"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лаванда"
           }
         }
       }
     },
-    "palette.rose": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rose"
+    "palette_lilac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lilac"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Роза"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сирень"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Садбарг"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бунафш"
           }
         }
       }
     },
-    "palette.sage": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sage"
+    "palette_midnight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midnight"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Шалфей"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полночь"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мармарак"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нимашаб"
           }
         }
       }
     },
-    "palette.butter": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Butter"
+    "palette_mint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Масло"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мята"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Равған"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пудина"
           }
         }
       }
     },
-    "palette.lilac": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lilac"
+    "palette_peach" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peach"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сирень"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Персик"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ёс"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шафтолу"
           }
         }
       }
     },
-    "palette.powder": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Powder blue"
+    "palette_pine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pine"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Голубая пудра"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хвоя"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Кабуди нарм"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Санавбар"
           }
         }
       }
     },
-    "pos.noun": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "noun"
+    "palette_powder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Powder"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "существительное"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пудра"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "исм"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Туман"
           }
         }
       }
     },
-    "pos.verb": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "verb"
+    "palette_rose" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rose"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "глагол"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роза"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "феъл"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Садбарг"
           }
         }
       }
     },
-    "pos.adjective": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "adjective"
+    "palette_rotate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New colour with every word"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "прилагательное"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый цвет с каждым словом"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "сифат"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бо ҳар калима ранги нав"
           }
         }
       }
     },
-    "pos.adverb": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "adverb"
+    "palette_sage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sage"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "наречие"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шалфей"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "зарф"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зайтун"
           }
         }
       }
     },
-    "pos.interjection": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "interjection"
+    "palette_sand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sand"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "междометие"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Песок"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "нидо"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рег"
           }
         }
       }
     },
-    "pos.phrase": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "phrase"
+    "palette_sky" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sky"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "фраза"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Небо"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ибора"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осмон"
           }
         }
       }
     },
-    "pos.pronoun": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "pronoun"
+    "pos_adjective" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "adjective"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "местоимение"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "прил."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ҷонишин"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сифат"
           }
         }
       }
     },
-    "pos.preposition": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "preposition"
+    "pos_adverb" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "adverb"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "предлог"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "наречие"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "пешоянд"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "зарф"
           }
         }
       }
     },
-    "pos.numeral": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "numeral"
+    "pos_conjunction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "conjunction"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "числительное"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "союз"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "шумора"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пайвандак"
           }
         }
       }
     },
-    "pos.conjunction": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "conjunction"
+    "pos_interjection" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "interjection"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "союз"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "междометие"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "пайвандак"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "нидо"
           }
         }
       }
     },
-    "guide.intro": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Once set up, your wallpaper changes to the current card at the times you pick. It takes about five minutes."
+    "pos_noun" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "noun"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "После настройки обои будут меняться на текущую карточку в выбранное время. Это занимает около пяти минут."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сущ."
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пас аз танзим, обои дар вақтҳои интихобкардаатон ба корти ҷорӣ иваз мешавад. Тақрибан панҷ дақиқа мегирад."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "исм"
           }
         }
       }
     },
-    "guide.step1": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open the Shortcuts app and tap + to create a new shortcut."
+    "pos_numeral" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "numeral"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Откройте «Быстрые команды» и нажмите +, чтобы создать новую команду."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "числительное"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Барномаи Shortcuts-ро кушоед ва барои сохтани фармони нав + -ро пахш кунед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "шумора"
           }
         }
       }
     },
-    "guide.step2": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add the action “Get LearnPaper card” (search for LearnPaper)."
+    "pos_phrase" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "phrase"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Добавьте действие «Get LearnPaper card» (найдите LearnPaper в поиске)."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фраза"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Амали «Get LearnPaper card»-ро илова кунед (LearnPaper-ро ҷустуҷӯ кунед)."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ибора"
           }
         }
       }
     },
-    "guide.step3": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add the action “Set Wallpaper” (on some iOS versions “Set Wallpaper Photo”), choose Lock Screen and Home Screen, and turn off “Show Preview”."
+    "pos_preposition" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "preposition"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Добавьте действие «Установить обои» (в некоторых версиях iOS — «Установить фото обоев»), выберите экран блокировки и главный экран и выключите «Показывать превью»."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "предлог"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Амали «Set Wallpaper»-ро илова кунед (дар баъзе версияҳои iOS «Set Wallpaper Photo»), экрани қулф ва экрани асосиро интихоб кунед ва «Show Preview»-ро хомӯш кунед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пешоянд"
           }
         }
       }
     },
-    "guide.step4": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Name the shortcut “LearnPaper wallpaper” and run it once to check."
+    "pos_pronoun" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pronoun"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Назовите команду «LearnPaper wallpaper» и запустите один раз для проверки."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "местоимение"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Фармонро «LearnPaper wallpaper» номгузорӣ кунед ва барои санҷиш як бор иҷро кунед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ҷонишин"
           }
         }
       }
     },
-    "guide.step5": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Go to Automation, tap +, choose Time of Day, pick a time, select Run Immediately and choose the shortcut."
+    "pos_verb" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verb"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Перейдите в «Автоматизация», нажмите +, выберите «Время суток», задайте время, включите «Запускать сразу» и выберите команду."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "глагол"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ба «Automation» гузаред, + -ро пахш кунед, «Time of Day»-ро интихоб кунед, вақтро муайян кунед, «Run Immediately»-ро интихоб кунед ва фармонро интихоб кунед."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "феъл"
           }
         }
       }
     },
-    "guide.step6": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repeat step 5 for every hour you want a new card, e.g. 8:00, 9:00 … 22:00. iOS has no “every hour” trigger, so each time is its own automation."
+    "quiet_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No changes at night"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Повторите шаг 5 для каждого часа, когда нужна новая карточка, например 8:00, 9:00 … 22:00. В iOS нет триггера «каждый час», поэтому каждое время — отдельная автоматизация."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ночью обои не меняются"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Қадами 5-ро барои ҳар соате, ки корти нав мехоҳед, такрор кунед, масалан 8:00, 9:00 … 22:00. Дар iOS триггери «ҳар соат» нест, бинобар ин ҳар вақт автоматизатсияи алоҳида аст."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шабона иваз намешавад"
           }
         }
       }
     },
-    "guide.tip": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your wallpaper must be a normal photo wallpaper (not Photo Shuffle). Fewer steps: use “When charger connected” or “When Focus changes” triggers instead of times."
+    "quiet_from" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои должны быть обычным фото (не «Перемешивание фото»). Меньше шагов: вместо времени используйте триггеры «При подключении зарядки» или «При смене фокусирования»."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "С"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обои бояд акси оддӣ бошад (на Photo Shuffle). Қадамҳои камтар: ба ҷои вақт триггерҳои «When charger connected» ё «When Focus changes»-ро истифода баред."
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аз"
           }
         }
       }
     },
-    "guide.openShortcuts": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Shortcuts"
+    "quiet_to" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Открыть «Быстрые команды»"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До"
           }
         },
-        "tg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shortcuts-ро кушоед"
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "То"
+          }
+        }
+      }
+    },
+    "settings_about" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О приложении"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дар бораи барнома"
+          }
+        }
+      }
+    },
+    "settings_about_body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words are graded by the CEFR-J Wordlist (Tono Laboratory, TUFS) and the Octanove C1/C2 profile. Illustrations: Fluent Emoji by Microsoft (MIT). Fonts: Onest and Inter (SIL OFL)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровни слов — по CEFR-J Wordlist (Tono Laboratory, TUFS) и профилю Octanove C1/C2. Иллюстрации: Fluent Emoji от Microsoft (MIT). Шрифты: Onest и Inter (SIL OFL)."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сатҳи калимаҳо аз рӯи CEFR-J Wordlist (Tono Laboratory, TUFS) ва профили Octanove C1/C2 муайян шудааст. Тасвирҳо: Fluent Emoji аз Microsoft (MIT). Ҳуруф: Onest ва Inter (SIL OFL)."
+          }
+        }
+      }
+    },
+    "settings_app_language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Язык приложения"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Забони барнома"
+          }
+        }
+      }
+    },
+    "settings_appearance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оформление"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Намуди зоҳирӣ"
+          }
+        }
+      }
+    },
+    "settings_learning" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learning"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обучение"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Омӯзиш"
+          }
+        }
+      }
+    },
+    "settings_levels" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Levels"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровни"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сатҳҳо"
+          }
+        }
+      }
+    },
+    "settings_licenses" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licences"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лицензии"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Иҷозатномаҳо"
+          }
+        }
+      }
+    },
+    "settings_notifications" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомления"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Огоҳиҳо"
+          }
+        }
+      }
+    },
+    "settings_privacy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No account, no ads, no tracking. Everything stays on your phone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без аккаунта, рекламы и слежки. Всё остаётся на вашем телефоне."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бе ҳисоби корбарӣ, бе реклама ва бе пайгирӣ. Ҳама чиз дар телефони шумо мемонад."
+          }
+        }
+      }
+    },
+    "settings_reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset progress"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить прогресс"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пешрафтро тоза кардан"
+          }
+        }
+      }
+    },
+    "settings_reset_confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This clears your history, favourites and learned words."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История, избранное и выученные слова будут удалены."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Таърих, дӯстдоштаҳо ва калимаҳои омӯхташуда тоза мешаванд."
+          }
+        }
+      }
+    },
+    "settings_schedule" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расписание"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҷадвал"
+          }
+        }
+      }
+    },
+    "settings_show_examples" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Example sentences"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примеры"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҷумлаҳои мисол"
+          }
+        }
+      }
+    },
+    "settings_show_examples_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One short sentence in every language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одно короткое предложение на каждом языке"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Як ҷумлаи кӯтоҳ ба ҳар забон"
+          }
+        }
+      }
+    },
+    "settings_show_transcriptions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcriptions"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Транскрипция"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Транскрипсия"
+          }
+        }
+      }
+    },
+    "settings_show_transcriptions_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IPA for English, Latin letters for Russian and Tajik"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "МФА для английского, латиница для русского и таджикского"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IPA барои англисӣ, ҳарфҳои лотинӣ барои русӣ ва тоҷикӣ"
+          }
+        }
+      }
+    },
+    "settings_version" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия %@"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версияи %@"
+          }
+        }
+      }
+    },
+    "settings_wallpaper" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wallpaper"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обои"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тасвири экран"
+          }
+        }
+      }
+    },
+    "stat_due" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "to review"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "повторить"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "барои такрор"
+          }
+        }
+      }
+    },
+    "stat_learned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "learned"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "выучено"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "омӯхта шуд"
+          }
+        }
+      }
+    },
+    "stat_seen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "seen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "показано"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дида шуд"
+          }
+        }
+      }
+    },
+    "stat_streak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld дня"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld дней"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld день"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld дня"
+                }
+              }
+            }
+          }
+        },
+        "tg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld рӯз"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld рӯз"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "time_hours_ago" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld h ago"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld h ago"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ч назад"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ч назад"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ч назад"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ч назад"
+                }
+              }
+            }
+          }
+        },
+        "tg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld соат пеш"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld соат пеш"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "time_just_now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "just now"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "только что"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ҳозир"
+          }
+        }
+      }
+    },
+    "time_minutes_ago" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld min ago"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld min ago"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld мин назад"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld мин назад"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld мин назад"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld мин назад"
+                }
+              }
+            }
+          }
+        },
+        "tg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld дақ. пеш"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld дақ. пеш"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "time_picker_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a time"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите время"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вақтро интихоб кунед"
+          }
+        }
+      }
+    },
+    "time_yesterday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yesterday"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вчера"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дирӯз"
+          }
+        }
+      }
+    },
+    "today_every" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "every %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "каждые %@"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ҳар %@"
+          }
+        }
+      }
+    },
+    "today_next_change" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next word at %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующее слово в %@"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи навбатӣ соати %@"
+          }
+        }
+      }
+    },
+    "today_quiet_now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiet hours until %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тихие часы до %@"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соатҳои ором то %@"
+          }
+        }
+      }
+    },
+    "widget_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current word with its translations."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текущее слово с переводами."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаи ҷорӣ бо тарҷумаҳояш."
+          }
+        }
+      }
+    },
+    "widget_name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LearnPaper card"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Карточка LearnPaper"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корти LearnPaper"
+          }
+        }
+      }
+    },
+    "words_clear_search" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear search"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить поиск"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҷустуҷӯро тоза кардан"
+          }
+        }
+      }
+    },
+    "words_count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld word"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld words"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld слова"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld слов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld слово"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld слова"
+                }
+              }
+            }
+          }
+        },
+        "tg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld калима"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld калима"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "words_empty_favorites" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the heart on a word to keep it here."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите на сердечко у слова, чтобы сохранить его здесь."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Барои нигоҳ доштани калима дар ин ҷо аломати дилро пахш кунед."
+          }
+        }
+      }
+    },
+    "words_empty_history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words you see on your wallpaper will appear here."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь появятся слова, которые вы видели на обоях."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаҳое, ки дар экран дидаед, дар ин ҷо пайдо мешаванд."
+          }
+        }
+      }
+    },
+    "words_empty_learned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words you mark as known are kept here and leave the rotation."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слова, отмеченные как знакомые, хранятся здесь и больше не показываются."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаҳое, ки ҳамчун шинос қайд кардед, дар ин ҷо нигоҳ дошта мешаванд ва дигар нишон дода намешаванд."
+          }
+        }
+      }
+    },
+    "words_empty_search" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing found. Try another spelling or language."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего не найдено. Попробуйте другое написание или язык."
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чизе ёфт нашуд. Навишти дигар ё забони дигарро санҷед."
+          }
+        }
+      }
+    },
+    "words_filter_all" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҳама"
+          }
+        }
+      }
+    },
+    "words_filter_favorites" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favourites"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Избранное"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дӯстдошта"
+          }
+        }
+      }
+    },
+    "words_filter_history" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показанные"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дидашуда"
+          }
+        }
+      }
+    },
+    "words_filter_learned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learned"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выученные"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Омӯхташуда"
+          }
+        }
+      }
+    },
+    "words_search_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search in any language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск на любом языке"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ҷустуҷӯ ба ҳар забон"
+          }
+        }
+      }
+    },
+    "words_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слова"
+          }
+        },
+        "tg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калимаҳо"
           }
         }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }

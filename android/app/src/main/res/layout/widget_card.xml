@@ -17,15 +17,40 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="14dp">
+        android:paddingStart="16dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="14dp">
 
-        <ImageView
-            android:id="@+id/widget_image"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="14dp"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter" />
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="14dp">
+
+            <ImageView
+                android:id="@+id/widget_tile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_tile" />
+
+            <ImageView
+                android:id="@+id/widget_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:padding="12dp"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/widget_monogram"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:textSize="32sp" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -39,8 +64,10 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
+                android:letterSpacing="-0.01"
                 android:maxLines="1"
-                android:textSize="22sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/widget_tr"
@@ -69,5 +96,15 @@
                 android:maxLines="2"
                 android:textSize="12sp" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/widget_next"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/action_next_word"
+            android:padding="9dp"
+            android:src="@drawable/ic_widget_next" />
     </LinearLayout>
 </FrameLayout>

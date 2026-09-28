@@ -1,6 +1,7 @@
 # LearnPaper — Design Document
 
-Status: **v0.2.** Decisions from 16 Sep 2026 are folded in (section 11). Android MVP implemented in `android/`; iOS not started.
+Status: **v1.0** (27 Sep 2026). Android release-ready in `android/`; iOS ported in `ios/` but not compiled
+yet (no Mac). Decisions are logged in §11; what changed for 1.0 is in §13.
 
 ## 1. Concept
 
@@ -10,7 +11,8 @@ to a new card: a pastel background chosen by the user, an English word with its
 IPA transcription, translations into Russian and Tajik with transcriptions, one
 simple example sentence in all three languages, and an illustration of the word.
 
-Fully offline. No account, no backend, no network needed for v1.
+Fully offline. No account, no backend, no network needed. The interface is in Tajik by default, with
+Russian and English one tap away inside the app.
 
 ## 2. The card
 
@@ -329,15 +331,60 @@ learnpaper/
     reviewed by a Tajik speaker; the rest are model drafts awaiting review.
 7. **Repo**: monorepo as in section 10.
 
+12. **Tajik review (26 Sep 2026)**: no Tajik reviewer is available; words 102–507 were checked against
+    online dictionaries and the corpus instead (65 fixes), and the same evidence-based process was used
+    for every new word (§13). Real-device tests of the Android app were reported good by the owner.
+13. **Version 1.0 (27 Sep 2026)**: Tajik-default interface with in-app RU/EN switch, new brand, redesigned
+    UI, all CEFR levels bundled, word library with search, release signing — see §13.
+
 Still open:
 
-- **Tajik review of words 102–507** (ids from `banana` onwards in
-  `content/source/words.jsonl`).
-- **Real-device check of live mode** on Xiaomi HyperOS and Samsung One UI: does
-  the lock screen show the live wallpaper, and does the launcher stay quiet?
 - **iOS build**: generate the project with XcodeGen on a Mac, fix whatever the
   compiler flags, verify the widget timeline and the Set Wallpaper action on
   iOS 17/18.
+
+## 13. Version 1.0 (27 Sep 2026)
+
+**Interface language.** Tajik is the default interface language regardless of the phone's language;
+Russian and English are switchable in onboarding and settings (Android 13+ also shows it in the system's
+per-app language screen). Tajik UI terminology follows GNOME's professional Tajik translation
+(wallpaper = "тасвири экран", lock screen = "экрани қулф", notifications = "огоҳиҳо") and was reviewed
+against dictionaries and the corpus. The Play bundle ships all three translations (no language splits).
+
+**Brand.** Two stacked flashcards with a bold "ā" (the macron of dictionary pronunciations and of the
+Tajik Ӣ/Ӯ). Iris violet + Apricot on warm Paper, Ink text; Onest as the brand typeface (full Tajik
+coverage), Inter for transcriptions (full IPA). Everything is generated from `branding/make_brand.py`;
+see `branding/README.md`.
+
+**App structure.** Onboarding (6 steps: welcome + interface language, languages, levels, look, rhythm,
+ready) → three tabs: *Today* (live card preview, the word with pronunciation, translations and example,
+favourite / "I know it" / next word, stats), *Words* (the whole library: search in any language that
+tolerates missing Tajik letters and Latin transliteration, filters for seen / favourites / learned,
+level filters, detail sheet with "Show on wallpaper"), *Settings* (grouped cards). Motion: spring
+press feedback, sliding segmented controls, cross-fading previews, animated word changes and counters.
+Dark theme throughout; two dark wallpaper palettes (Midnight, Pine) join the ten pastels.
+
+**Card.** Onest headword and translations, Inter transcriptions, a soft gradient background; abstract
+words without an illustration get a drop-cap tile instead of a forced picture.
+
+**Content.** All six CEFR levels, bundled offline (no download needed): 2,433 words — A1 490, A2 382,
+B1 517, B2 538, C1 292, C2 214; 1,131 illustrated (637 shared images), the rest abstract words with a
+drop-cap card. New words were drawn from the
+CEFR-J Wordlist (A1–B2) and the Octanove C1/C2 profile by frequency, written to a strict spec
+(`content/tools/CONTENT_SPEC.md`), checked automatically (dictionary + Wiktionary confirmation of every
+Tajik word, Russian stress against OpenRussian, IPA against Wiktionary, corpus attestation of every
+example word) and reviewed a second time (`REVIEW_SPEC.md`); anything that could not be confirmed was
+fixed or dropped. Images are lossless WebP shared between words (≈70% smaller than PNG). Tools:
+`content/tools/`.
+
+**Lock screen.** Stock Android on Pixels draws a large centred clock when there are no notifications,
+which covered the card; the lock screen now uses a compact layout under that clock ("Lock screen clock:
+Auto / Top / Middle", Auto = large clock on Google phones), while Xiaomi/Samsung-style small top clocks keep
+the full card.
+
+**Today** also supports swiping the card for the next word, tapping it for a full-size view, and a
+seven-day streak strip. **Widget** gained a next-word button; **releases** are signed with an upload key kept out of git
+(`docs/RELEASE.md`).
 
 ## 12. iOS, explained plainly
 

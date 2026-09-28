@@ -46,3 +46,14 @@ class SettingsTest {
         assertEquals("TJ", Lang.TJ.label)
     }
 }
+
+class LockStyleTest {
+    @org.junit.Test
+    fun `auto picks the large-clock layout on Google phones and the top-clock layout elsewhere`() {
+        kotlin.test.assertEquals(LockStyle.BIG_CLOCK, LockStyle.AUTO.resolve("Google"))
+        kotlin.test.assertEquals(LockStyle.TOP_CLOCK, LockStyle.AUTO.resolve("Xiaomi"))
+        kotlin.test.assertEquals(LockStyle.TOP_CLOCK, LockStyle.TOP_CLOCK.resolve("Google"))
+        kotlin.test.assertEquals(LayoutPreset.UNDER_CLOCK, Settings().lockLayout(LockStyle.BIG_CLOCK))
+        kotlin.test.assertEquals(LayoutPreset.LOCK, Settings().lockLayout(LockStyle.TOP_CLOCK))
+    }
+}

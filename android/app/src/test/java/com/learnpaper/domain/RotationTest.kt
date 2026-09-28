@@ -168,4 +168,19 @@ class RotationTest {
         repeat(Progress.HISTORY_CAP + 20) { p = Rotation.advance(p, settings, all, now + it * 60_000L) }
         assertEquals(Progress.HISTORY_CAP, p.history.size)
     }
+
+    @Test
+    fun `show puts the chosen word on screen with the usual bookkeeping`() {
+        val all = words(5)
+        val start = Rotation.advance(Progress(), settings, all, now)
+        val pick = all.first { it.id != start.currentId && it.id in start.queue }.id
+        val p = Rotation.show(start, pick, now + 60_000L)
+
+        assertEquals(pick, p.currentId)
+        assertEquals(pick, p.history.first().id)
+        assertEquals(now + 60_000L, p.lastChangeAt)
+        assertEquals(Review(stage = 1, dueAt = now + 60_000L + DAY), p.reviews[pick])
+        assertTrue(pick !in p.queue, "a shown word leaves the queue")
+        assertEquals(start.paletteIndex + 1, p.paletteIndex)
+    }
 }

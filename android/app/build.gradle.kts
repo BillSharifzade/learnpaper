@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,16 +8,34 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// Release signing comes from android/keystore.properties (git-ignored; see docs/RELEASE.md).
+// Without it, release builds are produced unsigned.
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
 android {
     namespace = "com.learnpaper"
     compileSdk = 36
+
+    signingConfigs {
+        if (keystoreProps.getProperty("storeFile") != null) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.learnpaper"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "1.0.0"
 
         // Where extra content packs are listed. Override for a local server with
         // ./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8000/manifest.json
@@ -30,6 +49,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
 
@@ -44,7 +64,15 @@ android {
     }
 
     androidResources {
-        localeFilters += listOf("en", "ru", "tg")
+        localeFilters += listOf("tg", "ru", "en")
+    }
+
+    // The interface language is chosen inside the app (Tajik by default), not by the system, so every
+    // language must be installed: no per-language splits in the Play bundle.
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
 }
 
@@ -62,6 +90,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.work.runtime.ktx)

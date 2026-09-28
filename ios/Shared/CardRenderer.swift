@@ -1,9 +1,10 @@
+import CoreText
 import UIKit
 
 /// Draws a word card into an image of the given pixel size. Port of the Android `CardRenderer`:
 /// all dimensions are expressed for a 1080 px wide canvas and scaled by `width / 1080`; the
 /// content is a vertical stack of blocks centred inside a band that depends on the layout preset,
-/// shrunk step by step if it does not fit.
+/// shrunk step by step if it does not fit. Onest for words and sentences, Inter for transcriptions.
 final class CardRenderer {
     static let shared = CardRenderer()
     private let margin: CGFloat = 96
@@ -12,22 +13,22 @@ final class CardRenderer {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = true
-        let size = CGSize(width: width, height: height)
-        return UIGraphicsImageRenderer(size: size, format: format).image { rc in
+        format.preferredRange = .standard
+        let image = settings.layout == .compact ? nil : ContentStore.shared.image(for: word)
+        return UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format).image { rc in
             let ctx = rc.cgContext
             let s = width / 1080
             drawBackground(ctx, palette: palette, w: width, h: height, s: s)
 
-            let (bandTop, bandBottom): (CGFloat, CGFloat)
+            let band: (top: CGFloat, bottom: CGFloat)
             switch settings.layout {
-            case .lock: (bandTop, bandBottom) = (0.30, 0.90)
-            case .home: (bandTop, bandBottom) = (0.16, 0.88)
-            case .compact: (bandTop, bandBottom) = (0.58, 0.92)
+            case .lock: band = (0.30, 0.90)
+            case .home: band = (0.16, 0.88)
+            case .compact: band = (0.58, 0.92)
             }
-            let top = bandTop * height
-            let bottom = bandBottom * height
+            let top = band.top * height
+            let bottom = band.bottom * height
             let maxWidth = width - 2 * margin * s
-            let image = settings.layout == .compact ? nil : ContentStore.shared.image(for: word)
 
             var scale: CGFloat = 1
             var blocks = buildBlocks(word: word, settings: settings, palette: palette, image: image, s: s, maxWidth: maxWidth)
@@ -47,16 +48,43 @@ final class CardRenderer {
         }
     }
 
+    // MARK: - background
+
+    /// Vertical gradient from the palette background towards its tile colour, a soft tile-coloured
+    /// blob top right and a faint accent blob bottom left (blurred circles on Android).
     private func drawBackground(_ ctx: CGContext, palette: Palette, w: CGFloat, h: CGFloat, s: CGFloat) {
-        ctx.setFillColor(palette.bg.cgColor)
-        ctx.fill(CGRect(x: 0, y: 0, width: w, height: h))
-        // Soft blobs, like the blurred circles on Android.
-        for (center, radius) in [(CGPoint(x: w * 0.88, y: h * 0.10), 300 * s), (CGPoint(x: w * 0.10, y: h * 0.96), 340 * s)] {
-            let colors = [palette.tile.cgColor, palette.tile.withAlphaComponent(0).cgColor] as CFArray
-            guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.35, 1]) else { continue }
-            ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius * 1.5, options: [])
+        let space = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+        let colors = [palette.bg.cgColor, Palette.mix(palette.bgHex, palette.tileHex, 0.55).cgColor] as CFArray
+        if let gradient = CGGradient(colorsSpace: space, colors: colors, locations: [0, 1]) {
+            ctx.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: h), options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+        } else {
+            ctx.setFillColor(palette.bg.cgColor)
+            ctx.fill(CGRect(x: 0, y: 0, width: w, height: h))
         }
+        blob(ctx, space: space, center: CGPoint(x: w * 0.90, y: h * 0.08), radius: 320 * s, blur: 160 * s, color: palette.tile, alpha: 1)
+        blob(ctx, space: space, center: CGPoint(x: w * 0.06, y: h * 0.97), radius: 360 * s, blur: 160 * s, color: palette.accent, alpha: 0.10)
     }
+
+    /// A disc blurred like Android's `BlurMaskFilter(radius, NORMAL)`: a radial gradient that follows
+    /// the Gaussian edge profile (sigma = 0.57735 * radius + 0.5, as Skia converts it).
+    private func blob(_ ctx: CGContext, space: CGColorSpace, center: CGPoint, radius: CGFloat, blur: CGFloat, color: UIColor, alpha: CGFloat) {
+        let sigma = max(1, Double(blur) * 0.57735 + 0.5)
+        let r = Double(radius)
+        let outer = r + 3 * sigma
+        let steps = 16
+        var colors: [CGColor] = []
+        var locations: [CGFloat] = []
+        for i in 0...steps {
+            let d = outer * Double(i) / Double(steps)
+            let a = 0.5 * erfc((d - r) / (sigma * 2.0.squareRoot()))
+            colors.append(color.withAlphaComponent(alpha * CGFloat(a)).cgColor)
+            locations.append(CGFloat(d / outer))
+        }
+        guard let gradient = CGGradient(colorsSpace: space, colors: colors as CFArray, locations: locations) else { return }
+        ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: CGFloat(outer), options: [])
+    }
+
+    // MARK: - layout
 
     private func buildBlocks(word: Word, settings: Settings, palette: Palette, image: UIImage?, s: CGFloat, maxWidth: CGFloat) -> [Block] {
         var blocks: [Block] = []
@@ -65,19 +93,26 @@ final class CardRenderer {
         let compact = settings.layout == .compact
 
         if let image {
-            blocks.append(ImageTile(image: image, size: 360 * s, radius: 64 * s, tileColor: palette.tile))
+            blocks.append(ImageTile(image: image, size: 360 * s, radius: 88 * s, tileColor: palette.tile))
             blocks.append(Spacer(56 * s))
+        } else if !compact {
+            // Abstract words have no illustration: a drop-cap tile keeps the rhythm of the card.
+            let letter = headline.text.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1).uppercased()
+            if !letter.isEmpty {
+                blocks.append(Monogram(letter: letter, attrs: attrs(150 * s, 800, palette.accent), size: 250 * s, radius: 72 * s, tileColor: palette.tile))
+                blocks.append(Spacer(56 * s))
+            }
         }
 
-        let headlineSize = fitSize(headline.text, start: 88 * s, weight: 700, maxWidth: maxWidth, minSize: 40 * s)
-        blocks.append(TextLine(headline.text, attrs(headlineSize, 700, palette.text)))
+        let headlineSize = fitSize(headline.text, start: 96 * s, weight: 700, maxWidth: maxWidth, minSize: 40 * s)
+        blocks.append(TextLine(headline.text, attrs(headlineSize, 700, palette.text, tracking: -0.015)))
         if settings.showTranscriptions, !headline.tr.isEmpty {
-            blocks.append(Spacer(10 * s))
-            blocks.append(TextLine(Self.formatTr(settings.headline, headline.tr), attrs(34 * s, 500, palette.muted)))
+            blocks.append(Spacer(12 * s))
+            blocks.append(TextLine(L10n.transcription(settings.headline, headline.tr), attrs(34 * s, 450, palette.muted, face: .inter)))
         }
         blocks.append(Spacer(20 * s))
         let tag = [word.level, PosNames.localized(word.pos)].filter { !$0.isEmpty }.joined(separator: "  ·  ").uppercased()
-        blocks.append(Tag(tag, attrs(22 * s, 600, palette.muted, kern: 0.12 * 22 * s), bg: palette.tile, s: s))
+        blocks.append(Tag(tag, attrs(22 * s, 600, palette.muted, tracking: 0.12), bg: palette.tile, s: s))
 
         if !translations.isEmpty {
             blocks.append(Spacer((compact ? 44 : 56) * s))
@@ -86,12 +121,12 @@ final class CardRenderer {
                 let e = word.entry(lang)
                 blocks.append(WordLine(
                     label: lang.label,
-                    labelAttrs: attrs(22 * s, 700, palette.muted, kern: 0.1 * 22 * s),
+                    labelAttrs: attrs(22 * s, 700, palette.muted, tracking: 0.1),
                     labelBg: palette.tile,
                     text: e.text,
                     textAttrs: attrs(fitSize(e.text, start: 46 * s, weight: 600, maxWidth: maxWidth * 0.7, minSize: 28 * s), 600, palette.text),
-                    tr: settings.showTranscriptions && !e.tr.isEmpty ? Self.formatTr(lang, e.tr) : nil,
-                    trAttrs: attrs(30 * s, 500, palette.muted),
+                    tr: settings.showTranscriptions && !e.tr.isEmpty ? L10n.transcription(lang, e.tr) : nil,
+                    trAttrs: attrs(30 * s, 450, palette.muted, face: .inter),
                     gap: 18 * s,
                     maxWidth: maxWidth,
                     s: s
@@ -101,37 +136,38 @@ final class CardRenderer {
 
         if settings.showExamples, !compact {
             let main = word.example.of(settings.headline)
-            if !main.isEmpty {
+            if !main.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 blocks.append(Spacer(48 * s))
                 blocks.append(Divider(width: 300 * s, thickness: 2 * s, color: palette.muted.withAlphaComponent(0.35)))
                 blocks.append(Spacer(40 * s))
-                blocks.append(Paragraph(main, attrs(34 * s, 500, palette.text), width: maxWidth, lineSpacing: 1.2))
+                blocks.append(Paragraph(main, attrs(36 * s, 500, palette.text), width: maxWidth, lineSpacing: 1.22))
                 for lang in translations {
                     let t = word.example.of(lang)
-                    if t.isEmpty { continue }
+                    if t.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { continue }
                     blocks.append(Spacer(16 * s))
-                    blocks.append(Paragraph(t, attrs(28 * s, 400, palette.muted), width: maxWidth, lineSpacing: 1.2))
+                    blocks.append(Paragraph(t, attrs(29 * s, 400, palette.muted), width: maxWidth, lineSpacing: 1.22))
                 }
             }
         }
         return blocks
     }
 
-    private func attrs(_ size: CGFloat, _ weight: Int, _ color: UIColor, kern: CGFloat = 0) -> [NSAttributedString.Key: Any] {
-        var a: [NSAttributedString.Key: Any] = [.font: Fonts.inter(size: size, weight: weight), .foregroundColor: color]
-        if kern != 0 { a[.kern] = kern }
+    /// Text attributes; `tracking` is in ems, like Android's `letterSpacing`.
+    private func attrs(_ size: CGFloat, _ weight: Int, _ color: UIColor, face: FontFace = .onest, tracking: CGFloat = 0) -> [NSAttributedString.Key: Any] {
+        var a: [NSAttributedString.Key: Any] = [.font: Fonts.ui(face, size: size, weight: weight), .foregroundColor: color]
+        if tracking != 0 { a[.kern] = tracking * size }
         return a
     }
 
     private func fitSize(_ text: String, start: CGFloat, weight: Int, maxWidth: CGFloat, minSize: CGFloat) -> CGFloat {
         var size = start
-        while size > minSize, (text as NSString).size(withAttributes: [.font: Fonts.inter(size: size, weight: weight)]).width > maxWidth {
+        while size > minSize, (text as NSString).size(withAttributes: [.font: Fonts.onest(size: size, weight: weight)]).width > maxWidth {
             size *= 0.94
         }
         return size
     }
 
-    static func formatTr(_ lang: Lang, _ tr: String) -> String { lang == .en ? "/\(tr)/" : "[\(tr)]" }
+    static func formatTr(_ lang: Lang, _ tr: String) -> String { L10n.transcription(lang, tr) }
 
     // MARK: - blocks
 
@@ -146,11 +182,12 @@ final class CardRenderer {
         }
     }
 
-    private static func measure(_ text: String, _ attrs: [NSAttributedString.Key: Any]) -> CGFloat {
+    fileprivate static func measure(_ text: String, _ attrs: [NSAttributedString.Key: Any]) -> CGFloat {
         (text as NSString).size(withAttributes: attrs).width
     }
 
-    private static func drawText(_ text: String, _ attrs: [NSAttributedString.Key: Any], x: CGFloat, baseline: CGFloat, ascent: CGFloat) {
+    /// UIKit places the first baseline `ascender` below the drawing origin.
+    fileprivate static func drawText(_ text: String, _ attrs: [NSAttributedString.Key: Any], x: CGFloat, baseline: CGFloat, ascent: CGFloat) {
         (text as NSString).draw(at: CGPoint(x: x, y: baseline - ascent), withAttributes: attrs)
     }
 
@@ -219,6 +256,7 @@ final class CardRenderer {
         let labelM: Metrics
         let labelH: CGFloat
         let labelW: CGFloat
+        let textM: Metrics
         let textW: CGFloat
         let trW: CGFloat
         let oneLine: Bool
@@ -245,10 +283,10 @@ final class CardRenderer {
             labelM = Metrics(labelAttrs)
             labelH = labelM.height + 2 * labelPadY
             labelW = CardRenderer.measure(label, labelAttrs) + 2 * labelPadX
+            textM = Metrics(textAttrs)
             textW = CardRenderer.measure(text, textAttrs)
             trW = tr.map { CardRenderer.measure($0, trAttrs) } ?? 0
             oneLine = tr == nil || labelW + gap + textW + gap + trW <= maxWidth
-            let textM = Metrics(textAttrs)
             trM = Metrics(trAttrs)
             ascent = max(textM.ascent, oneLine && tr != nil ? trM.ascent : 0)
             descent = max(textM.descent, oneLine && tr != nil ? trM.descent : 0)
@@ -268,7 +306,7 @@ final class CardRenderer {
             CardRenderer.drawText(label, labelAttrs, x: x + labelPadX, baseline: pillTop + labelPadY + labelM.ascent, ascent: labelM.ascent)
             x += labelW + gap
             let baseline = y + (line1H - (ascent + descent)) / 2 + ascent
-            CardRenderer.drawText(text, textAttrs, x: x, baseline: baseline, ascent: Metrics(textAttrs).ascent)
+            CardRenderer.drawText(text, textAttrs, x: x, baseline: baseline, ascent: textM.ascent)
             if let tr {
                 if oneLine {
                     CardRenderer.drawText(tr, trAttrs, x: x + textW + gap, baseline: baseline, ascent: trM.ascent)
@@ -279,6 +317,7 @@ final class CardRenderer {
         }
     }
 
+    /// Centred sentence of at most three lines, ellipsised after that.
     private struct Paragraph: Block {
         let attributed: NSAttributedString
         let width: CGFloat
@@ -287,13 +326,13 @@ final class CardRenderer {
             let style = NSMutableParagraphStyle()
             style.alignment = .center
             style.lineHeightMultiple = lineSpacing
-            style.lineBreakMode = .byTruncatingTail
+            style.lineBreakMode = .byWordWrapping
             var a = attrs
             a[.paragraphStyle] = style
             attributed = NSAttributedString(string: text, attributes: a)
             self.width = width
             let font = (attrs[.font] as? UIFont) ?? UIFont.systemFont(ofSize: 16)
-            let maxH = ceil(font.lineHeight * lineSpacing * 3)
+            let maxH = ceil(font.lineHeight * lineSpacing * 3) + 1
             let rect = attributed.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
             height = min(ceil(rect.height), maxH)
         }
@@ -331,18 +370,30 @@ final class CardRenderer {
             image.draw(in: CGRect(x: cx - inner / 2, y: y + (size - inner) / 2, width: inner, height: inner))
         }
     }
+
+    /// Rounded tile with one large letter, used instead of an illustration.
+    private struct Monogram: Block {
+        let letter: String
+        let attrs: [NSAttributedString.Key: Any]
+        let size: CGFloat
+        let radius: CGFloat
+        let tileColor: UIColor
+        var height: CGFloat { size }
+        func draw(cx: CGFloat, y: CGFloat, ctx: CGContext) {
+            ctx.setFillColor(tileColor.cgColor)
+            ctx.addPath(UIBezierPath(roundedRect: CGRect(x: cx - size / 2, y: y, width: size, height: size), cornerRadius: radius).cgPath)
+            ctx.fillPath()
+            // Centre the glyph itself (not the line box) in the tile, like Android's getTextBounds.
+            let line = CTLineCreateWithAttributedString(NSAttributedString(string: letter, attributes: attrs) as CFAttributedString)
+            let glyph = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
+            let advance = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
+            let ascent = Metrics(attrs).ascent
+            CardRenderer.drawText(letter, attrs, x: cx - advance / 2, baseline: y + size / 2 + glyph.midY, ascent: ascent)
+        }
+    }
 }
 
 private protocol Block {
     var height: CGFloat { get }
     func draw(cx: CGFloat, y: CGFloat, ctx: CGContext)
-}
-
-/// Part-of-speech keys from the content, localised through the string catalog.
-enum PosNames {
-    static let known = ["noun", "verb", "adjective", "adverb", "interjection", "phrase", "pronoun", "preposition", "numeral", "conjunction"]
-
-    static func localized(_ pos: String) -> String {
-        known.contains(pos) ? L10n.t("pos.\(pos)") : pos
-    }
 }

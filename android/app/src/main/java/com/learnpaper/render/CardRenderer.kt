@@ -4,17 +4,22 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Shader
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withTranslation
 import com.learnpaper.content.ContentRepository
 import com.learnpaper.content.Lang
 import com.learnpaper.content.Word
 import com.learnpaper.data.LayoutPreset
 import com.learnpaper.data.Settings
+import com.learnpaper.i18n.AppLocale
 import kotlin.math.max
 
 /**
@@ -28,7 +33,7 @@ import kotlin.math.max
 class CardRenderer(private val context: Context, private val content: ContentRepository) {
 
     fun render(word: Word, settings: Settings, palette: Palette, width: Int, height: Int): Bitmap {
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width, height)
         val canvas = Canvas(bitmap)
         val s = width / 1080f
         drawBackground(canvas, palette, width.toFloat(), height.toFloat(), s)
@@ -37,11 +42,13 @@ class CardRenderer(private val context: Context, private val content: ContentRep
             LayoutPreset.LOCK -> 0.30f to 0.90f
             LayoutPreset.HOME -> 0.16f to 0.88f
             LayoutPreset.COMPACT -> 0.58f to 0.92f
+            // Below a large centred lock-screen clock and above the unlock affordance.
+            LayoutPreset.UNDER_CLOCK -> 0.725f to 0.835f
         }
         val top = bandTop * height
         val bottom = bandBottom * height
         val maxWidth = width - 2 * MARGIN * s
-        val image = if (settings.layout == LayoutPreset.COMPACT) null else content.loadImage(word)
+        val image = if (settings.layout.compact) null else content.loadImage(word)
 
         var scale = 1f
         var blocks = buildBlocks(word, settings, palette, image, s, maxWidth)
@@ -63,13 +70,17 @@ class CardRenderer(private val context: Context, private val content: ContentRep
     }
 
     private fun drawBackground(canvas: Canvas, palette: Palette, w: Float, h: Float, s: Float) {
-        canvas.drawColor(palette.bg)
+        val base = Paint().apply {
+            shader = LinearGradient(0f, 0f, 0f, h, palette.bg, mix(palette.bg, palette.tile, 0.55f), Shader.TileMode.CLAMP)
+        }
+        canvas.drawRect(0f, 0f, w, h, base)
         val deco = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = palette.tile
-            maskFilter = BlurMaskFilter(140f * s, BlurMaskFilter.Blur.NORMAL)
+            maskFilter = BlurMaskFilter(160f * s, BlurMaskFilter.Blur.NORMAL)
         }
-        canvas.drawCircle(w * 0.88f, h * 0.10f, 300f * s, deco)
-        canvas.drawCircle(w * 0.10f, h * 0.96f, 340f * s, deco)
+        canvas.drawCircle(w * 0.90f, h * 0.08f, 320f * s, deco)
+        deco.color = withAlpha(palette.accent, 0.10f)
+        canvas.drawCircle(w * 0.06f, h * 0.97f, 360f * s, deco)
     }
 
     private fun buildBlocks(
@@ -83,23 +94,32 @@ class CardRenderer(private val context: Context, private val content: ContentRep
         val blocks = ArrayList<Block>()
         val headline = word.entry(settings.headline)
         val translations = settings.translations
-        val compact = settings.layout == LayoutPreset.COMPACT
+        val compact = settings.layout.compact
 
         if (image != null) {
-            blocks += ImageTile(image, size = 360f * s, radius = 64f * s, tileColor = palette.tile)
+            blocks += ImageTile(image, size = 360f * s, radius = 88f * s, tileColor = palette.tile)
             blocks += Spacer(56f * s)
+        } else if (!compact) {
+            // Abstract words have no illustration: a drop-cap tile keeps the rhythm of the card.
+            val letter = headline.text.trim().take(1).uppercase()
+            if (letter.isNotBlank()) {
+                blocks += Monogram(letter, paint(150f * s, 800, palette.accent), size = 250f * s, radius = 72f * s, tileColor = palette.tile)
+                blocks += Spacer(56f * s)
+            }
         }
 
-        val headlineSize = fitSize(headline.text, 88f * s, 700, maxWidth, minSize = 40f * s)
-        blocks += TextLine(headline.text, paint(headlineSize, 700, palette.text))
+        val headlineSize = fitSize(headline.text, 96f * s, 700, maxWidth, minSize = 40f * s)
+        blocks += TextLine(headline.text, paint(headlineSize, 700, palette.text).apply { letterSpacing = -0.015f })
         if (settings.showTranscriptions && headline.tr.isNotBlank()) {
-            blocks += Spacer(10f * s)
-            blocks += TextLine(formatTr(settings.headline, headline.tr), paint(34f * s, 500, palette.muted))
+            blocks += Spacer(12f * s)
+            blocks += TextLine(formatTr(settings.headline, headline.tr), paint(34f * s, 450, palette.muted, Fonts.INTER))
         }
-        blocks += Spacer(20f * s)
-        val tag = listOf(word.level, PosNames.localized(context, word.pos)).filter { it.isNotBlank() }
-            .joinToString("  ·  ").uppercase()
-        blocks += Tag(tag, paint(22f * s, 600, palette.muted).apply { letterSpacing = 0.12f }, palette.tile, s)
+        if (settings.layout != LayoutPreset.UNDER_CLOCK) {
+            blocks += Spacer(20f * s)
+            val tag = listOf(word.level, PosNames.localized(AppLocale.localized(context), word.pos)).filter { it.isNotBlank() }
+                .joinToString("  ·  ").uppercase()
+            blocks += Tag(tag, paint(22f * s, 600, palette.muted).apply { letterSpacing = 0.12f }, palette.tile, s)
+        }
 
         if (translations.isNotEmpty()) {
             blocks += Spacer(if (compact) 44f * s else 56f * s)
@@ -113,7 +133,7 @@ class CardRenderer(private val context: Context, private val content: ContentRep
                     text = e.text,
                     textPaint = paint(fitSize(e.text, 46f * s, 600, maxWidth * 0.7f, minSize = 28f * s), 600, palette.text),
                     tr = if (settings.showTranscriptions && e.tr.isNotBlank()) formatTr(lang, e.tr) else null,
-                    trPaint = paint(30f * s, 500, palette.muted),
+                    trPaint = paint(30f * s, 450, palette.muted, Fonts.INTER),
                     gap = 18f * s,
                     maxWidth = maxWidth,
                     s = s,
@@ -127,20 +147,20 @@ class CardRenderer(private val context: Context, private val content: ContentRep
                 blocks += Spacer(48f * s)
                 blocks += Divider(300f * s, 2f * s, withAlpha(palette.muted, 0.35f))
                 blocks += Spacer(40f * s)
-                blocks += Paragraph(main, paint(34f * s, 500, palette.text), maxWidth, 1.2f)
+                blocks += Paragraph(main, paint(36f * s, 500, palette.text), maxWidth, 1.22f)
                 for (lang in translations) {
                     val t = word.example.of(lang)
                     if (t.isBlank()) continue
                     blocks += Spacer(16f * s)
-                    blocks += Paragraph(t, paint(28f * s, 400, palette.muted), maxWidth, 1.2f)
+                    blocks += Paragraph(t, paint(29f * s, 400, palette.muted), maxWidth, 1.22f)
                 }
             }
         }
         return blocks
     }
 
-    private fun paint(size: Float, weight: Int, color: Int): TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Fonts.get(context, weight)
+    private fun paint(size: Float, weight: Int, color: Int, font: String = Fonts.ONEST): TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Fonts.get(context, weight, font)
         textSize = size
         this.color = color
         isSubpixelText = true
@@ -157,6 +177,13 @@ class CardRenderer(private val context: Context, private val content: ContentRep
     }
 
     private fun formatTr(lang: Lang, tr: String): String = if (lang == Lang.EN) "/$tr/" else "[$tr]"
+
+    /** Linear blend of two opaque colours; t = 0 gives [a]. */
+    private fun mix(a: Int, b: Int, t: Float): Int {
+        fun ch(c: Int, shift: Int) = (c shr shift) and 0xFF
+        fun lerp(x: Int, y: Int) = (x + (y - x) * t).toInt().coerceIn(0, 255)
+        return (0xFF shl 24) or (lerp(ch(a, 16), ch(b, 16)) shl 16) or (lerp(ch(a, 8), ch(b, 8)) shl 8) or lerp(ch(a, 0), ch(b, 0))
+    }
 
     private fun withAlpha(color: Int, alpha: Float): Int =
         (color and 0x00FFFFFF) or ((alpha * 255).toInt().coerceIn(0, 255) shl 24)
@@ -255,10 +282,7 @@ class CardRenderer(private val context: Context, private val content: ContentRep
             .build()
         override val height = layout.height.toFloat()
         override fun draw(canvas: Canvas, cx: Float, y: Float) {
-            canvas.save()
-            canvas.translate(cx - width / 2f, y)
-            layout.draw(canvas)
-            canvas.restore()
+            canvas.withTranslation(cx - width / 2f, y) { layout.draw(this) }
         }
     }
 
@@ -286,6 +310,29 @@ class CardRenderer(private val context: Context, private val content: ContentRep
             canvas.drawBitmap(bitmap, null, dst, img)
         }
     }
+
+    /** Rounded tile with one large letter, used instead of an illustration. */
+    private class Monogram(
+        private val letter: String,
+        private val paint: TextPaint,
+        private val size: Float,
+        private val radius: Float,
+        tileColor: Int,
+    ) : Block {
+        override val height = size
+        private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = tileColor }
+        override fun draw(canvas: Canvas, cx: Float, y: Float) {
+            canvas.drawRoundRect(RectF(cx - size / 2f, y, cx + size / 2f, y + size), radius, radius, fill)
+            val bounds = android.graphics.Rect()
+            paint.getTextBounds(letter, 0, letter.length, bounds)
+            val x = cx - paint.measureText(letter) / 2f
+            val baseline = y + size / 2f + bounds.height() / 2f - bounds.bottom
+            canvas.drawText(letter, x, baseline, paint)
+        }
+    }
+
+    private val LayoutPreset.compact: Boolean
+        get() = this == LayoutPreset.COMPACT || this == LayoutPreset.UNDER_CLOCK
 
     companion object {
         private const val MARGIN = 96f

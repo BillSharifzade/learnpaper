@@ -44,7 +44,16 @@ class WallpaperChanger(
         val progress = progressRepo.update {
             Rotation.advance(it, settings, words, now, TimeZone.getDefault().getOffset(now).toLong())
         }
-        val word = progress.currentId?.let { id -> words.firstOrNull { it.id == id } } ?: return@withContext ChangeResult.NoWords
+        val word = progress.currentId?.let { id -> content.word(id) } ?: return@withContext ChangeResult.NoWords
+        apply(word, settings, progress)
+    }
+
+    /** Shows a word the user picked (from the library) right away. */
+    suspend fun show(id: String): ChangeResult = withContext(Dispatchers.Default) {
+        val settings = settingsRepo.current()
+        val word = content.word(id) ?: return@withContext ChangeResult.NoWords
+        val now = System.currentTimeMillis()
+        val progress = progressRepo.update { Rotation.show(it, id, now, TimeZone.getDefault().getOffset(now).toLong()) }
         apply(word, settings, progress)
     }
 
@@ -73,7 +82,7 @@ class WallpaperChanger(
         if (!applier.isAllowed()) return ChangeResult.Failed
         val palette = Palettes.forSettings(settings, progress.paletteIndex)
         val (w, h) = ScreenSize.portrait(context)
-        val lockSettings = settings.copy(layout = LayoutPreset.LOCK)
+        val lockSettings = settings.copy(layout = settings.lockLayout())
 
         fun set(renderWith: Settings, flags: Int): Boolean {
             val bitmap = renderer.render(word, renderWith, palette, w, h)
@@ -88,7 +97,7 @@ class WallpaperChanger(
             WallpaperTarget.LOCK -> set(lockSettings, WallpaperManager.FLAG_LOCK)
             WallpaperTarget.HOME -> set(settings, WallpaperManager.FLAG_SYSTEM)
             WallpaperTarget.BOTH ->
-                if (settings.layout == LayoutPreset.LOCK) {
+                if (settings.layout == lockSettings.layout) {
                     set(settings, WallpaperManager.FLAG_SYSTEM or WallpaperManager.FLAG_LOCK)
                 } else {
                     set(settings, WallpaperManager.FLAG_SYSTEM) && set(lockSettings, WallpaperManager.FLAG_LOCK)

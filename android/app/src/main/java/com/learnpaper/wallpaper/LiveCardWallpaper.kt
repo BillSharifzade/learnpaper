@@ -14,6 +14,7 @@ import com.learnpaper.Graph
 import com.learnpaper.content.Word
 import com.learnpaper.data.LayoutPreset
 import com.learnpaper.data.Settings
+import com.learnpaper.i18n.AppLocale
 import com.learnpaper.render.Palette
 import com.learnpaper.render.Palettes
 import kotlinx.coroutines.CoroutineScope
@@ -51,9 +52,10 @@ class LiveCardWallpaper : WallpaperService() {
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
             setOffsetNotificationsEnabled(false)
-            combine(graph.settings.flow, graph.progress.flow, graph.content.generation, size, flags) { s, p, _, sz, f ->
-                Frame(s, p.currentId, Palettes.forSettings(s, p.paletteIndex), sz.first, sz.second, f)
+            combine(graph.settings.flow, graph.progress.flow, graph.content.generation, size, flags) { s, p, gen, sz, f ->
+                Frame(s, p.currentId, Palettes.forSettings(s, p.paletteIndex), sz.first, sz.second, f, gen)
             }
+                .combine(AppLocale.changes) { frame, locale -> frame.copy(localeVersion = locale) }
                 .distinctUntilChanged()
                 .mapNotNull { f -> if (f.width > 0 && f.height > 0) f else null }
                 .map { f -> f to withContext(Dispatchers.Default) { render(f) } }
@@ -90,7 +92,8 @@ class LiveCardWallpaper : WallpaperService() {
             val secondary = Color.valueOf(p.bg)
             val tertiary = Color.valueOf(p.text)
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                WallpaperColors(primary, secondary, tertiary, WallpaperColors.HINT_SUPPORTS_DARK_TEXT)
+                val hints = if (p.isDark) WallpaperColors.HINT_SUPPORTS_DARK_THEME else WallpaperColors.HINT_SUPPORTS_DARK_TEXT
+                WallpaperColors(primary, secondary, tertiary, hints)
             } else {
                 WallpaperColors(primary, secondary, tertiary)
             }
@@ -105,14 +108,14 @@ class LiveCardWallpaper : WallpaperService() {
 
         private suspend fun render(f: Frame): Bitmap? {
             val words = graph.content.words()
-            val word: Word = f.wordId?.let { id -> words.firstOrNull { it.id == id } }
+            val word: Word = f.wordId?.let { id -> graph.content.word(id) }
                 ?: words.firstOrNull { it.level in f.settings.levels }
                 ?: words.firstOrNull()
                 ?: return null
             // The lock screen keeps the clock zone clear. Before API 34 one engine may serve both
             // screens without telling us, so the safe layout is used there too.
             val lock = f.flags == 0 || f.flags and WallpaperManager.FLAG_LOCK != 0
-            val settings = if (lock) f.settings.copy(layout = LayoutPreset.LOCK) else f.settings
+            val settings = if (lock) f.settings.copy(layout = f.settings.lockLayout()) else f.settings
             return graph.renderer.render(word, settings, f.palette, f.width, f.height)
         }
 
@@ -137,6 +140,8 @@ class LiveCardWallpaper : WallpaperService() {
         val width: Int,
         val height: Int,
         val flags: Int,
+        val contentVersion: Int = 0,
+        val localeVersion: Int = 0,
     )
 
     companion object {

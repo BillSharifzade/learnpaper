@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- White rounded card; the widget tints it with the palette colour (setColorFilter). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="#FFFFFFFF" />
-    <corners android:radius="24dp" />
+    <corners android:radius="28dp" />
 </shape>

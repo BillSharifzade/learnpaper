@@ -13,7 +13,16 @@ data class Palette(
     val muted: Int,
     val tile: Int,
     val accent: Int,
-)
+) {
+    /** Dark backgrounds get light text; the wallpaper reports this to the system (status bar icons, clock). */
+    val isDark: Boolean
+        get() {
+            val r = (bg shr 16) and 0xFF
+            val g = (bg shr 8) and 0xFF
+            val b = bg and 0xFF
+            return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128
+        }
+}
 
 object Palettes {
     val all: List<Palette> = listOf(
@@ -27,6 +36,8 @@ object Palettes {
         Palette("butter", R.string.palette_butter, 0xFFFFF1C2.toInt(), 0xFF4A3E12.toInt(), 0xFF8C7A3A.toInt(), 0xFFFFE79E.toInt(), 0xFFE3B939.toInt()),
         Palette("lilac", R.string.palette_lilac, 0xFFF1DDF3.toInt(), 0xFF43244A.toInt(), 0xFF855A8E.toInt(), 0xFFE8C9EB.toInt(), 0xFFB972C2.toInt()),
         Palette("powder", R.string.palette_powder, 0xFFE3E8EF.toInt(), 0xFF23303F.toInt(), 0xFF5A6B80.toInt(), 0xFFD3DAE5.toInt(), 0xFF6F87A6.toInt()),
+        Palette("midnight", R.string.palette_midnight, 0xFF17142A.toInt(), 0xFFF2EEFF.toInt(), 0xFFA9A2C9.toInt(), 0xFF27224A.toInt(), 0xFFA99CFF.toInt()),
+        Palette("pine", R.string.palette_pine, 0xFF10231C.toInt(), 0xFFE9F5EE.toInt(), 0xFF9DBCAC.toInt(), 0xFF1B3A2E.toInt(), 0xFF7FDDB7.toInt()),
     )
 
     fun byId(id: String): Palette = all.firstOrNull { it.id == id } ?: all.first()
