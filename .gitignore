@@ -19,3 +19,6 @@ content/.venv/
 # release signing (back these up; never commit)
 android/keystore.properties
 android/keystore/
+
+# release artifacts (built with android/keystore.properties)
+dist/
