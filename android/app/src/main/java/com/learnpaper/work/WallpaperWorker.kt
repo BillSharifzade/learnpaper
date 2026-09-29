@@ -4,22 +4,15 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.learnpaper.Graph
-import com.learnpaper.wallpaper.ChangeResult
-import java.time.LocalTime
 
+/**
+ * Keeps home-screen widgets moving (scheduled only while a widget exists, see [WallpaperScheduler]): changes
+ * the word if it is due, which also refreshes the widgets. The wallpaper itself never needs this.
+ */
 class WallpaperWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val graph = Graph.get(applicationContext)
-        val settings = graph.settings.current()
-        if (!settings.onboarded) return Result.success()
-
-        val now = LocalTime.now()
-        if (settings.isQuiet(now.hour * 60 + now.minute)) return Result.success()
-
-        return when (graph.changer.changeToNext()) {
-            is ChangeResult.Applied, ChangeResult.NoWords, ChangeResult.NeedsLiveSetup -> Result.success()
-            ChangeResult.Failed -> if (runAttemptCount < 2) Result.retry() else Result.failure()
-        }
+        Graph.get(applicationContext).changer.advanceIfDue()
+        return Result.success()
     }
 }

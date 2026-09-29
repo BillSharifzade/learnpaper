@@ -19,6 +19,7 @@ import com.learnpaper.data.Settings
 import com.learnpaper.i18n.AppLocale
 import com.learnpaper.render.Palette
 import com.learnpaper.render.Palettes
+import com.learnpaper.work.WallpaperScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -41,12 +42,34 @@ class CardWidget : AppWidgetProvider() {
         }
     }
 
+    /** The first widget was placed: keep it moving even when the wallpaper is not on screen. */
+    override fun onEnabled(context: Context) {
+        syncRefresh(context, hasWidgets = true)
+    }
+
+    /** The last widget was removed: no more background work at all. */
+    override fun onDisabled(context: Context) {
+        syncRefresh(context, hasWidgets = false)
+    }
+
+    private fun syncRefresh(context: Context, hasWidgets: Boolean) {
+        val pending = goAsync()
+        scope.launch {
+            try {
+                val interval = Graph.get(context).settings.current().intervalMinutes
+                WallpaperScheduler.syncWidgetRefresh(context, interval, hasWidgets)
+            } finally {
+                pending.finish()
+            }
+        }
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_NEXT) {
             val pending = goAsync()
             scope.launch {
                 try {
-                    // In live mode the wallpaper redraws by itself; the changer also refreshes this widget.
+                    // The wallpaper redraws by itself; the changer also refreshes this widget.
                     Graph.get(context).changer.changeToNext()
                 } finally {
                     pending.finish()
@@ -59,6 +82,7 @@ class CardWidget : AppWidgetProvider() {
 
     companion object {
         private const val ACTION_NEXT = "com.learnpaper.widget.NEXT"
+        private const val IMAGE_PX = 160
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
         /** Refreshes every placed widget; called after each wallpaper change. */
@@ -68,6 +92,9 @@ class CardWidget : AppWidgetProvider() {
             if (ids.isEmpty()) return
             scope.launch { render(context, manager, ids) }
         }
+
+        fun hasWidgets(context: Context): Boolean =
+            AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, CardWidget::class.java)).isNotEmpty()
 
         private suspend fun render(base: Context, manager: AppWidgetManager, ids: IntArray) {
             val context = AppLocale.localized(base)
@@ -124,9 +151,9 @@ class CardWidget : AppWidgetProvider() {
                 settings.translations.joinToString("   ") { lang -> "${lang.label}  ${word.entry(lang).text}" },
             )
             views.setTextViewText(R.id.widget_example, if (settings.showExamples) word.example.of(settings.headline) else "")
-            val image = graph.content.loadImage(word, sampleSize = 2)
+            val image = graph.content.loadImageSized(word, targetPx = IMAGE_PX)
             if (image != null) {
-                views.setImageViewBitmap(R.id.widget_image, image.scaleTo(160))
+                views.setImageViewBitmap(R.id.widget_image, image.scaleTo(IMAGE_PX))
                 views.setViewVisibility(R.id.widget_monogram, View.GONE)
                 image.recycle()
             } else {

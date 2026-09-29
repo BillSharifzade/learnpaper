@@ -82,6 +82,12 @@ final class ContentStore {
         return image
     }
 
+    /// The thumbnail if it is already decoded; never touches the disk.
+    func cachedThumbnail(for word: Word, maxPixels: Int = 144) -> UIImage? {
+        guard let name = word.image else { return nil }
+        return thumbnails.object(forKey: "\(name)@\(maxPixels)" as NSString)
+    }
+
     /// Thumbnail decoded off the main thread, for list rows.
     func loadThumbnail(for word: Word, maxPixels: Int = 144) async -> UIImage? {
         if word.image == nil { return nil }

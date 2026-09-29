@@ -211,15 +211,24 @@ val BrandShapes = Shapes(
     extraLarge = RoundedCornerShape(34.dp),
 )
 
+/**
+ * One set of font families for the whole process: the same instances keep hitting Compose's typeface cache
+ * when the activity is recreated or the language is switched, so fonts are never loaded twice.
+ */
+@Volatile
+private var processFonts: BrandFonts? = null
+
+private fun brandFonts(context: android.content.Context): BrandFonts = processFonts ?: synchronized(BrandFonts::class) {
+    processFonts ?: BrandFonts(
+        display = variableFamily(context, Fonts.ONEST, listOf(400, 500, 600, 700, 800)),
+        text = variableFamily(context, Fonts.INTER, listOf(400, 500, 600)),
+    ).also { processFonts = it }
+}
+
 @Composable
 fun LearnPaperTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val context = LocalContext.current
-    val fonts = remember(context) {
-        BrandFonts(
-            display = variableFamily(context, Fonts.ONEST, listOf(400, 500, 600, 700, 800)),
-            text = variableFamily(context, Fonts.INTER, listOf(400, 500, 600)),
-        )
-    }
+    val fonts = remember { brandFonts(context.applicationContext) }
     val type = remember(fonts) { typography(fonts.display) }
     CompositionLocalProvider(
         LocalExtraColors provides if (dark) DarkExtra else LightExtra,

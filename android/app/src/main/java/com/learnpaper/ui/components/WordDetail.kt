@@ -160,8 +160,7 @@ fun WordDetail(
     favorite: Boolean,
     learned: Boolean,
     isCurrent: Boolean,
-    busy: Boolean,
-    thumbnail: (Word) -> android.graphics.Bitmap?,
+    thumbnails: Thumbnails,
     canSpeak: (Lang) -> Boolean,
     speak: (String, Lang) -> Unit,
     onFavorite: () -> Unit,
@@ -178,7 +177,7 @@ fun WordDetail(
             .padding(bottom = 16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            WordThumb(word, thumbnail, size = 64.dp, headline = settings.headline)
+            WordThumb(word, thumbnails, size = 64.dp, headline = settings.headline)
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -204,7 +203,7 @@ fun WordDetail(
         Spacer(Modifier.height(24.dp))
         Button(
             onClick = onShow,
-            enabled = !busy && !isCurrent,
+            enabled = !isCurrent,
             modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),

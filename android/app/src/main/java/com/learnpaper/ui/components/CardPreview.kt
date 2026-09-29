@@ -1,12 +1,6 @@
 package com.learnpaper.ui.components
 
-import android.graphics.Bitmap
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,11 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -49,12 +40,17 @@ import com.learnpaper.data.LockStyle
 import com.learnpaper.data.Settings
 import com.learnpaper.render.Palettes
 import com.learnpaper.render.ScreenSize
+import com.learnpaper.render.cardStyle
+import com.learnpaper.ui.CardPreviews
+import com.learnpaper.ui.LocalAppLanguage
+import com.learnpaper.ui.PreviewKey
 import com.learnpaper.ui.theme.LpTheme
 import kotlin.math.roundToInt
 
 /**
  * The real wallpaper for [word] with [settings], rendered off the main thread at half resolution and
- * shown in a phone-shaped frame. A new word or look cross-fades in. [showClock] draws a lock-screen
+ * shown in a phone-shaped frame. Rendered cards are cached ([CardPreviews]), so a card that was shown
+ * before appears in the first frame; a new word or look cross-fades in. [showClock] draws a lock-screen
  * clock where the system would put it, so the user sees why the card sits low.
  */
 @Composable
@@ -62,49 +58,42 @@ fun CardPreview(
     settings: Settings,
     word: Word?,
     paletteIndex: Int,
-    render: suspend (Settings, Word, Int, Int, Int) -> Bitmap,
+    previews: CardPreviews,
     modifier: Modifier = Modifier,
     corner: Dp = 30.dp,
     showClock: Boolean = false,
-    float: Boolean = false,
     /** Render width in pixels; previews use half the usual phone width, full-screen views the real one. */
     renderWidth: Int = PREVIEW_WIDTH,
 ) {
     val context = LocalContext.current
     val screen = remember { ScreenSize.portrait(context) }
     val aspect = screen.first.toFloat() / screen.second
-    var image by remember { mutableStateOf<ImageBitmap?>(null) }
+    val palette = Palettes.forSettings(settings, paletteIndex)
+    val lang = LocalAppLanguage.current
+    val style = settings.cardStyle()
+    fun keyFor(width: Int) = word?.let { PreviewKey(it.id, style, palette.id, width, (width / aspect).roundToInt(), lang) }
+    val key = keyFor(renderWidth)
+    // A full-size view starts from the cached half-size card, so it is never empty while the sharp one renders.
+    var image by remember { mutableStateOf(key?.let { previews.cached(it) ?: keyFor(PREVIEW_WIDTH)?.let(previews::cached) }) }
 
-    LaunchedEffect(settings, word?.id, paletteIndex) {
-        if (word != null) {
-            val w = renderWidth
-            val h = (w / aspect).roundToInt()
-            image = render(settings, word, paletteIndex, w, h).asImageBitmap()
-        }
+    LaunchedEffect(key) {
+        if (key != null && word != null) image = previews.render(key, word, palette)
     }
 
-    val lift = if (float) {
-        val t = rememberInfiniteTransition(label = "float")
-        t.animateFloat(0f, 1f, infiniteRepeatable(tween(3800, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "lift").value
-    } else 0f
-    val density = LocalDensity.current
     val shape = RoundedCornerShape(corner)
-    val palette = Palettes.forSettings(settings, paletteIndex)
-
     val description = word?.let { w ->
         (listOf(settings.headline) + settings.translations).joinToString(" — ") { w.entry(it).text }
     }
     Box(
         modifier
             .semantics { if (description != null) contentDescription = description }
-            .graphicsLayer { translationY = -with(density) { 6.dp.toPx() } * lift }
             .aspectRatio(aspect)
-            .shadow(elevation = 22.dp + 6.dp * lift, shape = shape, ambientColor = LpTheme.extra.cardShadow, spotColor = LpTheme.extra.cardShadow)
+            .shadow(elevation = 22.dp, shape = shape, ambientColor = LpTheme.extra.cardShadow, spotColor = LpTheme.extra.cardShadow)
             .clip(shape)
             .background(Color(palette.bg))
             .border(1.dp, Color.Black.copy(alpha = 0.06f), shape),
     ) {
-        Crossfade(targetState = image, animationSpec = tween(450), label = "preview") { img ->
+        Crossfade(targetState = image, animationSpec = tween(300), label = "preview") { img: ImageBitmap? ->
             if (img != null) {
                 Image(bitmap = img, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
             } else {
@@ -141,4 +130,5 @@ fun PreviewPlaceholder(modifier: Modifier = Modifier) {
     )
 }
 
-private const val PREVIEW_WIDTH = 540
+/** Width of in-app previews: half of a common phone width, sharp at the size they are shown. */
+const val PREVIEW_WIDTH = 540

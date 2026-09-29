@@ -117,24 +117,18 @@ struct OnboardingView: View {
 
     // MARK: - steps
 
+    /// The language comes first and stays put, and the texts keep the room of their longest translation,
+    /// so switching the language changes the words on screen and nothing else.
     @ViewBuilder
     private var welcome: some View {
+        Overline(text: L10n.t("onb_app_language"))
+            .padding(.top, 4)
+        AppLanguagePicker()
         Hero()
             .frame(maxWidth: .infinity)
-            .padding(.top, 8)
-        Text(L10n.t("onb_welcome_title"))
-            .textStyle(TypeScale.headlineMedium)
-            .foregroundStyle(Theme.onBackground)
-            .fixedSize(horizontal: false, vertical: true)
+            .padding(.top, 16)
+        WelcomeText(language: model.language)
             .padding(.top, 22)
-        Text(L10n.t("onb_welcome_body"))
-            .textStyle(TypeScale.bodyLarge)
-            .foregroundStyle(Theme.onSurfaceVariant)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.top, 8)
-        Overline(text: L10n.t("onb_app_language"))
-            .padding(.top, 20)
-        AppLanguagePicker()
     }
 
     @ViewBuilder
@@ -172,7 +166,7 @@ struct OnboardingView: View {
     @ViewBuilder
     private var ready: some View {
         StepHeader(title: L10n.t("onb_ready_title"), subtitle: L10n.t("ios_onb_ready_body"))
-        preview(widthFraction: 0.56, corner: 30, float: true)
+        preview(widthFraction: 0.56, corner: 30)
         Overline(text: L10n.t("ios_how_title"))
             .padding(.top, 28)
         Text(L10n.t("ios_how_body"))
@@ -194,8 +188,8 @@ struct OnboardingView: View {
         .padding(.top, 16)
     }
 
-    private func preview(widthFraction: CGFloat, corner: CGFloat, float: Bool = false) -> some View {
-        CardPreview(settings: model.draft, word: model.previewWord, paletteIndex: 0, corner: corner, showClock: true, float: float)
+    private func preview(widthFraction: CGFloat, corner: CGFloat) -> some View {
+        CardPreview(settings: model.draft, word: model.previewWord, paletteIndex: 0, corner: corner, showClock: true)
             .frame(width: CardPreview.screenWidth * widthFraction)
             .frame(maxWidth: .infinity)
     }
@@ -221,7 +215,33 @@ private struct StepHeader: View {
     }
 }
 
-/// The logo made real: the live card floating on a tilted apricot card, like the two cards of the icon.
+/// The welcome title and text in every interface language, only the current one visible: the block
+/// always has the height of its longest translation.
+private struct WelcomeText: View {
+    let language: AppLanguage
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            ForEach(AppLanguage.allCases) { lang in
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(L10n.t("onb_welcome_title", in: lang))
+                        .textStyle(TypeScale.headlineMedium)
+                        .foregroundStyle(Theme.onBackground)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(L10n.t("onb_welcome_body", in: lang))
+                        .textStyle(TypeScale.bodyLarge)
+                        .foregroundStyle(Theme.onSurfaceVariant)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .opacity(lang == language ? 1 : 0)
+                .accessibilityHidden(lang != language)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// The logo made real: the card on a tilted apricot card, like the two cards of the icon.
 private struct Hero: View {
     @EnvironmentObject private var model: AppModel
 
@@ -233,7 +253,7 @@ private struct Hero: View {
                 .frame(width: width - 28, height: width / CardPreview.aspect)
                 .offset(x: 14)
                 .rotationEffect(.degrees(8))
-            CardPreview(settings: model.draft, word: model.previewWord, paletteIndex: 0, corner: 28, showClock: true, float: true)
+            CardPreview(settings: model.draft, word: model.previewWord, paletteIndex: 0, corner: 28, showClock: true)
                 .frame(width: width)
                 .rotationEffect(.degrees(-4))
         }

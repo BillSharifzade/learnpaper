@@ -50,7 +50,7 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Coroutine
             .setStyle(NotificationCompat.BigTextStyle().bigText(listOf(translations, example).filter { it.isNotBlank() }.joinToString("\n")))
             .setContentIntent(open)
             .setAutoCancel(true)
-            .setLargeIcon(graph.content.loadImage(word))
+            .setLargeIcon(graph.content.loadImageSized(word, targetPx = 256))
             .build()
         applicationContext.getSystemService(NotificationManager::class.java).notify(ID, notification)
         return Result.success()

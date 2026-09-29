@@ -60,6 +60,20 @@ please treat compiler errors as typos, not as design questions.
   press-scale buttons with haptics.
 - **Card**: Onest headword, Inter transcriptions, gradient background with blurred blobs, a drop-cap
   tile for words without an illustration, two dark palettes (Midnight, Pine).
+
+## What changed in 1.1 (from the Android 1.1 work)
+
+- **Palettes**: light and dark groups of ten (`Palettes.light` / `.dark`, eight new dark ones); "a new
+  colour with every word" rotates inside the chosen group.
+- **Intervals**: presets plus "Custom" (1 minute to 24 hours, `IntervalSheet`). The widget precomputes up
+  to 60 changes per timeline and asks for the next timeline when they run out.
+- **Language switch**: the picker is at the top of the welcome step, the welcome texts keep the height of
+  their longest translation, the switch no longer cross-fades the whole screen, and card previews come from
+  a cache (also in another language until the exact render is ready), so nothing moves or flashes.
+- **Speed**: no endless float animation on cards; the search index and library order are built in the
+  background at launch (`LibraryIndex`) and the word list is computed off the main thread
+  (`WordsView.makeRows`); cached thumbnails show in the first frame; the speech synthesizer is created
+  on first use.
 - **Widget**: the Android widget look (lightened palette background, illustration or drop-cap
   tile, word, transcription, "RU слово   TJ калима", example) and a "next word" button.
 - **Content**: words are indexed by id, rotation replays use a prebuilt index, images are decoded
@@ -119,6 +133,6 @@ including the `tj` key for Tajik. The Android unit tests in
 `android/app/src/test/java/com/learnpaper/domain` describe the expected behaviour of `Rotation`,
 `Stats` and `WordSearch` and are the reference for an XCTest port.
 
-Not on iOS: downloadable content packs (the bundled pack is all there is), the Live/Classic
-wallpaper choice and the lock-screen clock style (the iOS clock is always at the top, so the lock
+Not on iOS: downloadable content packs (the bundled pack is all there is), the Android wallpaper
+engine and the lock-screen clock style (the iOS clock is always at the top, so the lock
 layout always keeps clear of it).

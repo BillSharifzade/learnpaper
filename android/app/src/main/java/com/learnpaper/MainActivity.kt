@@ -10,6 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.learnpaper.i18n.AppLocale
 import com.learnpaper.ui.AppViewModel
 import com.learnpaper.ui.LearnPaperApp
+import com.learnpaper.ui.LocalizedContent
 
 class MainActivity : ComponentActivity() {
     private val vm: AppViewModel by viewModels()
@@ -23,6 +24,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition { vm.state.value.loading }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent { LearnPaperApp(vm) }
+        setContent { LocalizedContent { LearnPaperApp(vm) } }
     }
 }

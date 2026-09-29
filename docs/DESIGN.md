@@ -1,7 +1,7 @@
 # LearnPaper — Design Document
 
-Status: **v1.0** (27 Sep 2026). Android release-ready in `android/`; iOS ported in `ios/` but not compiled
-yet (no Mac). Decisions are logged in §11; what changed for 1.0 is in §13.
+Status: **v1.1** (29 Sep 2026). Android release-ready in `android/`; iOS ported in `ios/` but not compiled
+yet (no Mac). Decisions are logged in §11; what changed for 1.0 is in §13, for 1.1 in §14.
 
 ## 1. Concept
 
@@ -87,14 +87,19 @@ This section shapes everything else.
   recreates the launcher and every dynamic-colour app; on Xiaomi HyperOS the
   launcher restarts visibly. This is the "phone reloads its UI on every change"
   bug.
-- Therefore the default delivery is a **live wallpaper** (`WallpaperService`):
-  a new card is a redraw of our own surface — no wallpaper-changed broadcast, no
-  colour extraction — and `onComputeColors()` reports one fixed colour set per
-  palette, so the theme never regenerates. Verified on the API 36 emulator: zero
-  theme events across changes, home and lock screen both served (Android 14+
+- Therefore the delivery is a **live wallpaper** (`WallpaperService`): a new
+  card is a redraw of our own surface — no wallpaper-changed broadcast, no
+  colour extraction. Since 1.1 it is the only delivery (the static "Classic"
+  mode is gone) and it is built to cost nothing between words (§14): the
+  colours reported to the system are those of the palette the user picked, even
+  while colours rotate, so the theme never regenerates; the card is drawn
+  straight onto the surface with the GPU canvas and no screen-sized bitmap is
+  kept; and words change only while the wallpaper is visible, so there is no
+  background job at all. Home and lock screen are both served (Android 14+
   tells the engine which screen it draws for; older versions get the lock
-  layout everywhere so the clock zone stays clear). The static path stays as
-  "Classic" for devices whose lock screen does not show live wallpapers.
+  layout everywhere so the clock zone stays clear). Lock screens that do not
+  show live wallpapers (some older Samsung/Xiaomi skins) show only the home
+  screen card; the widget is the alternative there.
 
 ### iOS — no public API to set the wallpaper
 
@@ -235,7 +240,10 @@ CDN without an app release.
   sage, butter, lilac, powder). Each defines background, primary text, muted
   text, and image-tile tint, checked for WCAG AA contrast (4.5:1 on body text).
   User picks one fixed palette or "rotate per word". Dimmed variants for quiet
-  hours are optional.
+  hours are optional. Since 1.1 there are two groups of ten: the pastels and ten
+  dark palettes (Midnight, Pine, Ocean, Plum, Pomegranate, Coffee, Graphite,
+  Turquoise, Gold, Coal — the last true black for OLED screens); rotation stays
+  inside the chosen group, so the light or dark look never flips between words.
 - **Typography**: one family covering Latin, IPA, Russian Cyrillic, and Tajik
   Cyrillic (Ғғ Ӣӣ Ққ Ӯӯ Ҳҳ Ҷҷ). Noto Sans is the safe choice; Inter is nicer
   and probably covers it — to be verified in the spike. The font is bundled in
@@ -245,9 +253,13 @@ CDN without an app release.
 
 ## 7. Scheduling and rotation
 
-- **Intervals**: 15 min, 30 min, 1 h (default), 2 h, 3 h, 6 h, 12 h, daily.
-  On iOS the wallpaper interval is whatever automations the user created; the
-  in-app setting drives the widget timeline and the setup guide.
+- **Intervals**: 15 min, 30 min, 1 h (default), 2 h, 3 h, 6 h, 12 h, daily, or
+  any custom value from 1 minute to 24 hours (since 1.1). On Android the word
+  changes while the wallpaper is on screen once the interval has passed (a
+  look at the phone after a long pause brings exactly one new word); nothing
+  runs while the screen is off. On iOS the wallpaper interval is whatever
+  automations the user created; the in-app setting drives the widget timeline
+  (up to 60 precomputed changes per timeline) and the setup guide.
 - **Quiet hours** (default 23:00–07:00): no changes. Saves battery and words.
 - **Order**: sequential through the chosen level(s), shuffled once per level.
   "Mark as learned" removes a word from rotation; "favorite" keeps it around.
@@ -336,6 +348,9 @@ learnpaper/
     for every new word (§13). Real-device tests of the Android app were reported good by the owner.
 13. **Version 1.0 (27 Sep 2026)**: Tajik-default interface with in-app RU/EN switch, new brand, redesigned
     UI, all CEFR levels bundled, word library with search, release signing — see §13.
+14. **Version 1.1 (29 Sep 2026)**: one wallpaper delivery instead of Live/Classic, rebuilt to never
+    re-theme the phone and to do no work while the screen is off; custom intervals from 1 minute; light and
+    dark palette groups (ten each); language switch without restart or layout shift; faster tabs — see §14.
 
 Still open:
 
@@ -404,3 +419,52 @@ Because that setup is tedious, the iOS app also ships widgets. A Home Screen
 widget shows the same card and refreshes itself hourly with no setup at all. It
 is not the wallpaper, but it is reliable, and it is what most iOS users will
 actually use. Both paths run from the same Swift rendering code.
+
+## 14. Version 1.1 (29 Sep 2026)
+
+**Why.** On real phones both delivery modes still made Android reload its UI, and old phones got warm.
+Measured on the API 36 emulator (release builds, same method before and after):
+
+| Three word changes, home screen visible | CPU (app + system + launcher) | System re-themes |
+|---|---|---|
+| 1.0 Classic (setBitmap) | 2.2 s, launcher relaunched | yes, every word |
+| 1.0 Live, "new colour with every word" | 0.5 s | yes, every word |
+| 1.0 Live, fixed colour | 0.26 s | no |
+| 1.1, colours rotating | 0.09–0.17 s, launcher 0 | never |
+
+The cause in Live mode was the colour report: with rotation on, every word told the system a new colour
+and Material You regenerated the theme (launcher and apps redraw). Classic re-themes by design. In the app,
+the Today card's endless float animation kept one core ~80 % busy while the screen was open (≈740 frames
+and 12 s of CPU in 15 s idle).
+
+**One wallpaper delivery.** The mode choice is gone. `LiveCardWallpaper` reports the chosen palette's
+colours (never the rotating one) and speaks up only when the user picks another palette; it answers the
+system's first colour request at once instead of leaving it empty. The card is laid out when something it
+shows changes and drawn straight onto the surface with the GPU canvas; nothing screen-sized stays in
+memory. Words change only while the wallpaper is visible (1-minute interval: 2 changes in 130 s on screen,
+0 in 150 s with the screen off, 1 on waking — the same on Android 8.0 and 16). There is no periodic job;
+only a placed home-screen widget schedules one (so widgets keep moving). Updating from 1.0 keeps the
+wallpaper and removes 1.0's job.
+
+**Intervals.** Presets plus "Custom": any value from 1 minute to 24 hours (number + minutes/hours). The
+Today chip says when the next word comes, or that it comes when the user leaves the app.
+
+**Palettes.** Light and Dark groups of ten; eight new dark ones (Ocean, Plum, Pomegranate, Coffee,
+Graphite, Turquoise, Gold, Coal); on both ends of their gradient the main text is above 12:1 and secondary
+text above 6.5:1 (PalettesTest checks every palette).
+
+**Language switch.** The activity is no longer recreated: Compose reads texts through a context in the
+chosen language, so a switch redraws in place (0 relaunches, measured). On the first onboarding step the
+switch sits at the top and the texts keep the height of their longest translation, so nothing moves.
+Dialogs and sheets (separate windows) get the language provided again; before, they showed the phone's
+language on Android 8–12.
+
+**Speed.** Tabs are kept once built (only the visible one is drawn); the word library (search index,
+sorting) is built once off the main thread; card previews are cached; the endless float animation is gone;
+text-to-speech starts on first use. 15 tab switches: janky frames 27–31 % → 2 %, worst frame 4.95 s →
+0.13 s; first opening of Words: worst frame 1.9 s → 0.07 s; idle on Today: 0 frames, 0 CPU.
+
+**iOS** got the same palettes, custom intervals (the widget precomputes up to 60 changes and reloads when
+they run out), the stable language switch (no cross-fade of the whole screen, cached previews), no float
+animation, and the word list computed in the background.
+

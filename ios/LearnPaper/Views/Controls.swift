@@ -115,15 +115,30 @@ private struct LevelCard: View {
     }
 }
 
-/// The twelve palettes as round swatches, plus "new colour with every word".
+/// Wallpaper colours in two groups, light and dark. Switching the group picks the colour last used in
+/// it; "a new colour with every word" rotates inside the chosen group, so the card never flips between
+/// light and dark. Port of `PaletteControls` on Android.
 struct PaletteControls: View {
     @Binding var settings: Settings
+    @State private var lastLight = Palettes.light[0].id
+    @State private var lastDark = Palettes.dark[0].id
 
     var body: some View {
+        let chosen = Palettes.byId(settings.paletteId)
         VStack(alignment: .leading, spacing: 0) {
             Overline(text: L10n.t("label_palette"))
+            SegmentedControl(
+                items: [false, true],
+                selection: chosen.isDark,
+                label: { dark in L10n.t(dark ? "palette_group_dark" : "palette_group_light") },
+                onSelect: { dark in
+                    var s = settings
+                    s.paletteId = dark ? lastDark : lastLight
+                    settings = s
+                }
+            )
             FlowLayout(spacing: 10, lineSpacing: 12) {
-                ForEach(Palettes.all) { palette in
+                ForEach(Palettes.group(of: chosen)) { palette in
                     PaletteSwatch(palette: palette, selected: !settings.rotatePalette && settings.paletteId == palette.id) {
                         var s = settings
                         s.paletteId = palette.id
@@ -132,9 +147,20 @@ struct PaletteControls: View {
                     }
                 }
             }
-            ToggleRow(title: L10n.t("palette_rotate"), isOn: $settings.rotatePalette)
-                .padding(.top, 6)
+            .padding(.top, 14)
+            ToggleRow(
+                title: L10n.t("palette_rotate"),
+                subtitle: L10n.t(chosen.isDark ? "palette_rotate_dark" : "palette_rotate_light"),
+                isOn: $settings.rotatePalette
+            )
+            .padding(.top, 6)
         }
+        .onAppear { remember(chosen) }
+        .onChange(of: settings.paletteId) { remember(Palettes.byId(settings.paletteId)) }
+    }
+
+    private func remember(_ palette: Palette) {
+        if palette.isDark { lastDark = palette.id } else { lastLight = palette.id }
     }
 }
 
@@ -288,10 +314,13 @@ private struct LayoutDiagram: View {
     }
 }
 
+/// Preset intervals plus "Custom", which takes any value from one minute to a day.
 struct IntervalControls: View {
     @Binding var settings: Settings
+    @State private var editing = false
 
     var body: some View {
+        let custom = !Settings.intervals.contains(settings.intervalMinutes)
         VStack(alignment: .leading, spacing: 0) {
             Overline(text: L10n.t("label_interval"))
             FlowLayout {
@@ -300,8 +329,107 @@ struct IntervalControls: View {
                         settings.intervalMinutes = minutes
                     }
                 }
+                ChoiceChip(
+                    text: custom ? L10n.interval(settings.intervalMinutes) : L10n.t("interval_custom"),
+                    selected: custom,
+                    systemImage: "pencil"
+                ) {
+                    editing = true
+                }
             }
         }
+        .sheet(isPresented: $editing) {
+            IntervalSheet(initial: settings.intervalMinutes) { minutes in
+                if let minutes { settings.intervalMinutes = minutes }
+                editing = false
+            }
+        }
+    }
+}
+
+/// "Every [ 45 ] minutes | hours": a number with steppers and a unit, from one minute to 24 hours.
+private struct IntervalSheet: View {
+    let initial: Int
+    let onDone: (Int?) -> Void
+    @State private var hours: Bool
+    @State private var text: String
+    @FocusState private var focused: Bool
+
+    init(initial: Int, onDone: @escaping (Int?) -> Void) {
+        self.initial = initial
+        self.onDone = onDone
+        let inHours = initial >= 60 && initial % 60 == 0
+        _hours = State(initialValue: inHours)
+        _text = State(initialValue: String(inHours ? initial / 60 : initial))
+    }
+
+    private var minutes: Int? { Int(text).map { hours ? $0 * 60 : $0 } }
+    private var valid: Bool { minutes.map { (Settings.minInterval...Settings.maxInterval).contains($0) } ?? false }
+
+    private func step(_ by: Int) {
+        let limit = hours ? Settings.maxInterval / 60 : Settings.maxInterval
+        text = String(min(limit, max(1, (Int(text) ?? 0) + by)))
+    }
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(L10n.t("label_interval"))
+                .textStyle(TypeScale.titleLarge)
+                .foregroundStyle(Theme.onSurface)
+                .padding(.top, 24)
+            HStack(spacing: 12) {
+                CircleIconButton(systemImage: "minus", label: "−", size: 44, iconSize: 17) { step(-1) }
+                TextField("", text: $text)
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.center)
+                    .font(TypeScale.headlineMedium.font)
+                    .foregroundStyle(Theme.onSurface)
+                    .focused($focused)
+                    .frame(width: 112, height: 60)
+                    .background(
+                        RoundedRectangle(cornerRadius: Radius.medium, style: .continuous)
+                            .strokeBorder(valid ? Theme.primary : Theme.error, lineWidth: 2)
+                    )
+                    .onChange(of: text) {
+                        let digits = String(text.filter(\.isNumber).prefix(4))
+                        if digits != text { text = digits }
+                    }
+                CircleIconButton(systemImage: "plus", label: "+", size: 44, iconSize: 17) { step(1) }
+            }
+            SegmentedControl(
+                items: [false, true],
+                selection: hours,
+                label: { inHours in L10n.t(inHours ? "interval_unit_hours" : "interval_unit_minutes") },
+                onSelect: { hours = $0 }
+            )
+            .padding(.horizontal, 24)
+            Text(L10n.t("interval_custom_hint"))
+                .textStyle(TypeScale.bodySmall)
+                .foregroundStyle(valid ? Theme.onSurfaceVariant : Theme.error)
+            HStack(spacing: 12) {
+                Button {
+                    onDone(nil)
+                } label: {
+                    Text(L10n.t("dialog_cancel"))
+                        .textStyle(TypeScale.labelLarge)
+                        .foregroundStyle(Theme.primary)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(Capsule().fill(Theme.surfaceContainerHigh))
+                }
+                .buttonStyle(PressableStyle())
+                Button(L10n.t("dialog_ok")) { onDone(minutes) }
+                    .buttonStyle(PrimaryButtonStyle(height: 50))
+                    .disabled(!valid)
+                    .opacity(valid ? 1 : 0.5)
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 12)
+        }
+        .frame(maxWidth: .infinity)
+        .background(Theme.surfaceContainerLowest)
+        .presentationDetents([.height(400)])
+        .presentationDragIndicator(.visible)
+        .presentationCornerRadius(Radius.extraLarge)
     }
 }
 

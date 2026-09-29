@@ -8,9 +8,9 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -53,74 +53,74 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.learnpaper.R
-import com.learnpaper.content.Word
-import com.learnpaper.domain.WordSearch
+import com.learnpaper.content.Lang
+import com.learnpaper.data.Settings
 import com.learnpaper.ui.AppViewModel
-import com.learnpaper.ui.UiState
+import com.learnpaper.ui.LocalizedContent
+import com.learnpaper.ui.WordFilter
+import com.learnpaper.ui.WordRow
 import com.learnpaper.ui.components.ChoiceChip
 import com.learnpaper.ui.components.EmptyState
 import com.learnpaper.ui.components.LevelBadge
+import com.learnpaper.ui.components.Thumbnails
 import com.learnpaper.ui.components.WordDetail
 import com.learnpaper.ui.components.WordThumb
 import com.learnpaper.ui.components.levelName
+import com.learnpaper.ui.components.rememberNow
 import com.learnpaper.ui.theme.LpTheme
 
-enum class WordFilter { ALL, HISTORY, FAVORITES, LEARNED }
-
-private data class Entry(val word: Word, val shownAt: Long? = null)
-
+/**
+ * The whole library. The list itself (search, filters, sorting over ~2,500 words) is computed by the view
+ * model off the main thread; this screen only shows rows, so it opens and scrolls without work.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun WordsScreen(state: UiState, vm: AppViewModel, listState: LazyListState) {
-    var query by rememberSaveable { mutableStateOf("") }
-    var filter by rememberSaveable { mutableStateOf(WordFilter.ALL) }
-    var levelFilter by rememberSaveable { mutableStateOf("") } // comma-joined; empty = all levels
+fun WordsScreen(settings: Settings, vm: AppViewModel, listState: LazyListState) {
+    val ui by vm.words.collectAsStateWithLifecycle()
+    val state by vm.state.collectAsStateWithLifecycle()
+    var text by rememberSaveable { mutableStateOf(ui.query.text) }
     var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
     val focus = LocalFocusManager.current
-    val headline = state.settings.headline
-    val levels = levelFilter.split(',').filter { it.isNotBlank() }.toSet()
+    val query = ui.query
+    val progress = state.progress
 
-    val search = remember(state.words) { WordSearch(state.words) }
-    val sortedAll = remember(state.words, headline) { WordSearch.sorted(state.words, headline) }
-    val rows: List<Entry> = remember(query, filter, levelFilter, state.words, state.progress, headline) {
-        val found = if (query.isBlank()) null else search.search(query)
-        val hits = found?.mapTo(HashSet()) { it.id }
-        val base: List<Entry> = when (filter) {
-            WordFilter.ALL -> (found ?: sortedAll).map { Entry(it) }
-            WordFilter.HISTORY -> {
-                val seen = LinkedHashMap<String, Long>()
-                state.progress.history.forEach { e -> if (e.id !in seen) seen[e.id] = e.at }
-                seen.mapNotNull { (id, at) -> state.byId[id]?.let { Entry(it, at) } }
-            }
-            WordFilter.FAVORITES -> WordSearch.sorted(state.progress.favorites.mapNotNull { state.byId[it] }, headline).map { Entry(it) }
-            WordFilter.LEARNED -> WordSearch.sorted(state.progress.learned.mapNotNull { state.byId[it] }, headline).map { Entry(it) }
-        }
-        base.filter { r -> (levels.isEmpty() || r.word.level in levels) && (hits == null || r.word.id in hits) }
+    // Opening a word hides the keyboard, so it does not come back when the sheet closes.
+    fun open(id: String) {
+        focus.clearFocus()
+        selectedId = id
     }
 
+    LaunchedEffect(text) { vm.setWordsText(text) }
     LaunchedEffect(listState.isScrollInProgress) { if (listState.isScrollInProgress) focus.clearFocus() }
-    LaunchedEffect(filter, levelFilter) { listState.scrollToItem(0) }
+    LaunchedEffect(query.filter, query.levels) { listState.scrollToItem(0) }
 
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
+        // Takes the focus Android hands out by itself: before Android 9 the system gives focus back to the
+        // first focusable view after every clearFocus(), and Compose would pass it to the search field,
+        // opening the keyboard while scrolling or switching tabs. Taps still focus the field directly.
+        Spacer(Modifier.size(1.dp).focusable().clearAndSetSemantics {})
         Column(Modifier.padding(horizontal = 20.dp)) {
             Row(Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 12.dp), verticalAlignment = Alignment.Bottom) {
                 Text(stringResource(R.string.words_title), style = MaterialTheme.typography.headlineLarge, modifier = Modifier.weight(1f))
                 Text(
-                    pluralStringResource(R.plurals.words_count, rows.size, rows.size),
+                    pluralStringResource(R.plurals.words_count, ui.rows.size, ui.rows.size),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 6.dp),
                 )
             }
-            SearchField(query, onChange = { query = it }, onDone = { focus.clearFocus() })
+            SearchField(text, onChange = { text = it }, onDone = { focus.clearFocus() })
             Spacer(Modifier.height(12.dp))
         }
         Row(
@@ -128,7 +128,7 @@ fun WordsScreen(state: UiState, vm: AppViewModel, listState: LazyListState) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             WordFilter.entries.forEach { f ->
-                val on = filter == f
+                val on = query.filter == f
                 ChoiceChip(
                     text = stringResource(
                         when (f) {
@@ -139,7 +139,7 @@ fun WordsScreen(state: UiState, vm: AppViewModel, listState: LazyListState) {
                         },
                     ),
                     selected = on,
-                    onClick = { filter = f },
+                    onClick = { vm.setWordsFilter(f) },
                     leading = when (f) {
                         WordFilter.ALL -> null
                         WordFilter.HISTORY -> { { Icon(Icons.Rounded.History, null, Modifier.size(18.dp), tint = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant) } }
@@ -155,53 +155,54 @@ fun WordsScreen(state: UiState, vm: AppViewModel, listState: LazyListState) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             state.availableLevels.forEach { level ->
-                val on = level in levels
-                ChoiceChip(
-                    text = level,
-                    selected = on,
-                    onClick = { levelFilter = (if (on) levels - level else levels + level).sortedBy { WordSearch.levelIndex(it) }.joinToString(",") },
-                )
+                ChoiceChip(text = level, selected = level in query.levels, onClick = { vm.toggleWordsLevel(level) })
             }
         }
         Spacer(Modifier.height(6.dp))
 
-        if (rows.isEmpty()) {
-            EmptyState(
-                stringResource(
-                    when {
-                        query.isNotBlank() -> R.string.words_empty_search
-                        filter == WordFilter.HISTORY -> R.string.words_empty_history
-                        filter == WordFilter.FAVORITES -> R.string.words_empty_favorites
-                        filter == WordFilter.LEARNED -> R.string.words_empty_learned
-                        else -> R.string.words_empty_search
-                    },
-                ),
-            )
+        if (ui.rows.isEmpty()) {
+            // Before the first result arrives the list is simply empty; the message is for real empty results.
+            if (!state.loading && ui.query.text == text) {
+                EmptyState(
+                    stringResource(
+                        when {
+                            query.text.isNotBlank() -> R.string.words_empty_search
+                            query.filter == WordFilter.HISTORY -> R.string.words_empty_history
+                            query.filter == WordFilter.FAVORITES -> R.string.words_empty_favorites
+                            query.filter == WordFilter.LEARNED -> R.string.words_empty_learned
+                            else -> R.string.words_empty_search
+                        },
+                    ),
+                )
+            }
         } else {
-            val grouped = filter == WordFilter.ALL && query.isBlank()
+            val headline = settings.headline
+            val translations = settings.translations
+            val now = rememberNow()
+            val groups = ui.groups
             LazyColumn(
                 state = listState,
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                if (grouped) {
-                    rows.groupBy { it.word.level }.forEach { (level, group) ->
-                        stickyHeader(key = "h-$level") { LevelHeader(level, group.size) }
+                if (groups != null) {
+                    groups.forEach { (level, group) ->
+                        stickyHeader(key = "h-$level", contentType = "header") { LevelHeader(level, group.size) }
                         items(group, key = { it.word.id }, contentType = { "word" }) { row ->
-                            WordRow(row, state, vm, onClick = { selectedId = row.word.id }, modifier = Modifier.animateItem(), showLevel = false)
+                            WordRowItem(row, headline, translations, vm, now, onClick = { open(row.word.id) }, showLevel = false)
                         }
                     }
                 } else {
-                    items(rows, key = { it.word.id }, contentType = { "word" }) { row ->
-                        WordRow(row, state, vm, onClick = { selectedId = row.word.id }, modifier = Modifier.animateItem())
+                    items(ui.rows, key = { it.word.id }, contentType = { "word" }) { row ->
+                        WordRowItem(row, headline, translations, vm, now, onClick = { open(row.word.id) })
                     }
                 }
             }
         }
     }
 
-    val selected = selectedId?.let { state.byId[it] }
+    val selected = selectedId?.let { state.word(it) }
     if (selected != null) {
         val sheet = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(
@@ -209,20 +210,22 @@ fun WordsScreen(state: UiState, vm: AppViewModel, listState: LazyListState) {
             sheetState = sheet,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         ) {
-            WordDetail(
-                word = selected,
-                settings = state.settings,
-                favorite = selected.id in state.progress.favorites,
-                learned = selected.id in state.progress.learned,
-                isCurrent = state.progress.currentId == selected.id,
-                busy = state.busy,
-                thumbnail = vm::thumbnail,
-                canSpeak = vm::canSpeak,
-                speak = vm::speak,
-                onFavorite = { vm.toggleFavorite(selected.id) },
-                onLearned = { vm.toggleLearned(selected.id) },
-                onShow = { vm.showWord(selected.id) },
-            )
+            // The sheet is a window of its own: its texts need the interface language provided again.
+            LocalizedContent {
+                WordDetail(
+                    word = selected,
+                    settings = settings,
+                    favorite = selected.id in progress.favorites,
+                    learned = selected.id in progress.learned,
+                    isCurrent = progress.currentId == selected.id,
+                    thumbnails = vm,
+                    canSpeak = vm::canSpeak,
+                    speak = vm::speak,
+                    onFavorite = { vm.toggleFavorite(selected.id) },
+                    onLearned = { vm.toggleLearned(selected.id) },
+                    onShow = { vm.showWord(selected.id) },
+                )
+            }
         }
     }
 }
@@ -250,8 +253,8 @@ private fun SearchField(query: String, onChange: (String) -> Unit, onDone: () ->
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
         ),
     )
 }
@@ -276,36 +279,42 @@ private fun LevelHeader(level: String, count: Int) {
     }
 }
 
+/** One word in the list. Takes only what it shows, so rows are skipped unless their own word changed. */
 @Composable
-private fun WordRow(row: Entry, state: UiState, vm: AppViewModel, onClick: () -> Unit, modifier: Modifier = Modifier, showLevel: Boolean = true) {
+private fun WordRowItem(
+    row: WordRow,
+    headline: Lang,
+    translations: List<Lang>,
+    thumbnails: Thumbnails,
+    now: Long,
+    onClick: () -> Unit,
+    showLevel: Boolean = true,
+) {
     val word = row.word
-    val settings = state.settings
-    val favorite = word.id in state.progress.favorites
-    val learned = word.id in state.progress.learned
-    val current = state.progress.currentId == word.id
+    val subtitle = remember(word, translations) { translations.joinToString("  ·  ") { word.entry(it).text } }
     Row(
-        modifier
+        Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .background(
-                if (current) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)
+                if (row.current) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)
                 else MaterialTheme.colorScheme.surfaceContainerLowest,
             )
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        WordThumb(word, vm::thumbnail, size = 46.dp, headline = settings.headline)
+        WordThumb(word, thumbnails, size = 46.dp, headline = headline)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
-                word.entry(settings.headline).text,
+                word.entry(headline).text,
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                settings.translations.joinToString("  ·  ") { word.entry(it).text },
+                subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -315,8 +324,8 @@ private fun WordRow(row: Entry, state: UiState, vm: AppViewModel, onClick: () ->
         Spacer(Modifier.width(8.dp))
         Column(horizontalAlignment = Alignment.End) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (learned) Icon(Icons.Rounded.TaskAlt, null, tint = LpTheme.extra.success, modifier = Modifier.size(16.dp).padding(end = 2.dp))
-                if (favorite) Icon(Icons.Rounded.Favorite, null, tint = LpTheme.extra.favorite, modifier = Modifier.size(16.dp).padding(end = 2.dp))
+                if (row.learned) Icon(Icons.Rounded.TaskAlt, null, tint = LpTheme.extra.success, modifier = Modifier.size(16.dp).padding(end = 2.dp))
+                if (row.favorite) Icon(Icons.Rounded.Favorite, null, tint = LpTheme.extra.favorite, modifier = Modifier.size(16.dp).padding(end = 2.dp))
                 if (showLevel) {
                     Spacer(Modifier.width(4.dp))
                     LevelBadge(word.level)
@@ -324,7 +333,7 @@ private fun WordRow(row: Entry, state: UiState, vm: AppViewModel, onClick: () ->
             }
             row.shownAt?.let {
                 Spacer(Modifier.height(4.dp))
-                Text(relativeTime(it), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(relativeTime(it, now), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -332,9 +341,9 @@ private fun WordRow(row: Entry, state: UiState, vm: AppViewModel, onClick: () ->
 
 /** "just now", "5 min ago", "3 h ago", "yesterday", or a short date, in the interface language. */
 @Composable
-private fun relativeTime(at: Long): String {
+private fun relativeTime(at: Long, now: Long): String {
     val configuration = LocalConfiguration.current
-    val diff = (System.currentTimeMillis() - at).coerceAtLeast(0L)
+    val diff = (now - at).coerceAtLeast(0L)
     val minutes = (diff / 60_000L).toInt()
     val hours = minutes / 60
     return when {

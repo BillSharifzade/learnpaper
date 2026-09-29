@@ -4,7 +4,6 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Article
+import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
@@ -33,10 +33,10 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.Wallpaper
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -60,11 +60,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.learnpaper.R
+import com.learnpaper.ui.LocalizedAlertDialog
 import com.learnpaper.content.PackInfo
 import com.learnpaper.data.Settings
-import com.learnpaper.data.WallpaperMode
 import com.learnpaper.i18n.AppLanguage
 import com.learnpaper.ui.AppViewModel
+import com.learnpaper.ui.LocalAppLanguage
 import com.learnpaper.ui.PacksUiState
 import com.learnpaper.ui.UiState
 import com.learnpaper.ui.components.ActionRow
@@ -74,15 +75,14 @@ import com.learnpaper.ui.components.LanguageControls
 import com.learnpaper.ui.components.LayoutControls
 import com.learnpaper.ui.components.LevelControls
 import com.learnpaper.ui.components.LockClockControls
-import com.learnpaper.ui.components.ModeControls
 import com.learnpaper.ui.components.NotificationControls
 import com.learnpaper.ui.components.Overline
 import com.learnpaper.ui.components.PaletteControls
 import com.learnpaper.ui.components.QuietHoursControls
 import com.learnpaper.ui.components.SectionCard
 import com.learnpaper.ui.components.SegmentedControl
-import com.learnpaper.ui.components.TargetControls
 import com.learnpaper.ui.components.ToggleRow
+import com.learnpaper.ui.theme.LpTheme
 
 @Composable
 fun SettingsScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
@@ -114,8 +114,8 @@ fun SettingsScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
         SectionCard(title = stringResource(R.string.settings_app_language), icon = Icons.Rounded.Translate) {
             SegmentedControl(
                 items = AppLanguage.entries,
-                selected = vm.appLanguage(),
-                onSelect = { vm.setAppLanguage(context, it) },
+                selected = LocalAppLanguage.current,
+                onSelect = vm::setAppLanguage,
                 label = { it.nativeName },
             )
         }
@@ -140,7 +140,7 @@ fun SettingsScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
                     settings = s,
                     word = state.current ?: state.previewWord,
                     paletteIndex = state.progress.paletteIndex,
-                    render = vm::renderPreview,
+                    previews = vm,
                     modifier = Modifier.fillMaxWidth(0.42f),
                     corner = 22.dp,
                     showClock = true,
@@ -154,35 +154,25 @@ fun SettingsScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
         }
 
         SectionCard(title = stringResource(R.string.settings_wallpaper), icon = Icons.Rounded.Wallpaper) {
-            ModeControls(s, update)
-            AnimatedVisibility(visible = s.mode == WallpaperMode.STATIC) {
-                Column {
-                    Spacer(Modifier.height(18.dp))
-                    TargetControls(s, update)
-                }
-            }
-            Spacer(Modifier.height(16.dp))
-            if (s.mode == WallpaperMode.LIVE) {
+            Text(stringResource(R.string.wallpaper_how), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(14.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    if (state.liveActive) Icons.Rounded.CheckCircle else Icons.Rounded.Info,
+                    contentDescription = null,
+                    tint = if (state.liveActive) LpTheme.extra.success else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(Modifier.width(8.dp))
                 Text(
                     stringResource(if (state.liveActive) R.string.live_active else R.string.live_inactive),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleSmall,
                 )
-                if (!state.liveActive) {
-                    Spacer(Modifier.height(10.dp))
-                    FilledTonalButton(onClick = vm::openLivePicker, modifier = Modifier.fillMaxWidth().height(50.dp), shape = MaterialTheme.shapes.extraLarge) {
-                        Text(stringResource(R.string.live_setup_action))
-                    }
-                }
-            } else {
-                Text(
-                    stringResource(R.string.settings_apply_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(10.dp))
-                FilledTonalButton(onClick = vm::applyCurrent, enabled = !state.busy, modifier = Modifier.fillMaxWidth().height(50.dp), shape = MaterialTheme.shapes.extraLarge) {
-                    Text(stringResource(R.string.settings_apply_now))
+            }
+            if (!state.liveActive) {
+                Spacer(Modifier.height(12.dp))
+                FilledTonalButton(onClick = vm::openLivePicker, modifier = Modifier.fillMaxWidth().height(50.dp), shape = MaterialTheme.shapes.extraLarge) {
+                    Text(stringResource(R.string.live_setup_action))
                 }
             }
         }
@@ -235,7 +225,7 @@ fun SettingsScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
     }
 
     if (confirmReset) {
-        AlertDialog(
+        LocalizedAlertDialog(
             onDismissRequest = { confirmReset = false },
             title = { Text(stringResource(R.string.settings_reset)) },
             text = { Text(stringResource(R.string.settings_reset_confirm)) },
@@ -263,7 +253,7 @@ private fun LicensesDialog(onDismiss: () -> Unit) {
                 context.assets.open("licenses/$name").bufferedReader().use { it.readText().trim() }
         }
     }
-    AlertDialog(
+    LocalizedAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_licenses)) },
         text = {

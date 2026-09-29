@@ -43,7 +43,7 @@ struct WordSearch {
                 r = 0
             } else if k.hasPrefix(q) {
                 r = 1
-            } else if k.split(whereSeparator: { $0 == " " || $0 == "-" }).contains(where: { $0.hasPrefix(q) }) {
+            } else if startsAWord(k, q) {
                 r = 2
             } else if k.contains(q) {
                 r = 3
@@ -53,6 +53,19 @@ struct WordSearch {
             if let r, best == nil || r < best! { best = r }
         }
         return best
+    }
+
+    /// Whether `q` starts one of the words of `k` (after a space or a hyphen), without splitting `k`.
+    private static func startsAWord(_ k: String, _ q: String) -> Bool {
+        var searchFrom = k.startIndex
+        while let range = k.range(of: q, range: searchFrom..<k.endIndex) {
+            if range.lowerBound > k.startIndex {
+                let before = k[k.index(before: range.lowerBound)]
+                if before == " " || before == "-" { return true }
+            }
+            searchFrom = k.index(after: range.lowerBound)
+        }
+        return false
     }
 
     private static let tajikFold: [Character: Character] = [

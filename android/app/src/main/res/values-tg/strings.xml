@@ -21,7 +21,6 @@
     <string name="onb_schedule_title">Чанд вақт як бор?</string>
     <string name="onb_schedule_body">Калимаи нав аз рӯи ҳамин ҷадвал пайдо мешавад. Шабона тасвири экран иваз намешавад.</string>
     <string name="onb_ready_title">Ҳама чиз тайёр!</string>
-    <string name="onb_ready_body">Калимаи аввалин тайёр аст. Минбаъд тасвири экран худ аз худ иваз мешавад.</string>
     <string name="onb_ready_body_live">Қадами охирин: Android мепурсад, ки LearnPaper-ро ҳамчун тасвири экран тасдиқ кунед. Агар пешниҳод шавад, экрани асосӣ ва экрани қулфро интихоб кунед.</string>
     <string name="onb_finish">Ба экран гузоштан</string>
 
@@ -43,6 +42,10 @@
 
     <string name="label_palette">Рангҳо</string>
     <string name="palette_rotate">Бо ҳар калима ранги нав</string>
+    <string name="palette_rotate_light">Навбат ба навбат аз рангҳои равшан</string>
+    <string name="palette_rotate_dark">Навбат ба навбат аз рангҳои торик</string>
+    <string name="palette_group_light">Равшан</string>
+    <string name="palette_group_dark">Торик</string>
     <string name="label_layout">Ҷойи корт</string>
     <string name="layout_lock">Поёнтар</string>
     <string name="layout_lock_desc">Барои соат ҷой мемонад</string>
@@ -68,28 +71,33 @@
     <string name="palette_powder">Туман</string>
     <string name="palette_midnight">Нимашаб</string>
     <string name="palette_pine">Санавбар</string>
+    <string name="palette_ocean">Уқёнус</string>
+    <string name="palette_plum">Олу</string>
+    <string name="palette_pomegranate">Анор</string>
+    <string name="palette_coffee">Қаҳва</string>
+    <string name="palette_graphite">Графит</string>
+    <string name="palette_turquoise">Фирӯза</string>
+    <string name="palette_gold">Тилло</string>
+    <string name="palette_coal">Ангишт</string>
 
     <string name="label_interval">Калимаи нав ҳар</string>
     <string name="interval_minutes">%1$d дақ.</string>
     <string name="interval_hours">%1$d соат</string>
     <string name="interval_daily">Рӯзе як бор</string>
+    <string name="interval_hours_minutes">%1$d соат %2$d дақ.</string>
+    <string name="interval_custom">Дигар</string>
+    <string name="interval_unit_minutes">Дақиқа</string>
+    <string name="interval_unit_hours">Соат</string>
+    <string name="interval_custom_hint">Аз 1 дақиқа то 24 соат</string>
     <string name="label_quiet">Соатҳои ором</string>
     <string name="quiet_desc">Шабона иваз намешавад</string>
     <string name="quiet_from">Аз</string>
     <string name="quiet_to">То</string>
-    <string name="label_mode">Тарзи гузоштан</string>
-    <string name="mode_live">Зинда (тавсия мешавад)</string>
-    <string name="mode_live_desc">Корт дар ҷояш аз нав кашида мешавад. Экран мижа намезанад ва телефон бо ҳар калима рангҳои мавзӯъро иваз намекунад.</string>
-    <string name="mode_static">Классикӣ</string>
-    <string name="mode_static_desc">Ҳар дафъа тасвири нав гузошта мешавад. Дар баъзе телефонҳо экрани асосӣ бо ҳар иваз аз нав бор мешавад.</string>
-    <string name="label_target">Гузоштан ба</string>
-    <string name="target_both">Ҳар ду экран</string>
-    <string name="target_home">Экрани асосӣ</string>
-    <string name="target_lock">Экрани қулф</string>
 
     <string name="today_next_change">Калимаи навбатӣ соати %1$s</string>
     <string name="today_every">ҳар %1$s</string>
     <string name="today_quiet_now">Соатҳои ором то %1$s</string>
+    <string name="today_next_on_leave">Калимаи навбатӣ — ҳамин ки аз барнома бароед</string>
     <string name="home_no_word">Барои ба экран гузоштани корти аввалин «Калимаи навбатӣ»-ро пахш кунед.</string>
     <string name="action_next_word">Калимаи навбатӣ</string>
     <string name="action_favorite">Ба дӯстдоштаҳо илова кардан</string>
@@ -105,15 +113,14 @@
     <string name="stat_seen">дида шуд</string>
     <string name="stat_learned">омӯхта шуд</string>
     <string name="stat_due">барои такрор</string>
-    <string name="msg_applied">Тасвири экран нав шуд</string>
     <string name="msg_shown">Акнун дар экрани шумо</string>
-    <string name="msg_failed">Тасвири экран гузошта нашуд</string>
     <string name="msg_no_words">Барои сатҳҳои интихобшуда калима нест</string>
     <string name="live_setup_title">Як қадам монд</string>
     <string name="live_setup_body">Дар экрани навбатӣ LearnPaper-ро ҳамчун тасвири экран тасдиқ кунед — барои экрани асосӣ ва экрани қулф, агар пешниҳод шавад.</string>
     <string name="live_setup_action">Ба экран гузоштан</string>
     <string name="live_active">LearnPaper тасвири экрани шумост.</string>
     <string name="live_inactive">LearnPaper ҳанӯз ҳамчун тасвири экран гузошта нашудааст.</string>
+    <string name="live_unsupported">Ин телефон тасвири экрани зиндаро гузошта наметавонад. Ба ҷои ин виджети LearnPaper-ро ба экрани асосӣ илова кунед.</string>
 
     <string name="words_title">Калимаҳо</string>
     <string name="words_search_hint">Ҷустуҷӯ ба ҳар забон</string>
@@ -147,8 +154,7 @@
     <string name="settings_show_examples_desc">Як ҷумлаи кӯтоҳ ба ҳар забон</string>
     <string name="settings_appearance">Намуди зоҳирӣ</string>
     <string name="settings_wallpaper">Тасвири экран</string>
-    <string name="settings_apply_now">Ҳозир татбиқ кардан</string>
-    <string name="settings_apply_hint">Тағйироти намуд бо калимаи навбатӣ ё фавран бо тугмаи «Ҳозир татбиқ кардан» татбиқ мешавад.</string>
+    <string name="wallpaper_how">Корт дар ҷояш аз нав кашида мешавад: экрани асосӣ аз нав бор намешавад ва телефон рангҳои мавзӯъро иваз намекунад. Калимаҳо танҳо вақте иваз мешаванд, ки шумо ба экран нигоҳ мекунед.</string>
     <string name="settings_schedule">Ҷадвал</string>
     <string name="settings_notifications">Огоҳиҳо</string>
     <string name="notif_daily">Калимаи рӯз</string>

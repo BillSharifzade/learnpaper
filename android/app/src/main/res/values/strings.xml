@@ -23,7 +23,6 @@
     <string name="onb_schedule_title">How often?</string>
     <string name="onb_schedule_body">A new word appears on this schedule. At night the wallpaper rests.</string>
     <string name="onb_ready_title">All set!</string>
-    <string name="onb_ready_body">Your first word is ready. From now on the wallpaper changes by itself.</string>
     <string name="onb_ready_body_live">One last step: Android will ask you to confirm LearnPaper as your wallpaper. Choose home and lock screen if offered.</string>
     <string name="onb_finish">Set as wallpaper</string>
 
@@ -47,6 +46,10 @@
     <!-- Look -->
     <string name="label_palette">Colours</string>
     <string name="palette_rotate">New colour with every word</string>
+    <string name="palette_rotate_light">Takes turns among the light colours</string>
+    <string name="palette_rotate_dark">Takes turns among the dark colours</string>
+    <string name="palette_group_light">Light</string>
+    <string name="palette_group_dark">Dark</string>
     <string name="label_layout">Card position</string>
     <string name="layout_lock">Lower</string>
     <string name="layout_lock_desc">Room for the clock</string>
@@ -72,30 +75,35 @@
     <string name="palette_powder">Powder</string>
     <string name="palette_midnight">Midnight</string>
     <string name="palette_pine">Pine</string>
+    <string name="palette_ocean">Ocean</string>
+    <string name="palette_plum">Plum</string>
+    <string name="palette_pomegranate">Pomegranate</string>
+    <string name="palette_coffee">Coffee</string>
+    <string name="palette_graphite">Graphite</string>
+    <string name="palette_turquoise">Turquoise</string>
+    <string name="palette_gold">Gold</string>
+    <string name="palette_coal">Coal</string>
 
     <!-- Schedule and delivery -->
     <string name="label_interval">New word every</string>
     <string name="interval_minutes">%1$d min</string>
     <string name="interval_hours">%1$d h</string>
     <string name="interval_daily">Once a day</string>
+    <string name="interval_hours_minutes">%1$d h %2$d min</string>
+    <string name="interval_custom">Custom</string>
+    <string name="interval_unit_minutes">Minutes</string>
+    <string name="interval_unit_hours">Hours</string>
+    <string name="interval_custom_hint">Anything from 1 minute to 24 hours</string>
     <string name="label_quiet">Quiet hours</string>
     <string name="quiet_desc">No changes at night</string>
     <string name="quiet_from">From</string>
     <string name="quiet_to">To</string>
-    <string name="label_mode">How the wallpaper is set</string>
-    <string name="mode_live">Live (recommended)</string>
-    <string name="mode_live_desc">The card is redrawn in place. No flicker, and your phone does not re-colour its theme with every word.</string>
-    <string name="mode_static">Classic</string>
-    <string name="mode_static_desc">A new picture is set each time. On some phones the home screen reloads with every change.</string>
-    <string name="label_target">Set on</string>
-    <string name="target_both">Both screens</string>
-    <string name="target_home">Home screen</string>
-    <string name="target_lock">Lock screen</string>
 
     <!-- Today -->
     <string name="today_next_change">Next word at %1$s</string>
     <string name="today_every">every %1$s</string>
     <string name="today_quiet_now">Quiet hours until %1$s</string>
+    <string name="today_next_on_leave">Next word as soon as you leave the app</string>
     <string name="home_no_word">Tap “Next word” to put your first card on the wallpaper.</string>
     <string name="action_next_word">Next word</string>
     <string name="action_favorite">Add to favourites</string>
@@ -111,15 +119,14 @@
     <string name="stat_seen">seen</string>
     <string name="stat_learned">learned</string>
     <string name="stat_due">to review</string>
-    <string name="msg_applied">Wallpaper updated</string>
     <string name="msg_shown">Now on your wallpaper</string>
-    <string name="msg_failed">Could not set the wallpaper</string>
     <string name="msg_no_words">No words for the selected levels</string>
     <string name="live_setup_title">One step left</string>
     <string name="live_setup_body">Confirm LearnPaper as your wallpaper on the next screen — for the home and lock screen if offered.</string>
     <string name="live_setup_action">Set as wallpaper</string>
     <string name="live_active">LearnPaper is your wallpaper.</string>
     <string name="live_inactive">LearnPaper is not your wallpaper yet.</string>
+    <string name="live_unsupported">This phone cannot set live wallpapers. You can add the LearnPaper widget to your home screen instead.</string>
 
     <!-- Words -->
     <string name="words_title">Words</string>
@@ -155,8 +162,7 @@
     <string name="settings_show_examples_desc">One short sentence in every language</string>
     <string name="settings_appearance">Appearance</string>
     <string name="settings_wallpaper">Wallpaper</string>
-    <string name="settings_apply_now">Apply now</string>
-    <string name="settings_apply_hint">Changes to the look are applied with the next word, or right away with “Apply now”.</string>
+    <string name="wallpaper_how">The card is redrawn in place: your home screen never reloads and the phone does not re-colour its theme. Words change only while you are looking at the screen.</string>
     <string name="settings_schedule">Schedule</string>
     <string name="settings_notifications">Notifications</string>
     <string name="notif_daily">Word of the day</string>

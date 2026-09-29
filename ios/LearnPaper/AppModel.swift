@@ -32,9 +32,11 @@ final class AppModel: ObservableObject {
 
     let content = ContentStore.shared
     private let store = Store.shared
-    private let synthesizer = AVSpeechSynthesizer()
-    private var searchIndex: WordSearch?
-    private var libraryCache: (headline: Lang, words: [Word])?
+    /// Created on the first tap of a listen button, not with the app.
+    private lazy var synthesizer = AVSpeechSynthesizer()
+    /// Search index and library order, built in the background at launch (folding ~12,000 strings
+    /// would otherwise block the first opening of the Words tab).
+    private let libraryTask: Task<LibraryIndex, Never>
     private var tickTask: Task<Void, Never>?
 
     init() {
@@ -45,6 +47,8 @@ final class AppModel: ObservableObject {
         progress = store.catchUp()
         language = L10n.language
         guideSeen = store.guideSeen
+        let words = ContentStore.shared.words
+        libraryTask = Task.detached(priority: .utility) { LibraryIndex(words: words) }
         scheduleTick()
     }
 
@@ -62,20 +66,8 @@ final class AppModel: ObservableObject {
         return StatsCalculator.of(progress, levels: settings.levels, wordLevels: content.wordLevels, now: now, tzOffsetMs: Schedule.tzOffset(at: now))
     }
 
-    var search: WordSearch {
-        if let searchIndex { return searchIndex }
-        let index = WordSearch(content.words)
-        searchIndex = index
-        return index
-    }
-
-    /// Library order (level, then alphabetical in the learned language), cached per headline language.
-    func libraryOrder(_ headline: Lang) -> [Word] {
-        if let cache = libraryCache, cache.headline == headline { return cache.words }
-        let sorted = WordSearch.sorted(content.words, headline: headline)
-        libraryCache = (headline, sorted)
-        return sorted
-    }
+    /// The search index and library order; ready right after launch, awaited on first use otherwise.
+    func library() async -> LibraryIndex { await libraryTask.value }
 
     func word(_ id: String) -> Word? { content.word(id) }
 
@@ -117,10 +109,13 @@ final class AppModel: ObservableObject {
         scheduleTick()
     }
 
+    /// Switches the interface language in one frame: layouts keep their size in every language and
+    /// card previews come from their cache, so nothing moves or flashes (a cross-fade of the whole tree
+    /// would dim what does not change).
     func setLanguage(_ lang: AppLanguage) {
         guard lang != language else { return }
         L10n.setLanguage(lang)
-        withAnimation(.easeInOut(duration: 0.25)) { language = lang }
+        language = lang
         store.reloadWidgets()
     }
 
@@ -233,6 +228,30 @@ final class AppModel: ObservableObject {
         utterance.voice = AVSpeechSynthesisVoice(language: lang.localeIdentifier)
         synthesizer.stopSpeaking(at: .immediate)
         synthesizer.speak(utterance)
+    }
+}
+
+/// Search over the whole word list and the library order per learned language. Immutable apart from
+/// the order cache, which is locked, so the Words tab can use it from background tasks.
+final class LibraryIndex: @unchecked Sendable {
+    let search: WordSearch
+    private let words: [Word]
+    private var orders: [Lang: [Word]] = [:]
+    private let lock = NSLock()
+
+    init(words: [Word]) {
+        self.words = words
+        search = WordSearch(words)
+    }
+
+    /// Level, then alphabetical in the learned language; computed once per language.
+    func order(_ headline: Lang) -> [Word] {
+        lock.lock()
+        defer { lock.unlock() }
+        if let cached = orders[headline] { return cached }
+        let sorted = WordSearch.sorted(words, headline: headline)
+        orders[headline] = sorted
+        return sorted
     }
 }
 

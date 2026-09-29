@@ -79,7 +79,11 @@ enum L10n {
     }
 
     static func t(_ key: String) -> String {
-        let lang = language
+        t(key, in: language)
+    }
+
+    /// The text in a given language (used to reserve the room of the longest translation).
+    static func t(_ key: String, in lang: AppLanguage) -> String {
         if let value = lookup(key, tag: lang.tag) { return value }
         if lang != .en, let value = lookup(key, tag: AppLanguage.en.tag) { return value }
         return Bundle.main.localizedString(forKey: key, value: key, table: nil)
@@ -118,9 +122,11 @@ enum L10n {
 
     static func wordsCount(_ count: Int) -> String { f("words_count", count) }
 
+    /// "15 min", "2 h", "1 h 30 min", "Once a day".
     static func interval(_ minutes: Int) -> String {
         if minutes >= 1440 { return t("interval_daily") }
-        if minutes >= 60 { return f("interval_hours", minutes / 60) }
+        if minutes >= 60 && minutes % 60 == 0 { return f("interval_hours", minutes / 60) }
+        if minutes >= 60 { return f("interval_hours_minutes", minutes / 60, minutes % 60) }
         return f("interval_minutes", minutes)
     }
 

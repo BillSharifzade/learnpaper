@@ -40,11 +40,12 @@ Android (run from `android/`; the Gradle wrapper is checked in, SDK path in `loc
 ./gradlew :app:assembleDebug     # APK at app/build/outputs/apk/debug/app-debug.apk
 ./gradlew :app:installDebug      # to a connected device/emulator
 ./gradlew :app:lint
-./gradlew :app:testDebugUnitTest                                     # JUnit: Rotation, Stats, Settings, scheduler, WordSearch
+./gradlew :app:testDebugUnitTest                                     # JUnit: Rotation, Schedule, Stats, Settings, Palettes, scheduler, WordSearch
 ./gradlew :app:assembleRelease :app:bundleRelease                    # signed with android/keystore.properties (git-ignored)
 ./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8765/manifest.json   # debug build reading packs from a local server
 $ANDROID_HOME/emulator/emulator -avd Pixel_API36 -no-window -no-audio -gpu swiftshader_indirect   # headless emulator
 python3 tools/smoke.py [--apk …]  # clean install, Tajik default + language switch, onboarding, live picker, search, show-on-wallpaper; screenshots
+$ANDROID_HOME/emulator/emulator -avd LearnPaper_API26 -no-window -no-audio -gpu swiftshader_indirect   # Android 8.0, the minSdk
 adb exec-out screencap -p > shot.png      # to check the rendered wallpaper on the launcher / lock screen
 ```
 
@@ -63,10 +64,15 @@ by the UI, the WorkManager workers, the widget and the wallpaper service.
 
 - **Interface language** (`i18n/AppLocale.kt`): `AppLanguage` TJ (default) / RU / EN, independent of the
   system language. Android 13+: stored as the system per-app locale (LocaleManager) and mirrored in shared
-  prefs; `LearnPaperApp.onCreate` calls `AppLocale.init`. The activity always wraps its base context
-  (`wrapForActivity`), everything else that draws text (wallpaper tag, widget, notification) uses
-  `AppLocale.localized(context)`; `AppLocale.changes` makes the live wallpaper redraw. The Play bundle has
-  language splits disabled so all three translations are always installed.
+  prefs; `LearnPaperApp.onCreate` calls `AppLocale.init`. Switching never recreates the activity: it
+  declares `configChanges="locale|layoutDirection"`, and `LocalizedContent` (`ui/Localized.kt`) provides a
+  `LocalContext`/`LocalConfiguration` in the chosen language, so the screen re-renders in place. Dialogs and
+  sheets are separate windows where Compose restores the activity context: wrap their content in
+  `LocalizedContent` again (`LocalizedAlertDialog` does it for alert dialogs) — without it they show the
+  phone's language before Android 13. The activity's base context is still wrapped (`wrapForActivity`) for
+  Material's own texts. Everything else that draws text (wallpaper tag, widget, notification) uses
+  `AppLocale.localized(context)`; `AppLocale.language` (StateFlow) makes the wallpaper redraw. The Play
+  bundle has language splits disabled so all three translations are always installed.
 - **Content**: `ContentRepository` loads `assets/content/words.json` (kotlinx.serialization, minified),
   merges packs installed under `files/packs/<id>/` (same id → the pack wins), keeps an id index, decodes
   illustrations (lossless WebP, shared by words; `image` may be null) and caches small thumbnails
@@ -75,54 +81,75 @@ by the UI, the WorkManager workers, the widget and the wallpaper service.
   `BuildConfig.PACKS_MANIFEST_URL` and installs zips; `content.generation` bumps so flows reload.
 - **Settings/Progress**: two DataStore-preferences stores. `Settings` is field-per-key.
   `Progress` (queue, current word, history, learned, favourites, palette index, per-word `Review`
-  state, active days) is one JSON blob under a single key. `Settings.translations` derives the
-  display languages (never the headline).
+  state, active days) is one JSON blob under a single key, decoded once per change (memoised) because the
+  UI, the wallpaper engines and the widget all read it; `update` returning the same instance writes
+  nothing. `Settings.translations` derives the display languages (never the headline).
 - **Domain** (no Android imports, JUnit-tested): `Rotation.advance` (light spaced repetition: due words
   first, steps 1/3/7/14/30/60 days; otherwise unseen words of the selected levels shuffled once per pass,
   then seen words by due time; learned words skipped) and `Rotation.show` (a word picked in the library,
-  same bookkeeping); `Stats` (streak/seen/learned/due); `WordSearch` (search over all three languages with
-  folding: case, stress marks, diacritics, ё=е, Tajik ғӣқӯҳҷ = гикухч, Latin transliterations indexed).
-- **Rendering** (`render/CardRenderer.kt`): Canvas-based. All sizes are written for a 1080 px wide
-  canvas and multiplied by `width / 1080`. The card is a vertical stack of `Block`s centred in a
-  band chosen by `LayoutPreset` (LOCK leaves the top ~30% for the clock). If the stack does not
-  fit, the whole thing is re-laid-out at 0.92× until it does. Words without an illustration get a
-  drop-cap `Monogram` tile. The lock screen uses `Settings.lockLayout()`: `LOCK` under a small top clock,
-  or the compact `UNDER_CLOCK` band (72.5–83.5 % of the height: word, transcription, translations) when
+  same bookkeeping); `Schedule.nextChangeAt` (one interval after the last change, never before now, pushed
+  to the end of quiet hours); `Stats` (streak/seen/learned/due); `WordSearch` (search over all three
+  languages with folding: case, stress marks, diacritics, ё=е, Tajik ғӣқӯҳҷ = гикухч, Latin
+  transliterations indexed; keys are folded once per word list, so build it off the main thread).
+- **Rendering** (`render/CardRenderer.kt`): Canvas-based. `layout()` measures once into a `Card` that draws
+  on any canvas (the wallpaper's GPU canvas, a bitmap for previews via `render()`); its inputs are a
+  `CardStyle` (`Settings.cardStyle(layout)`). The background glows are radial gradients, not blurs (cheap on
+  every canvas), and the illustration is decoded at the size it is drawn (`loadImageSized`). All sizes are
+  written for a 1080 px wide canvas and multiplied by `width / 1080`. The card is a vertical stack of
+  `Block`s centred in a band chosen by `LayoutPreset` (LOCK leaves the top ~30% for the clock). If the stack
+  does not fit, the whole thing is re-laid-out at 0.92× until it does. Words without an illustration get a
+  drop-cap `Monogram` tile. The lock screen uses `Settings.lockLayout()`: `LOCK` under a small top clock, or
+  the compact `UNDER_CLOCK` band (72.5–83.5 % of the height: word, transcription, translations) when
   `LockStyle` resolves to `BIG_CLOCK` — stock Android/Pixel draws a large centred clock with no
   notifications; `AUTO` picks it for `Build.MANUFACTURER == "Google"`, the user can override it in
-  Appearance. `Palettes` holds twelve palettes (ten pastels + Midnight and Pine, dark: `Palette.isDark`);
-  `Fonts` loads the bundled variable fonts per weight: Onest (brand face: words, translations,
-  examples) and Inter (transcriptions: full IPA and macron/acute vowels).
-- **Applying** (`wallpaper/WallpaperChanger.kt`): advance (or `show(id)`), refresh the widget, then by
-  `Settings.mode`. **LIVE** (default): `LiveCardWallpaper` (a `WallpaperService`) observes the
-  settings/progress/content/locale flows and redraws its surface; if our service is not the active
-  wallpaper the result is `NeedsLiveSetup` and the UI opens the system picker
-  (`LiveCardWallpaper.pickerIntent`). `onComputeColors()` reports fixed palette colours (dark-theme hint
-  for dark palettes) so Material You never regenerates (a static `setBitmap` picks a new seed colour from
-  every card and restarts the launcher on HyperOS — see `docs/DESIGN.md` §3). **STATIC** ("Classic"):
-  render at `ScreenSize.portrait` → `WallpaperApplier` (`WallpaperManager.setBitmap` with
-  FLAG_SYSTEM/FLAG_LOCK); lock screen always `LayoutPreset.LOCK`. Returns `ChangeResult`.
+  Appearance. `Palettes` holds two groups of ten, `light` (pastels) and `dark` (`Palette.isDark`); a
+  rotating palette stays inside the chosen palette's group, and `Palettes.reported` (the chosen palette,
+  never the rotating one) is what the wallpaper tells the system; `Fonts` loads the bundled variable fonts
+  per weight: Onest (brand face: words, translations, examples) and Inter (transcriptions: full IPA and
+  macron/acute vowels).
+- **Wallpaper** (`wallpaper/`): one delivery, `LiveCardWallpaper` (a `WallpaperService`); there is no
+  static `setBitmap` mode any more (it re-themed the phone and reloaded launchers — `docs/DESIGN.md` §3 and
+  §14). The engine lays the card out in the background whenever what it shows changes (settings, word,
+  palette, content, language, lock/home flags on API 34+), draws it straight onto the surface with
+  `lockHardwareCanvas` (software fallback) and keeps no screen-sized bitmap; the first frame after a
+  surface appears is drawn synchronously in `onSurfaceRedrawNeeded`. `onComputeColors()` answers at once
+  (reading settings if needed) with `Palettes.reported`, and `notifyColorsChanged` is called only when the
+  user picks another palette, so Material You never regenerates between words. While the engine is
+  visible (never in the picker preview) it runs `WallpaperChanger.followSchedule()`; words change only
+  then, so a screen that is off costs nothing. `WallpaperChanger`: `changeToNext`, `show(id)` and
+  `advanceIfDue` (checked and written atomically in one DataStore update, so two engines and the widget
+  can all ask). A change is one small write; the engine and widget observe it. `ChangeResult` is
+  `Applied`, `NoWords` or `NeedsLiveSetup` (our service is not the wallpaper; only onboarding then opens
+  the picker, `pickerIntent` with a `chooserIntent` fallback).
 - **Widget** (`widget/CardWidget.kt`): `AppWidgetProvider` with RemoteViews (`widget_card.xml`): palette
   surface via `setColorFilter` on white rounded drawables, illustration or drop-cap, and a next-word button
   (`ACTION_NEXT` broadcast → `changer.changeToNext()`); `CardWidget.update(context)` after every change.
-- **Scheduling** (`work/`): one unique `PeriodicWorkRequest` with `initialDelay = interval`
-  (the UI applies immediately, so the first periodic run must not double-apply). Quiet hours are
-  checked inside the worker, not by cancelling work. Interval changes re-enqueue with `UPDATE`.
-  `NotificationWorker` is a second unique periodic job (24 h, first run at `Settings.notifyMinute`)
-  posting the current word; POST_NOTIFICATIONS is requested when the switch is turned on.
+- **Background work** (`work/`): none for the wallpaper. `WallpaperWorker` ("widget-refresh", period =
+  interval, at least 15 min) exists only while a home-screen widget is placed (`CardWidget.onEnabled` /
+  `onDisabled`) and calls `advanceIfDue`. `NotificationWorker` is a unique periodic job (24 h, first run
+  at `Settings.notifyMinute`) posting the current word; POST_NOTIFICATIONS is requested when the switch is
+  turned on. `WallpaperScheduler.migrateOnce` cancels 1.0's "wallpaper-rotation" job on the first start.
 - **UI**: single `MainActivity` (core-splashscreen kept until the first state is loaded), Compose, no
   navigation library. `App.kt` crossfades between onboarding and a three-tab shell (Today / Words /
-  Settings; per-tab state kept with `rememberSaveableStateHolder`), re-checks `LiveCardWallpaper.isActive`
-  on resume and handles `UiEvent.OpenLivePicker`. `AppViewModel` combines settings, progress, a
-  `ContentSnapshot` (words, id index, levels, per-level counts — computed once per load) and live status
-  into `UiState`; snackbar messages are string-resource ids on a `SharedFlow`; `packs` is a separate
-  `StateFlow`. Design system in `ui/theme/Theme.kt` (brand colours light/dark, `ExtraColors` for level
-  tints/favourite/streak, Onest typography, shapes) and `ui/components/Kit.kt` (press-scale, segmented
-  control, chips, badges, section cards, toggle rows, stat tiles, empty state, word thumbnails).
-  Shared settings controls live in `ui/components/Controls.kt` and are reused by onboarding and settings;
-  `WordDetail.kt` holds the headword/translation/example building blocks and the library's detail sheet.
-  `CardPreview` renders the real card at half width in a phone frame (crossfade, optional lock-screen
-  clock and float).
+  Settings) held by `KeepAliveTabs`: a tab is composed on first visit and then kept (only the selected one
+  is measured and drawn), so switching back rebuilds nothing. It re-checks `LiveCardWallpaper.isActive` on
+  resume (off the main thread) and handles `UiEvent.OpenLivePicker`. `AppViewModel` builds a `Library`
+  (words, id index, levels, counts, search index, sorted orders per language) once per content load off the
+  main thread, combines it with settings, progress and live status into `UiState`, and computes the Words
+  list (`words: StateFlow<WordsUi>`, from `WordsQuery`) off the main thread too; it is the `CardPreviews`
+  cache (last few half-size renders) and the `Thumbnails` source; text-to-speech starts on the first listen
+  tap; onboarding choices live in `vm.draft`. Snackbar messages are string-resource ids on a `SharedFlow`;
+  `packs` is a separate `StateFlow`. Keep continuous animations off persistent screens (an endless float on
+  Today cost ~80 % of a core in 1.0). Design system in `ui/theme/Theme.kt` (brand colours light/dark,
+  `ExtraColors` for level tints/favourite/streak, Onest typography, shapes) and `ui/components/Kit.kt`
+  (press-scale, segmented control, chips, badges, section cards, toggle rows, stat tiles, empty state, word
+  thumbnails). Shared settings controls live in `ui/components/Controls.kt` and are reused by onboarding and
+  settings; `WordDetail.kt` holds the headword/translation/example building blocks and the library's detail
+  sheet. `CardPreview` shows the real card at half width in a phone frame from the preview cache (crossfade,
+  optional lock-screen clock). `StableAcrossLanguages` reserves the height of the longest translation
+  (onboarding welcome), so a language switch moves nothing. The Words tab starts with an invisible focusable
+  `Spacer`: before Android 9 the system hands focus back to the first focusable view after every
+  `clearFocus()`, and without it that would be the search field (keyboard pops up).
 
 ## Conventions and gotchas
 
@@ -139,9 +166,14 @@ by the UI, the WorkManager workers, the widget and the wallpaper service.
   `noto:<codepoint>`, `file:<name>` for a hand-made illustration in `content/source/images/`, or `none`
   for abstract words. New words: follow `content/tools/CONTENT_SPEC.md` and check Tajik with the tools;
   Tajik examples use literary grammar (see the spec's Tajik rules).
-- WorkManager's minimum period is 15 minutes; `Settings.INTERVALS` starts there for that reason.
-- Some OEM lock screens (Xiaomi, Samsung) ignore FLAG_LOCK from apps; `WallpaperTarget.HOME` is
-  the fallback in Classic mode.
+- Intervals are 1 minute to 24 hours (`Settings.MIN_INTERVAL`/`MAX_INTERVAL`, presets in `INTERVALS`
+  plus "Custom"): the wallpaper changes words itself while visible, so WorkManager's 15-minute floor only
+  applies to the widget refresh.
+- `am force-stop` on the app removes a live wallpaper (Android treats it like an uninstall); test cold
+  starts by closing the activity instead. The emulators may have animations disabled (`settings get
+  global animator_duration_scale`), which hides animation costs when measuring.
+- Some OEM lock screens do not show live wallpapers; there is no static fallback any more (the widget is
+  the alternative).
 - Kotlin block comments nest: `/* … images/*.png … */` inside a KDoc is an unclosed comment.
 - `mipmap-anydpi-v26` must keep its `-v26` suffix: the resource merger drops the adaptive icon from an
   unversioned `mipmap-anydpi` folder even though minSdk is 26.
@@ -156,7 +188,8 @@ by the UI, the WorkManager workers, the widget and the wallpaper service.
 Swift 5.9, SwiftUI, iOS 17, XcodeGen `project.yml`; `Shared/` is compiled into both the app and
 the widget extension and is a port of the Kotlin domain code (same JSON shapes). The card changes
 on a tick schedule (`Schedule.swift`) that the app, the widget timeline and the `GetCardIntent`
-replay deterministically; the widget precomputes 24 h of entries. The interface language (Tajik
+replay deterministically; the widget precomputes up to 60 entries (24 h at most) and reloads when they run
+out, so one-minute intervals work within WidgetKit's budget. The interface language (Tajik
 default) is chosen in-app via `L10n` language bundles (App Group, so widget and intents follow it).
 `Shared/Resources/Localizable.xcstrings` is generated from the Android strings.xml files plus the
 iOS-only texts in `ios/tools/sync_strings.py` — run it after changing interface strings. There is no Mac

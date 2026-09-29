@@ -12,8 +12,10 @@ struct Settings: Codable, Equatable {
     var showExamples = true
     var levels: Set<String> = ["A1"]
     var paletteId = "peach"
+    /// A new palette with every word, taken from the group (light or dark) of `paletteId`.
     var rotatePalette = false
     var layout: LayoutPreset = .lock
+    /// Minutes between words, `minInterval`...`maxInterval`: one of `intervals` or a custom value.
     var intervalMinutes = 60
     var quietEnabled = true
     /// Minutes since midnight.
@@ -39,7 +41,10 @@ struct Settings: Codable, Equatable {
         return isQuiet(minuteOfDay: (c.hour ?? 0) * 60 + (c.minute ?? 0))
     }
 
+    /// Offered as chips; any other value between the bounds can be entered as a custom interval.
     static let intervals = [15, 30, 60, 120, 180, 360, 720, 1440]
+    static let minInterval = 1
+    static let maxInterval = 24 * 60
 
     // Tolerate missing keys from older versions.
     enum CodingKeys: String, CodingKey {
@@ -61,7 +66,8 @@ struct Settings: Codable, Equatable {
         paletteId = try c.decodeIfPresent(String.self, forKey: .paletteId) ?? d.paletteId
         rotatePalette = try c.decodeIfPresent(Bool.self, forKey: .rotatePalette) ?? d.rotatePalette
         layout = try c.decodeIfPresent(LayoutPreset.self, forKey: .layout) ?? d.layout
-        intervalMinutes = try c.decodeIfPresent(Int.self, forKey: .intervalMinutes) ?? d.intervalMinutes
+        let interval = try c.decodeIfPresent(Int.self, forKey: .intervalMinutes) ?? d.intervalMinutes
+        intervalMinutes = min(Settings.maxInterval, max(Settings.minInterval, interval))
         quietEnabled = try c.decodeIfPresent(Bool.self, forKey: .quietEnabled) ?? d.quietEnabled
         quietStart = try c.decodeIfPresent(Int.self, forKey: .quietStart) ?? d.quietStart
         quietEnd = try c.decodeIfPresent(Int.self, forKey: .quietEnd) ?? d.quietEnd

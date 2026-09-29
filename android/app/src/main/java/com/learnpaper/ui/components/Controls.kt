@@ -25,23 +25,29 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,18 +58,20 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.learnpaper.R
+import com.learnpaper.ui.LocalizedAlertDialog
 import com.learnpaper.content.ContentRepository
 import com.learnpaper.content.Lang
 import com.learnpaper.data.LayoutPreset
 import com.learnpaper.data.LockStyle
 import com.learnpaper.data.Settings
-import com.learnpaper.data.WallpaperMode
-import com.learnpaper.data.WallpaperTarget
 import com.learnpaper.render.Palette
 import com.learnpaper.render.Palettes
 import com.learnpaper.ui.theme.LpTheme
@@ -92,7 +100,8 @@ fun levelName(level: String): String = when (level) {
 @Composable
 fun intervalLabel(minutes: Int): String = when {
     minutes >= 1440 -> stringResource(R.string.interval_daily)
-    minutes >= 60 -> stringResource(R.string.interval_hours, minutes / 60)
+    minutes >= 60 && minutes % 60 == 0 -> stringResource(R.string.interval_hours, minutes / 60)
+    minutes >= 60 -> stringResource(R.string.interval_hours_minutes, minutes / 60, minutes % 60)
     else -> stringResource(R.string.interval_minutes, minutes)
 }
 
@@ -194,12 +203,29 @@ private fun LevelCard(level: String, count: Int, selected: Boolean, onClick: () 
     }
 }
 
+/**
+ * Wallpaper colours in two groups, light and dark. Switching the group picks the colour last used in it;
+ * "a new colour with every word" rotates inside the chosen group, so the phone's light or dark look
+ * (clock, status bar) stays right for every card.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PaletteControls(settings: Settings, onChange: (Settings) -> Unit) {
+    val chosen = Palettes.byId(settings.paletteId)
+    var lastLight by rememberSaveable { mutableStateOf(Palettes.light.first().id) }
+    var lastDark by rememberSaveable { mutableStateOf(Palettes.dark.first().id) }
+    SideEffect { if (chosen.isDark) lastDark = chosen.id else lastLight = chosen.id }
+
     Overline(stringResource(R.string.label_palette))
+    SegmentedControl(
+        items = listOf(false, true),
+        selected = chosen.isDark,
+        onSelect = { dark -> if (dark != chosen.isDark) onChange(settings.copy(paletteId = if (dark) lastDark else lastLight)) },
+        label = { dark -> stringResource(if (dark) R.string.palette_group_dark else R.string.palette_group_light) },
+    )
+    Spacer(Modifier.height(14.dp))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Palettes.all.forEach { p ->
+        Palettes.group(chosen).forEach { p ->
             PaletteSwatch(
                 palette = p,
                 selected = !settings.rotatePalette && settings.paletteId == p.id,
@@ -210,6 +236,7 @@ fun PaletteControls(settings: Settings, onChange: (Settings) -> Unit) {
     Spacer(Modifier.height(6.dp))
     ToggleRow(
         title = stringResource(R.string.palette_rotate),
+        subtitle = stringResource(if (chosen.isDark) R.string.palette_rotate_dark else R.string.palette_rotate_light),
         checked = settings.rotatePalette,
         onChecked = { onChange(settings.copy(rotatePalette = it)) },
     )
@@ -370,9 +397,12 @@ fun LockClockControls(settings: Settings, onChange: (Settings) -> Unit) {
     Text(stringResource(R.string.lock_clock_desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
+/** Preset intervals plus "Custom…", which takes any value from one minute to a day. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun IntervalControls(settings: Settings, onChange: (Settings) -> Unit) {
+    var editing by remember { mutableStateOf(false) }
+    val custom = settings.intervalMinutes !in Settings.INTERVALS
     Overline(stringResource(R.string.label_interval))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Settings.INTERVALS.forEach { minutes ->
@@ -382,7 +412,88 @@ fun IntervalControls(settings: Settings, onChange: (Settings) -> Unit) {
                 onClick = { onChange(settings.copy(intervalMinutes = minutes)) },
             )
         }
+        ChoiceChip(
+            text = if (custom) intervalLabel(settings.intervalMinutes) else stringResource(R.string.interval_custom),
+            selected = custom,
+            onClick = { editing = true },
+            leading = {
+                Icon(
+                    Icons.Rounded.Edit,
+                    contentDescription = null,
+                    tint = if (custom) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp),
+                )
+            },
+        )
     }
+    if (editing) {
+        IntervalDialog(
+            initial = settings.intervalMinutes,
+            onDismiss = { editing = false },
+            onConfirm = { minutes ->
+                editing = false
+                onChange(settings.copy(intervalMinutes = minutes))
+            },
+        )
+    }
+}
+
+/** "Every [ 45 ] minutes | hours": a number with steppers and a unit, from one minute to 24 hours. */
+@Composable
+private fun IntervalDialog(initial: Int, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
+    val startInHours = initial >= 60 && initial % 60 == 0
+    var hours by rememberSaveable { mutableStateOf(startInHours) }
+    var text by rememberSaveable { mutableStateOf((if (startInHours) initial / 60 else initial).toString()) }
+    val number = text.toIntOrNull()
+    val minutes = number?.let { if (hours) it * 60 else it }
+    val valid = minutes != null && minutes in Settings.MIN_INTERVAL..Settings.MAX_INTERVAL
+    val max = if (hours) Settings.MAX_INTERVAL / 60 else Settings.MAX_INTERVAL
+    fun step(by: Int) {
+        text = ((number ?: 0) + by).coerceIn(1, max).toString()
+    }
+
+    LocalizedAlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.label_interval), style = MaterialTheme.typography.titleLarge) },
+        text = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CircleIconButton(Icons.Rounded.Remove, contentDescription = "−", onClick = { step(-1) }, size = 44.dp, iconSize = 20.dp)
+                    OutlinedTextField(
+                        value = text,
+                        onValueChange = { v -> text = v.filter(Char::isDigit).take(4) },
+                        singleLine = true,
+                        isError = !valid,
+                        textStyle = MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                        shape = MaterialTheme.shapes.medium,
+                        colors = OutlinedTextFieldDefaults.colors(unfocusedBorderColor = MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.width(112.dp),
+                    )
+                    CircleIconButton(Icons.Rounded.Add, contentDescription = "+", onClick = { step(1) }, size = 44.dp, iconSize = 20.dp)
+                }
+                Spacer(Modifier.height(16.dp))
+                SegmentedControl(
+                    items = listOf(false, true),
+                    selected = hours,
+                    onSelect = { hours = it },
+                    label = { inHours -> stringResource(if (inHours) R.string.interval_unit_hours else R.string.interval_unit_minutes) },
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    stringResource(R.string.interval_custom_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (valid) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { minutes?.let(onConfirm) }, enabled = valid) { Text(stringResource(R.string.dialog_ok)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.dialog_cancel)) } },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+    )
 }
 
 @Composable
@@ -435,7 +546,7 @@ fun TimeButton(label: String, minutes: Int, onChange: (Int) -> Unit, modifier: M
     }
     if (open) {
         val state = rememberTimePickerState(initialHour = minutes / 60, initialMinute = minutes % 60, is24Hour = true)
-        AlertDialog(
+        LocalizedAlertDialog(
             onDismissRequest = { open = false },
             title = { Text(stringResource(R.string.time_picker_title), style = MaterialTheme.typography.titleLarge) },
             text = {
@@ -456,46 +567,6 @@ fun TimeButton(label: String, minutes: Int, onChange: (Int) -> Unit, modifier: M
     }
 }
 
-/** Live (redraw in place) versus static (WallpaperManager.setBitmap) delivery. */
-@Composable
-fun ModeControls(settings: Settings, onChange: (Settings) -> Unit) {
-    Overline(stringResource(R.string.label_mode))
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        WallpaperMode.entries.forEach { mode ->
-            val (title, desc) = when (mode) {
-                WallpaperMode.LIVE -> R.string.mode_live to R.string.mode_live_desc
-                WallpaperMode.STATIC -> R.string.mode_static to R.string.mode_static_desc
-            }
-            val selected = settings.mode == mode
-            val interaction = remember { MutableInteractionSource() }
-            val border by animateColorAsState(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant, label = "modeBorder")
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .pressable(interaction, 0.98f)
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surfaceContainerLowest)
-                    .border(if (selected) 2.dp else 1.dp, border, MaterialTheme.shapes.medium)
-                    .clickable(interactionSource = interaction, indication = null, role = Role.RadioButton) { onChange(settings.copy(mode = mode)) }
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(title), style = MaterialTheme.typography.titleSmall)
-                    Spacer(Modifier.height(2.dp))
-                    Text(stringResource(desc), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                Spacer(Modifier.width(12.dp))
-                Icon(
-                    if (selected) Icons.Rounded.CheckCircle else Icons.Rounded.RadioButtonUnchecked,
-                    contentDescription = null,
-                    tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                )
-            }
-        }
-    }
-}
-
 /** Daily notification switch with its time. */
 @Composable
 fun NotificationControls(settings: Settings, onChange: (Settings) -> Unit) {
@@ -513,23 +584,4 @@ fun NotificationControls(settings: Settings, onChange: (Settings) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
         )
     }
-}
-
-@Composable
-fun TargetControls(settings: Settings, onChange: (Settings) -> Unit) {
-    Overline(stringResource(R.string.label_target))
-    SegmentedControl(
-        items = WallpaperTarget.entries,
-        selected = settings.target,
-        onSelect = { onChange(settings.copy(target = it)) },
-        label = {
-            stringResource(
-                when (it) {
-                    WallpaperTarget.BOTH -> R.string.target_both
-                    WallpaperTarget.HOME -> R.string.target_home
-                    WallpaperTarget.LOCK -> R.string.target_lock
-                },
-            )
-        },
-    )
 }

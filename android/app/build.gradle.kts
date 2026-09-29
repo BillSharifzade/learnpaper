@@ -34,8 +34,8 @@ android {
         applicationId = "com.learnpaper"
         minSdk = 26
         targetSdk = 36
-        versionCode = 3
-        versionName = "1.0.0"
+        versionCode = 4
+        versionName = "1.1.0"
 
         // Where extra content packs are listed. Override for a local server with
         // ./gradlew :app:installDebug -PpacksUrl=http://10.0.2.2:8000/manifest.json

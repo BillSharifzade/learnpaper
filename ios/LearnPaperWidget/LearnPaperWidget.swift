@@ -17,10 +17,14 @@ struct CardEntry: TimelineEntry {
     let palette: Palette
 }
 
-/// Precomputes the cards for the next day by replaying the tick schedule (see `Schedule`), so the
-/// widget changes on the hour without the app running. WidgetKit's refresh budget is not touched:
-/// one timeline covers 24 hours.
+/// Precomputes the cards ahead by replaying the tick schedule (see `Schedule`), so the widget changes
+/// on time without the app running. One timeline covers up to 24 hours or `maxEntries` changes; with
+/// short intervals (down to one minute) it asks for the next timeline when its entries run out, which
+/// stays well inside WidgetKit's daily refresh budget.
 struct CardProvider: TimelineProvider {
+    /// Changes precomputed per timeline: an hour of one-minute words, or a whole day of hourly ones.
+    static let maxEntries = 60
+
     func placeholder(in context: Context) -> CardEntry {
         let settings = Settings()
         return CardEntry(date: Date(), word: ContentStore.shared.words.first, settings: settings, palette: Palettes.byId(settings.paletteId))
@@ -48,13 +52,17 @@ struct CardProvider: TimelineProvider {
 
         var p = progress
         let horizon = now.millis + 24 * 3_600_000
-        for t in Schedule.ticks(progress: progress, settings: settings, until: horizon).prefix(48) {
+        let ticks = Schedule.ticks(progress: progress, settings: settings, until: horizon)
+        for t in ticks.prefix(Self.maxEntries) {
             p.lastTick = t
             if settings.isQuiet(at: Date(millis: t)) { continue }
             p = Rotation.advance(p, settings: settings, index: index, now: t, tzOffsetMs: Schedule.tzOffset(at: t))
             entries.append(entry(at: Date(millis: t), progress: p, settings: settings))
         }
-        let refresh = entries.last.map { max($0.date, now.addingTimeInterval(3600)) } ?? now.addingTimeInterval(3600)
+        // Short intervals use up the entries before the day is over: reload right after the last one.
+        let covered = ticks.count <= Self.maxEntries
+        let last = entries.last?.date ?? now
+        let refresh = covered ? max(last, now.addingTimeInterval(3600)) : max(last, now.addingTimeInterval(300))
         completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 

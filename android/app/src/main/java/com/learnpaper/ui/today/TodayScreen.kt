@@ -55,7 +55,6 @@ import androidx.compose.material.icons.rounded.NightsStay
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -77,8 +76,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.learnpaper.R
 import com.learnpaper.content.Word
+import com.learnpaper.domain.Schedule
 import com.learnpaper.render.PosNames
 import com.learnpaper.ui.AppViewModel
+import com.learnpaper.ui.LocalizedContent
 import com.learnpaper.ui.UiState
 import com.learnpaper.ui.components.CardPreview
 import com.learnpaper.ui.components.ExampleBlock
@@ -90,10 +91,10 @@ import com.learnpaper.ui.components.TranslationRows
 import com.learnpaper.ui.components.WordToggles
 import com.learnpaper.ui.components.formatMinutes
 import com.learnpaper.ui.components.intervalLabel
+import com.learnpaper.ui.components.rememberNow
 import com.learnpaper.ui.theme.Brand
 import com.learnpaper.ui.theme.LpTheme
 import java.time.Instant
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -117,14 +118,13 @@ fun TodayScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
 
         var fullScreen by remember { mutableStateOf(false) }
         Box(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp), contentAlignment = Alignment.Center) {
-            SwipeCard(enabled = !state.busy, onSwiped = vm::nextWord, onTap = { fullScreen = true }, modifier = Modifier.fillMaxWidth(0.5f)) {
+            SwipeCard(onSwiped = vm::nextWord, onTap = { fullScreen = true }, modifier = Modifier.fillMaxWidth(0.5f)) {
                 CardPreview(
                     settings = settings,
                     word = word ?: state.previewWord,
                     paletteIndex = state.progress.paletteIndex,
-                    render = vm::renderPreview,
+                    previews = vm,
                     showClock = true,
-                    float = true,
                 )
             }
         }
@@ -160,18 +160,13 @@ fun TodayScreen(state: UiState, vm: AppViewModel, scroll: ScrollState) {
             }
             Button(
                 onClick = vm::nextWord,
-                enabled = !state.busy,
                 modifier = Modifier.weight(1f).height(56.dp),
                 shape = MaterialTheme.shapes.extraLarge,
                 contentPadding = ButtonDefaults.ContentPadding,
             ) {
-                if (state.busy) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Icon(Icons.Rounded.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.action_next_word), style = MaterialTheme.typography.labelLarge)
-                }
+                Icon(Icons.Rounded.AutoAwesome, contentDescription = null, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.action_next_word), style = MaterialTheme.typography.labelLarge)
             }
         }
 
@@ -220,19 +215,29 @@ private fun TopBar(streak: Int) {
     }
 }
 
-/** "Next word at 14:00 · every 1 h", or the quiet-hours note at night. */
+/**
+ * "Next word at 14:00 · every 1 h", the quiet-hours note at night, or, once the next word is due while the
+ * app is open, that it will appear when the user goes back to the wallpaper (words change only there).
+ */
 @Composable
 private fun ScheduleChip(state: UiState, modifier: Modifier = Modifier) {
     val s = state.settings
-    val now = LocalTime.now()
-    val quiet = s.isQuiet(now.hour * 60 + now.minute)
+    val now = rememberNow()
+    val zone = ZoneId.systemDefault()
+    val time = Instant.ofEpochMilli(now).atZone(zone)
+    val quiet = s.isQuiet(time.hour * 60 + time.minute)
+    val every = stringResource(R.string.today_every, intervalLabel(s.intervalMinutes))
     val text = when {
         quiet -> stringResource(R.string.today_quiet_now, formatMinutes(s.quietEnd))
-        state.progress.lastChangeAt == 0L -> stringResource(R.string.today_every, intervalLabel(s.intervalMinutes)).replaceFirstChar { it.uppercase() }
+        state.progress.lastChangeAt == 0L || state.needsLiveSetup -> every.replaceFirstChar { it.uppercase() }
         else -> {
-            val next = Instant.ofEpochMilli(state.progress.lastChangeAt + s.intervalMinutes * 60_000L).atZone(ZoneId.systemDefault())
-            stringResource(R.string.today_next_change, next.format(DateTimeFormatter.ofPattern("HH:mm"))) +
-                "  ·  " + stringResource(R.string.today_every, intervalLabel(s.intervalMinutes))
+            val next = Schedule.nextChangeAt(s, state.progress.lastChangeAt, now, zone)
+            if (next <= now) {
+                stringResource(R.string.today_next_on_leave)
+            } else {
+                stringResource(R.string.today_next_change, Instant.ofEpochMilli(next).atZone(zone).format(DateTimeFormatter.ofPattern("HH:mm"))) +
+                    "  ·  " + every
+            }
         }
     }
     Row(
@@ -317,7 +322,6 @@ private fun LiveSetupBanner(onSetUp: () -> Unit, modifier: Modifier = Modifier) 
 /** The hero card: drag sideways to get the next word (it tilts with the finger and springs away), tap to see it full size. */
 @Composable
 private fun SwipeCard(
-    enabled: Boolean,
     onSwiped: () -> Unit,
     onTap: () -> Unit,
     modifier: Modifier = Modifier,
@@ -335,8 +339,7 @@ private fun SwipeCard(
                 rotationZ = offset.value / 40f
                 alpha = 1f - (kotlin.math.abs(offset.value) / (threshold * 4)).coerceIn(0f, 0.5f)
             }
-            .pointerInput(enabled) {
-                if (!enabled) return@pointerInput
+            .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragEnd = {
                         scope.launch {
@@ -366,25 +369,30 @@ private fun SwipeCard(
 @Composable
 private fun FullScreenPreview(state: UiState, vm: AppViewModel, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.55f))
-                .pointerInput(Unit) { detectTapGestures(onTap = { onDismiss() }) }
-                .padding(24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            CardPreview(
-                settings = state.settings,
-                word = state.current ?: state.previewWord,
-                paletteIndex = state.progress.paletteIndex,
-                render = vm::renderPreview,
-                modifier = Modifier.fillMaxWidth(),
-                corner = 36.dp,
-                showClock = true,
-                renderWidth = LocalContext.current.resources.displayMetrics.widthPixels.coerceAtMost(1440),
-            )
-        }
+        LocalizedContent { FullScreenCard(state, vm, onDismiss) }
+    }
+}
+
+@Composable
+private fun FullScreenCard(state: UiState, vm: AppViewModel, onDismiss: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f))
+            .pointerInput(Unit) { detectTapGestures(onTap = { onDismiss() }) }
+            .padding(24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        CardPreview(
+            settings = state.settings,
+            word = state.current ?: state.previewWord,
+            paletteIndex = state.progress.paletteIndex,
+            previews = vm,
+            modifier = Modifier.fillMaxWidth(),
+            corner = 36.dp,
+            showClock = true,
+            renderWidth = LocalContext.current.resources.displayMetrics.widthPixels.coerceAtMost(1440),
+        )
     }
 }
 

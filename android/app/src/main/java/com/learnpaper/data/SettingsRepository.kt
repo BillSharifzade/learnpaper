@@ -30,8 +30,8 @@ class SettingsRepository(private val context: Context) {
         val ROTATE_PALETTE = booleanPreferencesKey("rotate_palette")
         val LAYOUT = stringPreferencesKey("layout")
         val LOCK_STYLE = stringPreferencesKey("lock_style")
-        val MODE = stringPreferencesKey("mode")
-        val TARGET = stringPreferencesKey("target")
+        /** Written by 1.0 (live/classic mode, screens for classic); removed on the next write. */
+        val LEGACY = listOf(stringPreferencesKey("mode"), stringPreferencesKey("target"))
         val INTERVAL = intPreferencesKey("interval")
         val QUIET_ENABLED = booleanPreferencesKey("quiet_enabled")
         val QUIET_START = intPreferencesKey("quiet_start")
@@ -66,9 +66,7 @@ class SettingsRepository(private val context: Context) {
             rotatePalette = p[Keys.ROTATE_PALETTE] ?: d.rotatePalette,
             layout = p[Keys.LAYOUT]?.let { v -> LayoutPreset.choices.firstOrNull { it.name == v } } ?: d.layout,
             lockStyle = p[Keys.LOCK_STYLE]?.let { v -> LockStyle.entries.firstOrNull { it.name == v } } ?: d.lockStyle,
-            mode = p[Keys.MODE]?.let { v -> WallpaperMode.entries.firstOrNull { it.name == v } } ?: d.mode,
-            target = p[Keys.TARGET]?.let { v -> WallpaperTarget.entries.firstOrNull { it.name == v } } ?: d.target,
-            intervalMinutes = p[Keys.INTERVAL] ?: d.intervalMinutes,
+            intervalMinutes = (p[Keys.INTERVAL] ?: d.intervalMinutes).coerceIn(Settings.MIN_INTERVAL, Settings.MAX_INTERVAL),
             quietEnabled = p[Keys.QUIET_ENABLED] ?: d.quietEnabled,
             quietStart = p[Keys.QUIET_START] ?: d.quietStart,
             quietEnd = p[Keys.QUIET_END] ?: d.quietEnd,
@@ -88,9 +86,8 @@ class SettingsRepository(private val context: Context) {
         p[Keys.ROTATE_PALETTE] = s.rotatePalette
         p[Keys.LAYOUT] = s.layout.name
         p[Keys.LOCK_STYLE] = s.lockStyle.name
-        p[Keys.MODE] = s.mode.name
-        p[Keys.TARGET] = s.target.name
-        p[Keys.INTERVAL] = s.intervalMinutes
+        Keys.LEGACY.forEach { p.remove(it) }
+        p[Keys.INTERVAL] = s.intervalMinutes.coerceIn(Settings.MIN_INTERVAL, Settings.MAX_INTERVAL)
         p[Keys.QUIET_ENABLED] = s.quietEnabled
         p[Keys.QUIET_START] = s.quietStart
         p[Keys.QUIET_END] = s.quietEnd

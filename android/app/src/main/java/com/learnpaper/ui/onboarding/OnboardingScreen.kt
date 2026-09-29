@@ -2,7 +2,6 @@ package com.learnpaper.ui.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -33,7 +32,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -54,22 +51,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.learnpaper.R
-import com.learnpaper.data.WallpaperMode
+import com.learnpaper.data.Settings
 import com.learnpaper.i18n.AppLanguage
 import com.learnpaper.render.ScreenSize
 import com.learnpaper.ui.AppViewModel
+import com.learnpaper.ui.LocalAppLanguage
 import com.learnpaper.ui.UiState
 import com.learnpaper.ui.components.CardPreview
 import com.learnpaper.ui.components.IntervalControls
 import com.learnpaper.ui.components.LanguageControls
 import com.learnpaper.ui.components.LayoutControls
 import com.learnpaper.ui.components.LevelControls
-import com.learnpaper.ui.components.ModeControls
 import com.learnpaper.ui.components.Overline
 import com.learnpaper.ui.components.PaletteControls
 import com.learnpaper.ui.components.QuietHoursControls
 import com.learnpaper.ui.components.SegmentedControl
-import com.learnpaper.ui.components.TargetControls
+import com.learnpaper.ui.components.StableAcrossLanguages
 import com.learnpaper.ui.theme.Brand
 
 private enum class Step { WELCOME, LANGUAGES, LEVEL, LOOK, SCHEDULE, READY }
@@ -78,9 +75,10 @@ private enum class Step { WELCOME, LANGUAGES, LEVEL, LOOK, SCHEDULE, READY }
 fun OnboardingScreen(state: UiState, vm: AppViewModel) {
     var stepIndex by rememberSaveable { mutableIntStateOf(0) }
     val step = Step.entries[stepIndex]
-    var draft by remember { mutableStateOf(state.settings) }
+    // The choices live in the view model until the end, so a rotation or a language switch keeps them.
+    val draft = vm.draft ?: state.settings
+    val update: (Settings) -> Unit = { vm.draft = it }
     val previewWord = state.previewWord
-    val context = LocalContext.current
 
     fun back() { if (stepIndex > 0) stepIndex-- }
     fun next() { if (stepIndex < Step.entries.lastIndex) stepIndex++ }
@@ -141,33 +139,39 @@ fun OnboardingScreen(state: UiState, vm: AppViewModel) {
             ) {
                 when (s) {
                     Step.WELCOME -> {
-                        Hero(state, vm, draft, Modifier.align(Alignment.CenterHorizontally))
-                        Spacer(Modifier.height(22.dp))
-                        Text(stringResource(R.string.onb_welcome_title), style = MaterialTheme.typography.headlineMedium)
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            stringResource(R.string.onb_welcome_body),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Spacer(Modifier.height(20.dp))
+                        // The language comes first and stays put: everything below keeps its place in all three.
+                        Spacer(Modifier.height(4.dp))
                         Overline(stringResource(R.string.onb_app_language))
                         SegmentedControl(
                             items = AppLanguage.entries,
-                            selected = vm.appLanguage(),
-                            onSelect = { vm.setAppLanguage(context, it) },
+                            selected = LocalAppLanguage.current,
+                            onSelect = vm::setAppLanguage,
                             label = { it.nativeName },
                         )
+                        Spacer(Modifier.height(24.dp))
+                        Hero(draft, state, vm, Modifier.align(Alignment.CenterHorizontally))
+                        Spacer(Modifier.height(22.dp))
+                        StableAcrossLanguages {
+                            Column {
+                                Text(stringResource(R.string.onb_welcome_title), style = MaterialTheme.typography.headlineMedium)
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    stringResource(R.string.onb_welcome_body),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
                     }
                     Step.LANGUAGES -> {
                         StepHeader(R.string.onb_languages_title, R.string.onb_languages_body)
-                        LanguageControls(draft) { draft = it }
+                        LanguageControls(draft, update)
                         Spacer(Modifier.height(28.dp))
                         CardPreview(
                             settings = draft,
                             word = previewWord,
                             paletteIndex = 0,
-                            render = vm::renderPreview,
+                            previews = vm,
                             modifier = Modifier.fillMaxWidth(0.44f).align(Alignment.CenterHorizontally),
                             corner = 24.dp,
                             showClock = true,
@@ -175,7 +179,7 @@ fun OnboardingScreen(state: UiState, vm: AppViewModel) {
                     }
                     Step.LEVEL -> {
                         StepHeader(R.string.onb_level_title, R.string.onb_level_body)
-                        LevelControls(draft, state.availableLevels, state.levelCounts) { draft = it }
+                        LevelControls(draft, state.availableLevels, state.levelCounts, update)
                     }
                     Step.LOOK -> {
                         StepHeader(R.string.onb_look_title, R.string.onb_look_body)
@@ -183,43 +187,31 @@ fun OnboardingScreen(state: UiState, vm: AppViewModel) {
                             settings = draft,
                             word = previewWord,
                             paletteIndex = 0,
-                            render = vm::renderPreview,
+                            previews = vm,
                             modifier = Modifier.fillMaxWidth(0.46f).align(Alignment.CenterHorizontally),
                             corner = 24.dp,
                             showClock = true,
                         )
                         Spacer(Modifier.height(24.dp))
-                        PaletteControls(draft) { draft = it }
+                        PaletteControls(draft, update)
                         Spacer(Modifier.height(20.dp))
-                        LayoutControls(draft) { draft = it }
+                        LayoutControls(draft, update)
                     }
                     Step.SCHEDULE -> {
                         StepHeader(R.string.onb_schedule_title, R.string.onb_schedule_body)
-                        IntervalControls(draft) { draft = it }
+                        IntervalControls(draft, update)
                         Spacer(Modifier.height(16.dp))
-                        QuietHoursControls(draft) { draft = it }
-                        Spacer(Modifier.height(20.dp))
-                        ModeControls(draft) { draft = it }
-                        AnimatedVisibility(visible = draft.mode == WallpaperMode.STATIC) {
-                            Column {
-                                Spacer(Modifier.height(20.dp))
-                                TargetControls(draft) { draft = it }
-                            }
-                        }
+                        QuietHoursControls(draft, update)
                     }
                     Step.READY -> {
-                        StepHeader(
-                            R.string.onb_ready_title,
-                            if (draft.mode == WallpaperMode.LIVE) R.string.onb_ready_body_live else R.string.onb_ready_body,
-                        )
+                        StepHeader(R.string.onb_ready_title, R.string.onb_ready_body_live)
                         CardPreview(
                             settings = draft,
                             word = previewWord,
                             paletteIndex = 0,
-                            render = vm::renderPreview,
+                            previews = vm,
                             modifier = Modifier.fillMaxWidth(0.56f).align(Alignment.CenterHorizontally),
                             showClock = true,
-                            float = true,
                         )
                     }
                 }
@@ -229,35 +221,30 @@ fun OnboardingScreen(state: UiState, vm: AppViewModel) {
 
         Button(
             onClick = { if (step == Step.READY) vm.completeOnboarding(draft) else next() },
-            enabled = !state.busy,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp).height(58.dp),
             shape = MaterialTheme.shapes.extraLarge,
         ) {
-            if (state.busy && step == Step.READY) {
-                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-            } else {
-                Text(
-                    stringResource(
-                        when (step) {
-                            Step.WELCOME -> R.string.onb_start
-                            Step.READY -> R.string.onb_finish
-                            else -> R.string.onb_next
-                        },
-                    ),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                if (step != Step.READY) {
-                    Spacer(Modifier.width(8.dp))
-                    Icon(Icons.AutoMirrored.Rounded.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
-                }
+            Text(
+                stringResource(
+                    when (step) {
+                        Step.WELCOME -> R.string.onb_start
+                        Step.READY -> R.string.onb_finish
+                        else -> R.string.onb_next
+                    },
+                ),
+                style = MaterialTheme.typography.labelLarge,
+            )
+            if (step != Step.READY) {
+                Spacer(Modifier.width(8.dp))
+                Icon(Icons.AutoMirrored.Rounded.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
             }
         }
     }
 }
 
-/** The logo made real: the live card floating on an apricot card, like the two cards of the icon. */
+/** The logo made real: the card on an apricot card, like the two cards of the icon. */
 @Composable
-private fun Hero(state: UiState, vm: AppViewModel, draft: com.learnpaper.data.Settings, modifier: Modifier = Modifier) {
+private fun Hero(draft: Settings, state: UiState, vm: AppViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val aspect = remember { ScreenSize.portrait(context).let { it.first.toFloat() / it.second } }
     Box(modifier.fillMaxWidth(0.5f), contentAlignment = Alignment.Center) {
@@ -274,11 +261,10 @@ private fun Hero(state: UiState, vm: AppViewModel, draft: com.learnpaper.data.Se
             settings = draft,
             word = state.previewWord,
             paletteIndex = 0,
-            render = vm::renderPreview,
+            previews = vm,
             modifier = Modifier.fillMaxWidth(0.86f).rotate(-4f),
             corner = 28.dp,
             showClock = true,
-            float = true,
         )
     }
 }

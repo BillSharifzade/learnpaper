@@ -29,15 +29,6 @@ enum class LockStyle {
     }
 }
 
-enum class WallpaperTarget { BOTH, HOME, LOCK }
-
-/**
- * How the card reaches the screen. [LIVE] draws it from our own wallpaper service, so a change is a
- * plain redraw: no wallpaper-changed broadcast, no colour extraction, no system re-theme (which on
- * some launchers restarts the whole home screen). [STATIC] sets a bitmap with WallpaperManager.
- */
-enum class WallpaperMode { LIVE, STATIC }
-
 data class Settings(
     val onboarded: Boolean = false,
     /** Language being learned: the big word on the card. */
@@ -48,12 +39,11 @@ data class Settings(
     val showExamples: Boolean = true,
     val levels: Set<String> = setOf("A1"),
     val paletteId: String = "peach",
+    /** A new palette with every word, taken from the group (light or dark) of [paletteId]. */
     val rotatePalette: Boolean = false,
     val layout: LayoutPreset = LayoutPreset.LOCK,
     val lockStyle: LockStyle = LockStyle.AUTO,
-    val mode: WallpaperMode = WallpaperMode.LIVE,
-    /** Screens to set in [WallpaperMode.STATIC]; in LIVE mode the system picker decides. */
-    val target: WallpaperTarget = WallpaperTarget.BOTH,
+    /** Minutes between words, [MIN_INTERVAL]..[MAX_INTERVAL]: one of [INTERVALS] or a custom value. */
     val intervalMinutes: Int = 60,
     val quietEnabled: Boolean = true,
     /** Minutes since midnight. */
@@ -81,6 +71,14 @@ data class Settings(
     }
 
     companion object {
+        /** Offered as chips; any other value between the bounds can be entered as a custom interval. */
         val INTERVALS = listOf(15, 30, 60, 120, 180, 360, 720, 1440)
+
+        /**
+         * Words change only while the wallpaper is on screen (see [com.learnpaper.domain.Schedule]),
+         * so there is no background job and no 15-minute WorkManager floor: one minute is fine.
+         */
+        const val MIN_INTERVAL = 1
+        const val MAX_INTERVAL = 24 * 60
     }
 }

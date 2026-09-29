@@ -1,20 +1,21 @@
 package com.learnpaper.ui
 
+import android.content.ActivityNotFoundException
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -35,15 +36,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -74,7 +79,20 @@ fun LearnPaperApp(vm: AppViewModel) {
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when (event) {
-                UiEvent.OpenLivePicker -> runCatching { context.startActivity(LiveCardWallpaper.pickerIntent(context)) }
+                UiEvent.OpenLivePicker -> {
+                    // The direct "set LearnPaper" screen, else the list of live wallpapers.
+                    val opened = listOf(LiveCardWallpaper.pickerIntent(context), LiveCardWallpaper.chooserIntent()).any { intent ->
+                        try {
+                            context.startActivity(intent)
+                            true
+                        } catch (_: ActivityNotFoundException) {
+                            false
+                        } catch (_: SecurityException) {
+                            false
+                        }
+                    }
+                    if (!opened) vm.livePickerMissing()
+                }
             }
         }
     }
@@ -117,7 +135,7 @@ private fun MainScreen(state: UiState, vm: AppViewModel) {
     var screen by rememberSaveable { mutableStateOf(Screen.TODAY) }
     val snackbar = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val holder = rememberSaveableStateHolder()
+    val focus = LocalFocusManager.current
     val todayScroll = rememberScrollState()
     val settingsScroll = rememberScrollState()
     val wordsList = rememberLazyListState()
@@ -150,6 +168,8 @@ private fun MainScreen(state: UiState, vm: AppViewModel) {
                         selected = screen == s,
                         onClick = {
                             if (screen == s) return@NavigationBarItem
+                            // A search field in a tab that goes away must not keep the keyboard open.
+                            focus.clearFocus()
                             screen = s
                         },
                         icon = { Icon(s.icon, contentDescription = null) },
@@ -166,25 +186,52 @@ private fun MainScreen(state: UiState, vm: AppViewModel) {
             }
         },
     ) { padding ->
-        AnimatedContent(
-            targetState = screen,
-            transitionSpec = {
-                (fadeIn(tween(240, delayMillis = 70)) + scaleIn(tween(240, delayMillis = 70), initialScale = 0.985f))
-                    .togetherWith(fadeOut(tween(90)))
-            },
-            label = "tab",
-            modifier = Modifier.padding(padding),
-        ) { tab ->
-            holder.SaveableStateProvider(tab.name) {
-                ReadableWidth {
-                    when (tab) {
-                        Screen.TODAY -> TodayScreen(state, vm, todayScroll)
-                        Screen.WORDS -> WordsScreen(state, vm, wordsList)
-                        Screen.SETTINGS -> SettingsScreen(state, vm, settingsScroll)
-                    }
+        KeepAliveTabs(selected = screen, modifier = Modifier.padding(padding)) { tab ->
+            ReadableWidth {
+                when (tab) {
+                    Screen.TODAY -> TodayScreen(state, vm, todayScroll)
+                    Screen.WORDS -> WordsScreen(state.settings, vm, wordsList)
+                    Screen.SETTINGS -> SettingsScreen(state, vm, settingsScroll)
                 }
             }
         }
         StatusBarScrim()
     }
 }
+
+/**
+ * Tabs that are built once and then kept: switching back to a tab shows it as it was, with nothing to
+ * rebuild, reload or re-render. Only the selected tab is measured, placed and drawn; the others keep
+ * their state (scroll positions, search, rendered cards) off screen. A tab is first built when it is
+ * first opened, and fades in quickly when selected.
+ */
+@Composable
+private fun <T : Any> KeepAliveTabs(selected: T, modifier: Modifier = Modifier, content: @Composable (T) -> Unit) {
+    val opened = remember { mutableStateListOf(selected) }
+    if (selected !in opened) opened += selected
+    val alpha = remember { Animatable(1f) }
+    var first by remember { mutableStateOf(true) }
+    LaunchedEffect(selected) {
+        if (first) {
+            first = false
+        } else {
+            alpha.snapTo(0f)
+            alpha.animateTo(1f, tween(TAB_FADE_MS))
+        }
+    }
+    Layout(
+        modifier = modifier,
+        content = {
+            opened.forEach { tab ->
+                key(tab) {
+                    Box(Modifier.graphicsLayer { if (tab == selected) this.alpha = alpha.value }) { content(tab) }
+                }
+            }
+        },
+    ) { measurables, constraints ->
+        val placeable = measurables[opened.indexOf(selected)].measure(constraints)
+        layout(constraints.maxWidth, constraints.maxHeight) { placeable.place(0, 0) }
+    }
+}
+
+private const val TAB_FADE_MS = 160

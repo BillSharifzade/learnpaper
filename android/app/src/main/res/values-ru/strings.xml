@@ -21,7 +21,6 @@
     <string name="onb_schedule_title">Как часто?</string>
     <string name="onb_schedule_body">Новое слово появляется по этому расписанию. Ночью обои отдыхают.</string>
     <string name="onb_ready_title">Всё готово!</string>
-    <string name="onb_ready_body">Первое слово уже на месте. Дальше обои будут меняться сами.</string>
     <string name="onb_ready_body_live">Последний шаг: Android попросит подтвердить LearnPaper как обои. Если будет предложено, выберите домашний экран и экран блокировки.</string>
     <string name="onb_finish">Установить обои</string>
 
@@ -45,6 +44,10 @@
 
     <string name="label_palette">Цвета</string>
     <string name="palette_rotate">Новый цвет с каждым словом</string>
+    <string name="palette_rotate_light">По очереди из светлых цветов</string>
+    <string name="palette_rotate_dark">По очереди из тёмных цветов</string>
+    <string name="palette_group_light">Светлые</string>
+    <string name="palette_group_dark">Тёмные</string>
     <string name="label_layout">Положение карточки</string>
     <string name="layout_lock">Ниже</string>
     <string name="layout_lock_desc">Место для часов</string>
@@ -70,28 +73,33 @@
     <string name="palette_powder">Пудра</string>
     <string name="palette_midnight">Полночь</string>
     <string name="palette_pine">Хвоя</string>
+    <string name="palette_ocean">Океан</string>
+    <string name="palette_plum">Слива</string>
+    <string name="palette_pomegranate">Гранат</string>
+    <string name="palette_coffee">Кофе</string>
+    <string name="palette_graphite">Графит</string>
+    <string name="palette_turquoise">Бирюза</string>
+    <string name="palette_gold">Золото</string>
+    <string name="palette_coal">Уголь</string>
 
     <string name="label_interval">Новое слово каждые</string>
     <string name="interval_minutes">%1$d мин</string>
     <string name="interval_hours">%1$d ч</string>
     <string name="interval_daily">Раз в день</string>
+    <string name="interval_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="interval_custom">Другое</string>
+    <string name="interval_unit_minutes">Минуты</string>
+    <string name="interval_unit_hours">Часы</string>
+    <string name="interval_custom_hint">От 1 минуты до 24 часов</string>
     <string name="label_quiet">Тихие часы</string>
     <string name="quiet_desc">Ночью обои не меняются</string>
     <string name="quiet_from">С</string>
     <string name="quiet_to">До</string>
-    <string name="label_mode">Как устанавливаются обои</string>
-    <string name="mode_live">Живые (рекомендуется)</string>
-    <string name="mode_live_desc">Карточка перерисовывается на месте. Без мигания, и телефон не перекрашивает тему с каждым словом.</string>
-    <string name="mode_static">Классические</string>
-    <string name="mode_static_desc">Каждый раз ставится новая картинка. На некоторых телефонах рабочий стол при этом перезагружается.</string>
-    <string name="label_target">Установить на</string>
-    <string name="target_both">Оба экрана</string>
-    <string name="target_home">Главный экран</string>
-    <string name="target_lock">Экран блокировки</string>
 
     <string name="today_next_change">Следующее слово в %1$s</string>
     <string name="today_every">каждые %1$s</string>
     <string name="today_quiet_now">Тихие часы до %1$s</string>
+    <string name="today_next_on_leave">Следующее слово — как только выйдете из приложения</string>
     <string name="home_no_word">Нажмите «Следующее слово», чтобы поставить первую карточку на обои.</string>
     <string name="action_next_word">Следующее слово</string>
     <string name="action_favorite">Добавить в избранное</string>
@@ -109,15 +117,14 @@
     <string name="stat_seen">показано</string>
     <string name="stat_learned">выучено</string>
     <string name="stat_due">повторить</string>
-    <string name="msg_applied">Обои обновлены</string>
     <string name="msg_shown">Теперь на обоях</string>
-    <string name="msg_failed">Не удалось установить обои</string>
     <string name="msg_no_words">Для выбранных уровней нет слов</string>
     <string name="live_setup_title">Остался один шаг</string>
     <string name="live_setup_body">На следующем экране подтвердите LearnPaper как обои — для главного экрана и экрана блокировки, если предложат.</string>
     <string name="live_setup_action">Установить обои</string>
     <string name="live_active">LearnPaper — ваши обои.</string>
     <string name="live_inactive">LearnPaper ещё не установлен как обои.</string>
+    <string name="live_unsupported">Этот телефон не умеет ставить живые обои. Вместо этого можно добавить виджет LearnPaper на рабочий стол.</string>
 
     <string name="words_title">Слова</string>
     <string name="words_search_hint">Поиск на любом языке</string>
@@ -155,8 +162,7 @@
     <string name="settings_show_examples_desc">Одно короткое предложение на каждом языке</string>
     <string name="settings_appearance">Оформление</string>
     <string name="settings_wallpaper">Обои</string>
-    <string name="settings_apply_now">Применить сейчас</string>
-    <string name="settings_apply_hint">Изменения вида применяются со следующим словом или сразу — кнопкой «Применить сейчас».</string>
+    <string name="wallpaper_how">Карточка перерисовывается на месте: рабочий стол не перезагружается, и телефон не перекрашивает тему. Слова меняются, только когда вы смотрите на экран.</string>
     <string name="settings_schedule">Расписание</string>
     <string name="settings_notifications">Уведомления</string>
     <string name="notif_daily">Слово дня</string>

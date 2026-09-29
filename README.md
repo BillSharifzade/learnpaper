@@ -8,10 +8,12 @@ away.
 - **2,433 words across all six CEFR levels** — A1 490 · A2 382 · B1 517 · B2 538 · C1 292 · C2 214 —
   bundled in the app, fully offline. Every Tajik word and example was checked against the Rahimi–Uspenskaya
   dictionary, Wiktionary and a 564k-sentence Tajik corpus (there is no native reviewer on the project).
-- **Android** (Kotlin, Jetpack Compose): live wallpaper that redraws in place (no theme reloads), a classic
-  static mode, home-screen widget with a next-word button, word library with search in any language,
-  light spaced repetition, streaks, daily notification, lock-screen layouts for both small-top and large
-  centred clocks, light and dark themes, twelve card palettes.
+- **Android** (Kotlin, Jetpack Compose): the card is the wallpaper itself, redrawn in place — a new word
+  never re-themes the phone or reloads the home screen, and nothing runs while the screen is off. Words
+  change on your schedule (1 minute to 24 hours), a home-screen widget with a next-word button, word
+  library with search in any language, light spaced repetition, streaks, daily notification, lock-screen
+  layouts for both small-top and large centred clocks, light and dark themes, twenty card palettes (ten
+  light, ten dark). Works from Android 8.0.
 - **iOS** (Swift, SwiftUI, iOS 17): widgets and a Shortcuts-based wallpaper flow (iOS does not let apps
   set the wallpaper) — ported but not yet compiled; see `ios/README.md`.
 

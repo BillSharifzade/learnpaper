@@ -11,7 +11,7 @@ import Foundation
 enum Schedule {
     /// Ticks in (progress.lastTick, until], oldest first.
     static func ticks(progress: Progress, settings: Settings, until: Int64) -> [Int64] {
-        let interval = Int64(max(settings.intervalMinutes, 15)) * 60_000
+        let interval = Int64(min(Settings.maxInterval, max(settings.intervalMinutes, Settings.minInterval))) * 60_000
         guard progress.scheduleAnchor > 0 else { return [] }
         var result: [Int64] = []
         var t = progress.scheduleAnchor

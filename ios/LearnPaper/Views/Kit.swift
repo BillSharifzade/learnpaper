@@ -359,7 +359,15 @@ struct WordThumb: View {
     let word: Word
     var size: CGFloat = 48
     var headline: Lang = .en
-    @State private var image: UIImage? = nil
+    @State private var image: UIImage?
+
+    /// A thumbnail that is already decoded shows in the first frame; others load in the background.
+    init(word: Word, size: CGFloat = 48, headline: Lang = .en) {
+        self.word = word
+        self.size = size
+        self.headline = headline
+        _image = State(initialValue: ContentStore.shared.cachedThumbnail(for: word, maxPixels: Int(size * 3)))
+    }
 
     var body: some View {
         ZStack {
@@ -379,7 +387,7 @@ struct WordThumb: View {
         .frame(width: size, height: size)
         .accessibilityHidden(true)
         .task(id: word.id) {
-            image = await ContentStore.shared.loadThumbnail(for: word, maxPixels: Int(size * 3))
+            if image == nil { image = await ContentStore.shared.loadThumbnail(for: word, maxPixels: Int(size * 3)) }
         }
     }
 }

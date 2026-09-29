@@ -24,7 +24,10 @@ label_palette palette_rotate label_layout layout_lock layout_lock_desc layout_ho
 layout_compact layout_compact_desc layout_note
 palette_peach palette_mint palette_lavender palette_sky palette_sand palette_rose palette_sage
 palette_butter palette_lilac palette_powder palette_midnight palette_pine
+palette_ocean palette_plum palette_pomegranate palette_coffee palette_graphite palette_turquoise palette_gold
+palette_coal palette_group_light palette_group_dark palette_rotate_light palette_rotate_dark
 label_interval interval_minutes interval_hours interval_daily label_quiet quiet_desc quiet_from quiet_to
+interval_hours_minutes interval_custom interval_unit_minutes interval_unit_hours interval_custom_hint
 today_next_change today_every today_quiet_now home_no_word action_next_word action_favorite
 action_unfavorite action_learned action_unlearned action_speak action_show_on_wallpaper
 stat_streak stat_seen stat_learned stat_due msg_no_words
@@ -176,10 +179,15 @@ def android_text(raw: str) -> str:
     if len(text) >= 2 and text[0] == '"' and text[-1] == '"':
         text = text[1:-1]
     text = re.sub(r"\\(['\"@?])", r"\1", text).replace("\\n", "\n").replace("\\t", "\t")
-    # Android positional placeholders to iOS ones (every shared string has at most one argument).
-    text = re.sub(r"%1\$s", "%@", text)
-    text = re.sub(r"%(?:1\$)?d", "%lld", text)
-    if re.search(r"%[0-9]+\$", text):
+    # Android placeholders to iOS ones: "%1$s" -> "%@" and "%d" -> "%lld" for a single argument; with
+    # several arguments the positions are kept ("%1$d h %2$d min" -> "%1$lld h %2$lld min").
+    if re.search(r"%[2-9]\$", text):
+        text = re.sub(r"%([0-9])\$s", r"%\1$@", text)
+        text = re.sub(r"%([0-9])\$d", r"%\1$lld", text)
+    else:
+        text = re.sub(r"%1\$s", "%@", text)
+        text = re.sub(r"%(?:1\$)?d", "%lld", text)
+    if re.search(r"%[0-9]+\$(?![@l])", text):
         sys.exit(f"unsupported placeholder in: {text}")
     return text
 

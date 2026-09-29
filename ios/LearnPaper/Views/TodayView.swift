@@ -27,8 +27,7 @@ struct TodayView: View {
                         settings: settings,
                         word: word ?? model.previewWord,
                         paletteIndex: model.progress.paletteIndex,
-                        showClock: true,
-                        float: true
+                        showClock: true
                     )
                     .frame(width: CardPreview.screenWidth * 0.5)
                 }

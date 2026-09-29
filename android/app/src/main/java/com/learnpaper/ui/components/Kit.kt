@@ -45,21 +45,28 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -67,24 +74,63 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.learnpaper.content.ContentRepository
 import com.learnpaper.content.Lang
 import com.learnpaper.content.Word
+import com.learnpaper.i18n.AppLanguage
+import com.learnpaper.i18n.AppLocale
+import com.learnpaper.ui.LocalAppLanguage
 import com.learnpaper.ui.theme.LpTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /** Gentle shrink while pressed, springing back on release: the tactile feel of every tappable surface. */
 @Composable
 fun Modifier.pressable(interaction: MutableInteractionSource, pressedScale: Float = 0.96f): Modifier {
     val isPressed by interaction.collectIsPressedAsState()
-    val scale by animateFloatAsState(
+    val scale = animateFloatAsState(
         if (isPressed) pressedScale else 1f,
         spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMedium),
         label = "press",
     )
-    return this.graphicsLayer { scaleX = scale; scaleY = scale }
+    // Read in the layer, not in composition: the spring animates without recomposing anything.
+    return this.graphicsLayer { scaleX = scale.value; scaleY = scale.value }
 }
+
+/** The current time, refreshed every minute while the screen is started ("next word at", "5 min ago"). */
+@Composable
+fun rememberNow(): Long {
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val now = remember { mutableLongStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while (true) {
+                val t = System.currentTimeMillis()
+                now.longValue = t
+                delay(60_000L - t % 60_000L + 50L)
+            }
+        }
+    }
+    return now.longValue
+}
+
+/** Where list illustrations come from (the view model, backed by the content cache). */
+interface Thumbnails {
+    /** The decoded thumbnail if it is in memory; never touches the disk. */
+    fun cachedThumbnail(word: Word): Bitmap?
+
+    /** Decodes (and caches) the thumbnail; called off the main thread. */
+    fun thumbnail(word: Word): Bitmap?
+}
+
+/** Thumbnail decodes run two at a time, so a fast fling through the list does not start dozens at once. */
+@OptIn(ExperimentalCoroutinesApi::class)
+private val thumbDecoder = Dispatchers.IO.limitedParallelism(2)
 
 /** Content column capped at a comfortable reading width and centred, for tablets and foldables. */
 @Composable
@@ -126,6 +172,33 @@ fun SectionCard(
             }
         }
         content()
+    }
+}
+
+/**
+ * Content that always takes the height it has in its longest translation, so switching the interface
+ * language never moves what follows it. The content is composed once per language with that language's
+ * texts; only the current one is drawn and read aloud.
+ */
+@Composable
+fun StableAcrossLanguages(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val app = LocalContext.current.applicationContext
+    val current = LocalAppLanguage.current
+    Box(modifier) {
+        AppLanguage.entries.forEach { lang ->
+            if (lang == current) {
+                content()
+            } else {
+                val localized = remember(lang) { AppLocale.localized(app, lang) }
+                CompositionLocalProvider(
+                    LocalContext provides localized,
+                    LocalConfiguration provides localized.resources.configuration,
+                    LocalAppLanguage provides lang,
+                ) {
+                    Box(Modifier.alpha(0f).clearAndSetSemantics {}) { content() }
+                }
+            }
+        }
     }
 }
 
@@ -416,9 +489,12 @@ fun EmptyState(message: String, modifier: Modifier = Modifier) {
 
 /** The word's illustration from the thumbnail cache, or its first letter on the level tint. */
 @Composable
-fun WordThumb(word: Word, loader: (Word) -> Bitmap?, modifier: Modifier = Modifier, size: Dp = 48.dp, headline: Lang = Lang.EN) {
-    val image by produceState<ImageBitmap?>(initialValue = null, word.id, word.image) {
-        value = if (word.image == null) null else withContext(Dispatchers.IO) { loader(word)?.asImageBitmap() }
+fun WordThumb(word: Word, thumbnails: Thumbnails, modifier: Modifier = Modifier, size: Dp = 48.dp, headline: Lang = Lang.EN) {
+    // Keyed by the word: a recycled list row never shows the previous word's picture, and a cached one
+    // appears in the first frame.
+    var image by remember(word.id) { mutableStateOf(thumbnails.cachedThumbnail(word)?.asImageBitmap()) }
+    LaunchedEffect(word.id) {
+        if (image == null && word.image != null) image = withContext(thumbDecoder) { thumbnails.thumbnail(word)?.asImageBitmap() }
     }
     val i = ContentRepository.LEVEL_ORDER.indexOf(word.level).coerceIn(0, 5)
     Box(

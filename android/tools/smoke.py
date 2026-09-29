@@ -120,8 +120,8 @@ def main() -> int:
     screenshot(out, "02_ready")
     ok &= tap("Ба экран гузоштан", wait=5)
     screenshot(out, "03_picker")
-    # Live mode (the default) hands over to the system picker.
-    ok &= tap("Set wallpaper", wait=3)
+    # Finishing onboarding hands over to the system picker (label as on Android 8 and on 9+).
+    ok &= any(tap(label, wait=3, retries=3) for label in ("Set wallpaper", "SET WALLPAPER"))
     for choice in ("Home screen and lock screen", "Home and lock screen", "Home screen"):
         if node_center(choice):
             tap(choice, wait=4)

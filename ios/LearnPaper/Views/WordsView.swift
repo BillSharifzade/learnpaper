@@ -1,17 +1,28 @@
 import SwiftUI
 
 /// The word library: search in any language, filters, level groups with sticky headers, and a detail
-/// sheet. Port of android/.../ui/words/WordsScreen.kt (replaces the old History screen).
+/// sheet. Port of android/.../ui/words/WordsScreen.kt (replaces the old History screen). The list
+/// (search, filters, sorting over ~2,500 words) is computed in a background task whenever its inputs
+/// change, so typing and opening the tab never wait for it.
 struct WordsView: View {
     @EnvironmentObject private var model: AppModel
     @State private var query = ""
     @State private var filter: WordFilter = .all
     @State private var levelFilter: Set<String> = []
     @State private var selected: Word? = nil
+    @State private var rows: [WordRowItem] = []
+    @State private var shownKey: RowsKey? = nil
     @FocusState private var searchFocused: Bool
 
+    private var rowsKey: RowsKey {
+        RowsKey(
+            query: trimmedQuery, filter: filter, levels: levelFilter, headline: model.settings.headline,
+            history: model.progress.history.first?.at ?? 0, favorites: model.progress.favorites, learned: model.progress.learned
+        )
+    }
+
     var body: some View {
-        let rows = makeRows()
+        let key = rowsKey
         let grouped = filter == .all && trimmedQuery.isEmpty
         VStack(spacing: 0) {
             VStack(spacing: 0) {
@@ -59,7 +70,10 @@ struct WordsView: View {
 
             if rows.isEmpty {
                 ScrollView {
-                    EmptyState(message: L10n.t(emptyKey))
+                    // Only a finished, empty result gets the message; not the moment before the first one.
+                    if shownKey == key {
+                        EmptyState(message: L10n.t(emptyKey))
+                    }
                 }
                 .scrollDismissesKeyboard(.immediately)
             } else {
@@ -67,6 +81,21 @@ struct WordsView: View {
             }
         }
         .background(Theme.background)
+        .task(id: key) {
+            // A keystroke waits a moment, so fast typing searches once; everything else updates at once.
+            if let shown = shownKey, shown.query != key.query {
+                try? await Task.sleep(nanoseconds: 120_000_000)
+            }
+            let library = await model.library()
+            let progress = model.progress
+            guard !Task.isCancelled else { return }
+            let result = await Task.detached(priority: .userInitiated) {
+                WordsView.makeRows(key: key, library: library, progress: progress)
+            }.value
+            guard !Task.isCancelled else { return }
+            rows = result
+            shownKey = key
+        }
         .sheet(item: $selected) { word in
             WordDetailSheet(word: word)
                 .environmentObject(model)
@@ -164,29 +193,30 @@ struct WordsView: View {
         }
     }
 
-    private func makeRows() -> [WordRowItem] {
-        let headline = model.settings.headline
-        let found: [Word]? = trimmedQuery.isEmpty ? nil : model.search.search(trimmedQuery)
+    /// The rows for `key`; pure, runs off the main thread.
+    nonisolated static func makeRows(key: RowsKey, library: LibraryIndex, progress: Progress) -> [WordRowItem] {
+        let content = ContentStore.shared
+        let found: [Word]? = key.query.isEmpty ? nil : library.search.search(key.query)
         let hits: Set<String>? = found.map { words in Set(words.map { $0.id }) }
         let base: [WordRowItem]
-        switch filter {
+        switch key.filter {
         case .all:
-            base = (found ?? model.libraryOrder(headline)).map { WordRowItem(word: $0, shownAt: nil) }
+            base = (found ?? library.order(key.headline)).map { WordRowItem(word: $0, shownAt: nil) }
         case .history:
             var seen = Set<String>()
             var list: [WordRowItem] = []
-            for entry in model.progress.history where !seen.contains(entry.id) {
+            for entry in progress.history where !seen.contains(entry.id) {
                 seen.insert(entry.id)
-                if let word = model.word(entry.id) { list.append(WordRowItem(word: word, shownAt: entry.at)) }
+                if let word = content.word(entry.id) { list.append(WordRowItem(word: word, shownAt: entry.at)) }
             }
             base = list
         case .favorites:
-            base = WordSearch.sorted(model.progress.favorites.compactMap { model.word($0) }, headline: headline).map { WordRowItem(word: $0, shownAt: nil) }
+            base = WordSearch.sorted(progress.favorites.compactMap { content.word($0) }, headline: key.headline).map { WordRowItem(word: $0, shownAt: nil) }
         case .learned:
-            base = WordSearch.sorted(model.progress.learned.compactMap { model.word($0) }, headline: headline).map { WordRowItem(word: $0, shownAt: nil) }
+            base = WordSearch.sorted(progress.learned.compactMap { content.word($0) }, headline: key.headline).map { WordRowItem(word: $0, shownAt: nil) }
         }
         return base.filter { row in
-            (levelFilter.isEmpty || levelFilter.contains(row.word.level)) && (hits?.contains(row.word.id) ?? true)
+            (key.levels.isEmpty || key.levels.contains(row.word.level)) && (hits?.contains(row.word.id) ?? true)
         }
     }
 
@@ -227,6 +257,18 @@ enum WordFilter: CaseIterable {
         case .learned: return Theme.success
         }
     }
+}
+
+/// Everything the list depends on; a change starts a new background computation.
+struct RowsKey: Equatable {
+    let query: String
+    let filter: WordFilter
+    let levels: Set<String>
+    let headline: Lang
+    /// Newest history entry, standing in for the whole history (it only grows at the front).
+    let history: Int64
+    let favorites: Set<String>
+    let learned: Set<String>
 }
 
 struct WordRowItem: Identifiable {

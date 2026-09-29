@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -22,8 +21,10 @@
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="33">
 
+        <!-- The interface language is switched in place (see AppLocale): no restart, no flicker. -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="locale|layoutDirection"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
